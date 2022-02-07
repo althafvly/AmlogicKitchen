@@ -14,7 +14,7 @@ md out
 
 for /R %%f in (in\*.img) do (set filename=%%~nf)
 
-bin\AmlImagePack -r level1\image.cfg level1 "out\%filename%.img"
+bin\windows\AmlImagePack -r level1\image.cfg level1 "out\%filename%.img"
 
 echo Done.
 pause

@@ -7,7 +7,7 @@ md level1
 
 for /R %%f in (in\*.img) do (set filename=%%~nf)
 
-bin\AmlImagePack -d "in\%filename%.img" level1
+bin\windows\AmlImagePack -d "in\%filename%.img" level1
 
 echo Done.
 pause
