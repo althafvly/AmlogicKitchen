@@ -1,5 +1,6 @@
 in/
 out/
+bin/python/__pycache__/
 level1/
 level2/
 level3/
