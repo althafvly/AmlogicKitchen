@@ -14,6 +14,11 @@ bin\windows\make_ext4fs -s -J -L system -T -1 -S level2\system_file_contexts -C 
 call :size level1\system.PARTITION
 if %SIZE%==0 exit
 
+set /p system_ext_size=<"level2\system_ext_size"
+bin\windows\make_ext4fs -s -J -L system_ext -T -1 -S level2\system_ext_file_contexts -C level2\system_ext_fs_config -l %system_ext_size% -a system_ext level1\system_ext.PARTITION level2\system_ext\
+call :size level1\system_ext.PARTITION
+if %SIZE%==0 exit
+
 set /p vendor_size=<"level2\vendor_size"
 bin\windows\make_ext4fs -s -J -L vendor -T -1 -S level2\vendor_file_contexts -C level2\vendor_fs_config -l %vendor_size% -a vendor level1\vendor.PARTITION level2\vendor\
 call :size level1\vendor.PARTITION
@@ -27,6 +32,11 @@ if %SIZE%==0 exit
 set /p odm_size=<"level2\odm_size"
 bin\windows\make_ext4fs -s -J -L odm -T -1 -S level2\odm_file_contexts -C level2\odm_fs_config -l %odm_size% -a odm level1\odm.PARTITION level2\odm\
 call :size level1\odm.PARTITION
+if %SIZE%==0 exit
+
+set /p oem_size=<"level2\oem_size"
+bin\windows\make_ext4fs -s -J -L oem -T -1 -S level2\oem_file_contexts -C level2\oem_fs_config -l %oem_size% -a oem level1\oem.PARTITION level2\oem\
+call :size level1\oem.PARTITION
 if %SIZE%==0 exit
 
 echo Done.

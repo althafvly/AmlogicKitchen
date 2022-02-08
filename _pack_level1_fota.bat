@@ -26,6 +26,7 @@ bin\windows\7za x bin\common\update.zip -otmp
 
 copy level1\boot.PARTITION tmp\boot.img
 copy level1\ddr.USB tmp\bootloader.img
+copy level1\DDR.USB tmp\bootloader.img
 copy level1\_aml_dtb.PARTITION tmp\dt.img
 copy level1\dtbo.PARTITION tmp\dtbo.img
 copy level1\logo.PARTITION tmp\logo.img
@@ -36,6 +37,11 @@ copy level1\odm.PARTITION tmp\odm.img
 bin\windows\img2sdat tmp\odm.img -o tmp -v 4 -p odm
 bin\windows\brotli.exe --in tmp\odm.new.dat --out tmp\odm.new.dat.br --quality 6 -w 24
 del tmp\odm.img tmp\odm.new.dat
+
+copy level1\oem.PARTITION tmp\oem.img
+bin\windows\img2sdat tmp\oem.img -o tmp -v 4 -p oem
+bin\windows\brotli.exe --in tmp\oem.new.dat --out tmp\oem.new.dat.br --quality 6 -w 24
+del tmp\oem.img tmp\oem.new.dat
 
 copy level1\product.PARTITION tmp\product.img
 bin\windows\img2sdat tmp\product.img -o tmp -v 4 -p product
@@ -53,6 +59,12 @@ bin\windows\img2sdat tmp\system.img -o tmp -v 4 -p system
 echo Please Wait...
 bin\windows\brotli.exe --in tmp\system.new.dat --out tmp\system.new.dat.br --quality 6 -w 24
 del tmp\system.img tmp\system.new.dat
+
+copy level1\system_ext.PARTITION tmp\system_ext.img
+bin\windows\img2sdat tmp\system_ext.img -o tmp -v 4 -p system_ext
+echo Please Wait...
+bin\windows\brotli.exe --in tmp\system_ext.new.dat --out tmp\system_ext.new.dat.br --quality 6 -w 24
+del tmp\system_ext.img tmp\system_ext.new.dat
 
 bin\windows\7za a out\update_tmp.zip .\tmp\*
 

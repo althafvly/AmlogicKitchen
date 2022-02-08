@@ -15,7 +15,7 @@ else
     mkdir level2
 fi
 
-for part in system vendor product odm
+for part in system system_ext vendor product odm oem
 do
     if [ -f level1/$part.PARTITION ]; then
     echo "Extracting $part"

@@ -5,7 +5,7 @@ if [ ! -d level2 ]; then
     exit 0
 fi
 
-for part in system vendor product odm
+for part in system system_ext vendor product odm oem
 do
     if [ -d level2/$part ]; then
     size=$(cat level2/${part}_size.txt)

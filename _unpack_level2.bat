@@ -13,9 +13,11 @@ if exist level2 rmdir /q /s level2
 md level2
 
 bin\windows\imgextractor level1\system.PARTITION level2\system
+bin\windows\imgextractor level1\system_ext.PARTITION level2\system_ext
 bin\windows\imgextractor level1\vendor.PARTITION level2\vendor
 bin\windows\imgextractor level1\product.PARTITION level2\product
 bin\windows\imgextractor level1\odm.PARTITION level2\odm
+bin\windows\imgextractor level1\oem.PARTITION level2\oem
 
 del level1\*.raw.img
 
