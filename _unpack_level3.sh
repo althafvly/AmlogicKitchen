@@ -1,5 +1,11 @@
 #!/usr/bin/sudo sh
 
+if [ ! `which dtc` ]; then
+    echo "dtc : not installed"
+    echo "install device-tree-compiler"
+    exit 0
+fi
+
 if [ ! -d level1 ]; then
     echo "Unpack level 1 first"
     exit 0
