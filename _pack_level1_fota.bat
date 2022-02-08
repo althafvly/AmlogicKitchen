@@ -22,7 +22,7 @@ md tmp
 
 for /R %%f in (in\*.img) do (set filename=%%~nf)
 
-bin\windows\7za x bin\windows\update.zip -otmp
+bin\windows\7za x bin\common\update.zip -otmp
 
 copy level1\boot.PARTITION tmp\boot.img
 copy level1\ddr.USB tmp\bootloader.img
@@ -57,7 +57,7 @@ del tmp\system.img tmp\system.new.dat
 bin\windows\7za a out\update_tmp.zip .\tmp\*
 
 echo Signing...
-java -jar bin\windows\zipsigner.jar out\update_tmp.zip "out\%filename%_fota.zip"
+java -jar bin\common\zipsigner.jar out\update_tmp.zip "out\%filename%_fota.zip"
 
 del out\update_tmp.zip
 if exist tmp rmdir /q /s tmp

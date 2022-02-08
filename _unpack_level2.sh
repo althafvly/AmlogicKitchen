@@ -1,6 +1,6 @@
 #!/usr/bin/sudo sh
 
-imgextractor="bin/python/imgextractor.py"
+imgextractor="bin/common/imgextractor.py"
 
 if [ ! -d level1 ]; then
     echo "Unpack level 1 first"
