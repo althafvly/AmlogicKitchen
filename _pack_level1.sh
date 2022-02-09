@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/sudo sh
 
 if [ ! -d level1 ]; then
     echo "Can't find level1 folder"

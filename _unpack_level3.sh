@@ -1,8 +1,7 @@
 #!/usr/bin/sudo sh
 
 if [ ! `which dtc` ]; then
-    echo "dtc : not installed"
-    echo "install device-tree-compiler"
+    echo "install dtc, please (apt-get install device-tree-compiler)"
     exit 0
 fi
 
@@ -36,7 +35,8 @@ if [ -f level1/_aml_dtb.PARTITION ]; then
     for filename in level3/devtree/*.dtb; do
     [ -e "$filename" ] || continue
     name=$(basename $filename .dtb)
-    dtc -I dtb -O dts level3/devtree/$name.dtb -o level3/devtree/$name.dts
+    dtc -I dtb -O dts level3/devtree/$name.dtb -o "`echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/'`"
+    rm level3/devtree/$name.dtb
     done
 fi
 
