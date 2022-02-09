@@ -26,7 +26,9 @@ set /p osversion=<"level3\boot\boot.PARTITION-os_version"
 set /p boardname=<"level3\boot\boot.PARTITION-board"
 set /p hash=<"level3\boot\boot.PARTITION-hashtype"
 
+if exist level3\boot\ (
 bin\windows\mkbootimg.exe --kernel %kernel% --kernel_offset %kerneloff% --ramdisk %ramdisk% --ramdisk_offset %ramdiskoff% --second %second% --second_offset %secondoff% --cmdline "%cmdline%" --board "%boardname%" --base %base% --pagesize %pagesize% --tags_offset %tagsoff% --os_version %osversion% --os_patch_level %oslevel% --header_version %headerversion% --hashtype %hash% -o level1\boot.PARTITION
+)
 
 set kernel="level3\recovery\recovery.PARTITION-zImage"
 set ramdisk="level3\recovery\recovery.PARTITION-ramdisk.gz"
@@ -46,18 +48,21 @@ set /p osversion=<"level3\recovery\recovery.PARTITION-os_version"
 set /p boardname=<"level3\recovery\recovery.PARTITION-board"
 set /p hash=<"level3\recovery\recovery.PARTITION-hashtype"
 
+if exist level3\recovery\ (
 bin\windows\mkbootimg.exe --kernel %kernel% --kernel_offset %kerneloff% --ramdisk %ramdisk% --ramdisk_offset %ramdiskoff% --second %second% --second_offset %secondoff% --recovery_dtbo %recoverydtbo% --cmdline "%cmdline%" --board "%boardname%" --base %base% --pagesize %pagesize% --tags_offset %tagsoff% --os_version %osversion% --os_patch_level %oslevel% --header_version %headerversion% --hashtype %hash% -o level1\recovery.PARTITION
+)
 
+if exist level3\logo\ (
 bin\windows\imgpack -r level3\logo level1\logo.PARTITION
+)
 
-bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
-del level3\devtree\single.dts 
+if exist level3\devtree\ (
 for %%x in (level3\devtree\*.dts) do (
   bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x
   del %%x
 )
 bin\windows\dtbTool -p bin\windows\ -v level3/devtree/ -o _aml_dtb
-
+)
 call :size _aml_dtb
 if %SIZE% gtr 196607 (
   bin\windows\gzip -nc _aml_dtb > level1\_aml_dtb.PARTITION
@@ -65,6 +70,7 @@ if %SIZE% gtr 196607 (
   copy _aml_dtb level1\_aml_dtb.PARTITION
 )
 del _aml_dtb
+
 
 echo Done.
 pause
