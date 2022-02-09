@@ -1,5 +1,7 @@
 @echo off
 
+setlocal EnableDelayedExpansion
+
 cls
 
 if exist level3 goto pass
@@ -9,6 +11,7 @@ exit
 
 :pass
 
+if exist level3\boot\ (
 set kernel="level3\boot\boot.PARTITION-zImage"
 set ramdisk="level3\boot\boot.PARTITION-ramdisk.gz"
 set second="level3\boot\boot.PARTITION-second"
@@ -26,10 +29,10 @@ set /p osversion=<"level3\boot\boot.PARTITION-os_version"
 set /p boardname=<"level3\boot\boot.PARTITION-board"
 set /p hash=<"level3\boot\boot.PARTITION-hashtype"
 
-if exist level3\boot\ (
-bin\windows\mkbootimg.exe --kernel %kernel% --kernel_offset %kerneloff% --ramdisk %ramdisk% --ramdisk_offset %ramdiskoff% --second %second% --second_offset %secondoff% --cmdline "%cmdline%" --board "%boardname%" --base %base% --pagesize %pagesize% --tags_offset %tagsoff% --os_version %osversion% --os_patch_level %oslevel% --header_version %headerversion% --hashtype %hash% -o level1\boot.PARTITION
+bin\windows\mkbootimg.exe --kernel !kernel! --kernel_offset !kerneloff! --ramdisk !ramdisk! --ramdisk_offset !ramdiskoff! --second !second! --second_offset !secondoff! --cmdline "!cmdline!" --board "!boardname!" --base !base! --pagesize !pagesize! --tags_offset !tagsoff! --os_version !osversion! --os_patch_level !oslevel! --header_version !headerversion! --hashtype !hash! -o level1\boot.PARTITION
 )
 
+if exist level3\recovery\ (
 set kernel="level3\recovery\recovery.PARTITION-zImage"
 set ramdisk="level3\recovery\recovery.PARTITION-ramdisk.gz"
 set second="level3\recovery\recovery.PARTITION-second"
@@ -48,8 +51,7 @@ set /p osversion=<"level3\recovery\recovery.PARTITION-os_version"
 set /p boardname=<"level3\recovery\recovery.PARTITION-board"
 set /p hash=<"level3\recovery\recovery.PARTITION-hashtype"
 
-if exist level3\recovery\ (
-bin\windows\mkbootimg.exe --kernel %kernel% --kernel_offset %kerneloff% --ramdisk %ramdisk% --ramdisk_offset %ramdiskoff% --second %second% --second_offset %secondoff% --recovery_dtbo %recoverydtbo% --cmdline "%cmdline%" --board "%boardname%" --base %base% --pagesize %pagesize% --tags_offset %tagsoff% --os_version %osversion% --os_patch_level %oslevel% --header_version %headerversion% --hashtype %hash% -o level1\recovery.PARTITION
+bin\windows\mkbootimg.exe --kernel !kernel! --kernel_offset !kerneloff! --ramdisk !ramdisk! --ramdisk_offset !ramdiskoff! --second !second! --second_offset !secondoff! --recovery_dtbo !recoverydtbo! --cmdline "!cmdline!" --board "!boardname!" --base !base! --pagesize !pagesize! --tags_offset !tagsoff! --os_version !osversion! --os_patch_level !oslevel! --header_version !headerversion! --hashtype !hash! -o level1\recovery.PARTITION
 )
 
 if exist level3\logo\ (

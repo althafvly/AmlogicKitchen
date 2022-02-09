@@ -23,14 +23,21 @@ if exist level1\logo.PARTITION (
 bin\windows\imgpack -d level1\logo.PARTITION level3\logo
 )
 
-if exist level1\_aml_dtb.PARTITION (
+bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION
+bin\windows\7za x level1\_aml_dtb.PARTITION -y > NUL:
 bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\
 
+if exist _aml_dtb (
+	bin\windows\dtbSplit _aml_dtb level3\devtree\
+	del _aml_dtb
+)
+
 for %%x in (level3\devtree\*.dtb) do (
-  bin\windows\dtc.exe -I dtb -O dts -o level3\devtree\%%~nx.dts %%x
+  bin\windows\dtc -I dtb -O dts -o level3\devtree\%%~nx.dts %%x
   del %%x
 )
-)
+
+ROBOCOPY level3 level3 /S /MOVE /NFL /NDL /NJH /NJS /nc /ns /np
 
 echo Done.
 pause
