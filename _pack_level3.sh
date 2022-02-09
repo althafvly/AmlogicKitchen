@@ -10,48 +10,17 @@ if [ ! -d level3 ]; then
     exit 0
 fi
 
-if [ -d level3/boot ]; then
-	kernel="level3/boot/boot.PARTITION-kernel"
-	ramdisk="level3/boot/boot.PARTITION-ramdisk"
-	second="level3/boot/boot.PARTITION-second"
-
-	cmdline=`cat level3/boot/boot.PARTITION-cmdline`
-	headerversion=`cat level3/boot/boot.PARTITION-header_version`
-	base=`cat level3/boot/boot.PARTITION-base`
-	pagesize=`cat level3/boot/boot.PARTITION-pagesize`
-	kerneloff=`cat level3/boot/boot.PARTITION-kernel_offset`
-	ramdiskoff=`cat level3/boot/boot.PARTITION-ramdisk_offset`
-	secondoff=`cat level3/boot/boot.PARTITION-second_offset`
-	tagsoff=`cat level3/boot/boot.PARTITION-tags_offset`
-	oslevel=`cat level3/boot/boot.PARTITION-os_patch_level`
-	osversion=`cat level3/boot/boot.PARTITION-os_version`
-	boardname=`cat level3/boot/boot.PARTITION-board`
-	hash=`cat level3/boot/boot.PARTITION-hashtype`
-
-	bin/linux/mkbootimg --kernel $kernel --kernel_offset $kerneloff --ramdisk $ramdisk --ramdisk_offset $ramdiskoff --second $second --second_offset $secondoff --cmdline "$cmdline" --board "$boardname" --base $base --pagesize $pagesize --tags_offset $tagsoff --os_version $osversion --os_patch_level $oslevel --header_version $headerversion --hashtype $hash -o level1/boot.PARTITION
-fi
-
-if [ -d level3/recovery ]; then
-	kernel="level3/recovery/recovery.PARTITION-kernel"
-	ramdisk="level3/recovery/recovery.PARTITION-ramdisk"
-	second="level3/recovery/recovery.PARTITION-second"
-	recoverydtbo="level3/recovery/recovery.PARTITION-recovery_dtbo"
-
-	cmdline=`cat level3/recovery/recovery.PARTITION-cmdline`
-	headerversion=`cat level3/recovery/recovery.PARTITION-header_version`
-	base=`cat level3/recovery/recovery.PARTITION-base`
-	pagesize=`cat level3/recovery/recovery.PARTITION-pagesize`
-	kerneloff=`cat level3/recovery/recovery.PARTITION-kernel_offset`
-	ramdiskoff=`cat level3/recovery/recovery.PARTITION-ramdisk_offset`
-	secondoff=`cat level3/recovery/recovery.PARTITION-second_offset`
-	tagsoff=`cat level3/recovery/recovery.PARTITION-tags_offset`
-	oslevel=`cat level3/recovery/recovery.PARTITION-os_patch_level`
-	osversion=`cat level3/recovery/recovery.PARTITION-os_version`
-	boardname=`cat level3/recovery/recovery.PARTITION-board`
-	hash=`cat level3/recovery/recovery.PARTITION-hashtype`
-
-	bin/linux/mkbootimg --kernel $kernel --kernel_offset $kerneloff --ramdisk $ramdisk --ramdisk_offset $ramdiskoff --second $second --second_offset $secondoff --recovery_dtbo $recoverydtbo --cmdline "$cmdline" --board "$boardname" --base $base --pagesize $pagesize --tags_offset $tagsoff --os_version $osversion --os_patch_level $oslevel --header_version $headerversion --hashtype $hash -o level1/recovery.PARTITION
-fi
+for part in boot recovery
+do
+    if [ -d level3/${part} ]; then
+    bin/linux/aik/cleanup.sh
+    cp -r level3/$part/ramdisk bin/linux/aik/
+    cp -r level3/$part/split_img bin/linux/aik/
+    bin/linux/aik/repackimg.sh
+    mv bin/linux/aik/image-new.img level1/${part}.PARTITION
+    bin/linux/aik/cleanup.sh
+    fi
+done
 
 if [ -d level3/logo ]; then
 	bin/linux/imgpack -r level3/logo level1/logo.PARTITION

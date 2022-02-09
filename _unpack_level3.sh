@@ -20,7 +20,9 @@ for part in boot recovery
 do
     if [ -f level1/${part}.PARTITION ]; then
     mkdir level3/$part
-    bin/linux/unpackbootimg -i level1/${part}.PARTITION -o level3/$part
+    bin/linux/aik/unpackimg.sh level1/${part}.PARTITION
+    mv -i bin/linux/aik/ramdisk level3/$part/
+    mv -i bin/linux/aik/split_img level3/$part/
     fi
 done
 

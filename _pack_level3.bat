@@ -1,5 +1,30 @@
 @echo off
 
+:: BatchGotAdmin
+:-------------------------------------
+REM  --> Check for permissions
+>nul 2>&1 "%SYSTEMROOT%\system32\cacls.exe" "%SYSTEMROOT%\system32\config\system"
+
+REM --> If error flag set, we do not have admin.
+if '%errorlevel%' NEQ '0' (
+    echo Requesting administrative privileges...
+    goto UACPrompt
+) else ( goto gotAdmin )
+
+:UACPrompt
+    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\getadmin.vbs"
+    set params = %*:"=""
+    echo UAC.ShellExecute "cmd.exe", "/c %~s0 %params%", "", "runas", 1 >> "%temp%\getadmin.vbs"
+
+    "%temp%\getadmin.vbs"
+    del "%temp%\getadmin.vbs"
+    exit /B
+
+:gotAdmin
+    pushd "%CD%"
+    CD /D "%~dp0"
+:--------------------------------------
+
 setlocal EnableDelayedExpansion
 
 cls
@@ -12,46 +37,37 @@ exit
 :pass
 
 if exist level3\boot\ (
-set kernel="level3\boot\boot.PARTITION-zImage"
-set ramdisk="level3\boot\boot.PARTITION-ramdisk.gz"
-set second="level3\boot\boot.PARTITION-second"
-
-set /p cmdline=<"level3\boot\boot.PARTITION-cmdline"
-set /p headerversion=<"level3\boot\boot.PARTITION-header_version"
-set /p base=<"level3\boot\boot.PARTITION-base"
-set /p pagesize=<"level3\boot\boot.PARTITION-pagesize"
-set /p kerneloff=<"level3\boot\boot.PARTITION-kernel_offset"
-set /p ramdiskoff=<"level3\boot\boot.PARTITION-ramdisk_offset"
-set /p secondoff=<"level3\boot\boot.PARTITION-second_offset"
-set /p tagsoff=<"level3\boot\boot.PARTITION-tags_offset"
-set /p oslevel=<"level3\boot\boot.PARTITION-os_patch_level"
-set /p osversion=<"level3\boot\boot.PARTITION-os_version"
-set /p boardname=<"level3\boot\boot.PARTITION-board"
-set /p hash=<"level3\boot\boot.PARTITION-hashtype"
-
-bin\windows\mkbootimg.exe --kernel !kernel! --kernel_offset !kerneloff! --ramdisk !ramdisk! --ramdisk_offset !ramdiskoff! --second !second! --second_offset !secondoff! --cmdline "!cmdline!" --board "!boardname!" --base !base! --pagesize !pagesize! --tags_offset !tagsoff! --os_version !osversion! --os_patch_level !oslevel! --header_version !headerversion! --hashtype !hash! -o level1\boot.PARTITION
+	call bin\windows\aik\cleanup.bat
+	if exist level3\boot\ramdisk\ (
+		move level3\boot\ramdisk bin\windows\aik\
+	)
+	move level3\boot\split_img bin\windows\aik\
+	call bin\windows\aik\repackimg.bat
+	move bin\windows\aik\image-new.img bin\windows\aik\boot.img
+	call bin\windows\aik\unpackimg.bat bin\windows\aik\boot.img
+	if exist bin\windows\aik\ramdisk\ (
+		move bin\windows\aik\ramdisk level3\boot\
+	)
+	move bin\windows\aik\split_img  level3\boot\
+	move bin\windows\aik\boot.img level1\boot.PARTITION
+	call bin\windows\aik\cleanup.bat
 )
 
 if exist level3\recovery\ (
-set kernel="level3\recovery\recovery.PARTITION-zImage"
-set ramdisk="level3\recovery\recovery.PARTITION-ramdisk.gz"
-set second="level3\recovery\recovery.PARTITION-second"
-set recoverydtbo="level3\recovery\recovery.PARTITION-recovery_dtbo"
-
-set /p cmdline=<"level3\recovery\recovery.PARTITION-cmdline"
-set /p headerversion=<"level3\recovery\recovery.PARTITION-header_version"
-set /p base=<"level3\recovery\recovery.PARTITION-base"
-set /p pagesize=<"level3\recovery\recovery.PARTITION-pagesize"
-set /p kerneloff=<"level3\recovery\recovery.PARTITION-kernel_offset"
-set /p ramdiskoff=<"level3\recovery\recovery.PARTITION-ramdisk_offset"
-set /p secondoff=<"level3\recovery\recovery.PARTITION-second_offset"
-set /p tagsoff=<"level3\recovery\recovery.PARTITION-tags_offset"
-set /p oslevel=<"level3\recovery\recovery.PARTITION-os_patch_level"
-set /p osversion=<"level3\recovery\recovery.PARTITION-os_version"
-set /p boardname=<"level3\recovery\recovery.PARTITION-board"
-set /p hash=<"level3\recovery\recovery.PARTITION-hashtype"
-
-bin\windows\mkbootimg.exe --kernel !kernel! --kernel_offset !kerneloff! --ramdisk !ramdisk! --ramdisk_offset !ramdiskoff! --second !second! --second_offset !secondoff! --recovery_dtbo !recoverydtbo! --cmdline "!cmdline!" --board "!boardname!" --base !base! --pagesize !pagesize! --tags_offset !tagsoff! --os_version !osversion! --os_patch_level !oslevel! --header_version !headerversion! --hashtype !hash! -o level1\recovery.PARTITION
+	call bin\windows\aik\cleanup.bat
+	if exist level3\recovery\ramdisk\ (
+		move level3\recovery\ramdisk bin\windows\aik\
+	)
+	move level3\recovery\split_img bin\windows\aik\
+	call bin\windows\aik\repackimg.bat
+	move bin\windows\aik\image-new.img bin\windows\aik\recovery.img
+	call bin\windows\aik\unpackimg.bat bin\windows\aik\recovery.img
+	if exist bin\windows\aik\ramdisk\ (
+		move bin\windows\aik\ramdisk level3\recovery\
+	)
+	move bin\windows\aik\split_img  level3\recovery\
+	move bin\windows\aik\recovery.img level1\recovery.PARTITION
+	call bin\windows\aik\cleanup.bat
 )
 
 if exist level3\logo\ (
@@ -72,7 +88,6 @@ if %SIZE% gtr 196607 (
   copy _aml_dtb level1\_aml_dtb.PARTITION
 )
 del _aml_dtb
-
 
 echo Done.
 pause
