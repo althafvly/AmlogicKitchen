@@ -37,20 +37,16 @@ exit
 if exist level3 rmdir /q /s level3
 md level3 level3\boot level3\recovery level3\logo level3\devtree
 
-if exist level1\boot.PARTITION (
-	copy level1\boot.PARTITION bin\windows\aik\boot.img
-	call bin\windows\aik\unpackimg.bat bin\windows\aik\boot.img
-	move bin\windows\aik\ramdisk level3\boot\
-	move bin\windows\aik\split_img level3\boot\
-	del bin\windows\aik\boot.img
-)
-
-if exist level1\recovery.PARTITION (
-	copy level1\recovery.PARTITION bin\windows\aik\recovery.img
-	call bin\windows\aik\unpackimg.bat bin\windows\aik\recovery.img
-	move bin\windows\aik\ramdisk .\level3\recovery\
-	move bin\windows\aik\split_img level3\recovery\
-	del bin\windows\aik\recovery.img
+FOR %%A IN (recovery boot) DO (
+    if exist level1\%%A.PARTITION (
+        copy level1\%%A.PARTITION bin\windows\aik\%%A.img
+        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img
+        if exist bin\windows\aik\ramdisk\ (
+            move bin\windows\aik\ramdisk level3\%%A\
+        )
+        move bin\windows\aik\split_img level3\%%A\
+        del bin\windows\aik\%%A.img
+    )
 )
 
 if exist level1\logo.PARTITION (

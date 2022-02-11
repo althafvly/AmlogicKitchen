@@ -24,47 +24,32 @@ for /R %%f in (in\*.img) do (set filename=%%~nf)
 
 bin\windows\7za x bin\common\update.zip -otmp
 
-copy level1\boot.PARTITION tmp\boot.img
+FOR %%A IN (boot dtbo logo recovery vbmeta) DO (
+    if exist level1\%%A.PARTITION (
+        copy level1\%%A.PARTITION tmp\%%A.img
+    )
+)
+
+if exist level1\ddr.USB (
 copy level1\ddr.USB tmp\bootloader.img
-copy level1\DDR.USB tmp\bootloader.img
-copy level1\_aml_dtb.PARTITION tmp\dt.img
-copy level1\dtbo.PARTITION tmp\dtbo.img
-copy level1\logo.PARTITION tmp\logo.img
-copy level1\recovery.PARTITION tmp\recovery.img
-copy level1\vbmeta.PARTITION tmp\vbmeta.img
+)
 
-copy level1\odm.PARTITION tmp\odm.img
-bin\windows\img2sdat tmp\odm.img -o tmp -v 4 -p odm
-bin\windows\brotli.exe --in tmp\odm.new.dat --out tmp\odm.new.dat.br --quality 6 -w 24
-del tmp\odm.img tmp\odm.new.dat
+if exist level1\DDR.USB (
+    copy level1\DDR.USB tmp\bootloader.img
+)
 
-copy level1\oem.PARTITION tmp\oem.img
-bin\windows\img2sdat tmp\oem.img -o tmp -v 4 -p oem
-bin\windows\brotli.exe --in tmp\oem.new.dat --out tmp\oem.new.dat.br --quality 6 -w 24
-del tmp\oem.img tmp\oem.new.dat
+if exist level1\_aml_dtb.PARTITION (
+    copy level1\_aml_dtb.PARTITION tmp\dt.img
+)
 
-copy level1\product.PARTITION tmp\product.img
-bin\windows\img2sdat tmp\product.img -o tmp -v 4 -p product
-bin\windows\brotli.exe --in tmp\product.new.dat --out tmp\product.new.dat.br --quality 6 -w 24
-del tmp\product.img tmp\product.new.dat
-
-copy level1\vendor.PARTITION tmp\vendor.img
-bin\windows\img2sdat tmp\vendor.img -o tmp -v 4 -p vendor
-echo Please Wait...
-bin\windows\brotli.exe --in tmp\vendor.new.dat --out tmp\vendor.new.dat.br --quality 6 -w 24
-del tmp\vendor.img tmp\vendor.new.dat
-
-copy level1\system.PARTITION tmp\system.img
-bin\windows\img2sdat tmp\system.img -o tmp -v 4 -p system
-echo Please Wait...
-bin\windows\brotli.exe --in tmp\system.new.dat --out tmp\system.new.dat.br --quality 6 -w 24
-del tmp\system.img tmp\system.new.dat
-
-copy level1\system_ext.PARTITION tmp\system_ext.img
-bin\windows\img2sdat tmp\system_ext.img -o tmp -v 4 -p system_ext
-echo Please Wait...
-bin\windows\brotli.exe --in tmp\system_ext.new.dat --out tmp\system_ext.new.dat.br --quality 6 -w 24
-del tmp\system_ext.img tmp\system_ext.new.dat
+FOR %%A IN (odm oem product vendor system system_ext) DO (
+    if exist level1\%%A.PARTITION (
+        copy level1\%%A.PARTITION tmp\%%A.img
+        bin\windows\img2sdat tmp\%%A.img -o tmp -v 4 -p %%A
+        bin\windows\brotli.exe --in tmp\%%A.new.dat --out tmp\%%A.new.dat.br --quality 6 -w 24
+        del tmp\%%A.img tmp\%%A.new.dat
+    )
+)
 
 bin\windows\7za a out\update_tmp.zip .\tmp\*
 

@@ -36,38 +36,23 @@ exit
 
 :pass
 
-if exist level3\boot\ (
-	call bin\windows\aik\cleanup.bat
-	if exist level3\boot\ramdisk\ (
-		move level3\boot\ramdisk bin\windows\aik\
-	)
-	move level3\boot\split_img bin\windows\aik\
-	call bin\windows\aik\repackimg.bat
-	move bin\windows\aik\image-new.img bin\windows\aik\boot.img
-	call bin\windows\aik\unpackimg.bat bin\windows\aik\boot.img
-	if exist bin\windows\aik\ramdisk\ (
-		move bin\windows\aik\ramdisk level3\boot\
-	)
-	move bin\windows\aik\split_img  level3\boot\
-	move bin\windows\aik\boot.img level1\boot.PARTITION
-	call bin\windows\aik\cleanup.bat
-)
-
-if exist level3\recovery\ (
-	call bin\windows\aik\cleanup.bat
-	if exist level3\recovery\ramdisk\ (
-		move level3\recovery\ramdisk bin\windows\aik\
-	)
-	move level3\recovery\split_img bin\windows\aik\
-	call bin\windows\aik\repackimg.bat
-	move bin\windows\aik\image-new.img bin\windows\aik\recovery.img
-	call bin\windows\aik\unpackimg.bat bin\windows\aik\recovery.img
-	if exist bin\windows\aik\ramdisk\ (
-		move bin\windows\aik\ramdisk level3\recovery\
-	)
-	move bin\windows\aik\split_img  level3\recovery\
-	move bin\windows\aik\recovery.img level1\recovery.PARTITION
-	call bin\windows\aik\cleanup.bat
+FOR %%A IN (recovery boot) DO (
+    if exist level3\%%A\ (
+        call bin\windows\aik\cleanup.bat
+        if exist level3\%%A\ramdisk\ (
+            move level3\%%A\ramdisk bin\windows\aik\
+        )
+        move level3\%%A\split_img bin\windows\aik\
+        call bin\windows\aik\repackimg.bat
+        move bin\windows\aik\image-new.img bin\windows\aik\%%A.img
+        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img
+        if exist bin\windows\aik\ramdisk\ (
+            move bin\windows\aik\ramdisk level3\%%A\
+        )
+        move bin\windows\aik\split_img  level3\%%A\
+        move bin\windows\aik\%%A.img level1\%%A.PARTITION
+        call bin\windows\aik\cleanup.bat
+    )
 )
 
 if exist level3\logo\ (

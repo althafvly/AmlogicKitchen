@@ -1,5 +1,6 @@
 in/
 out/
+tmp/
 bin/common/__pycache__/
 level1/
 level2/
