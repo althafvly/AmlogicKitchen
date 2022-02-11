@@ -21,7 +21,7 @@ else
     mkdir tmp
 fi
 
-bin/linux/7za x bin/common/update.zip -otmp
+cp -r bin/common/fota/* tmp/
 
 if [ -f level1/ddr.USB ]; then
     cp level1/ddr.USB tmp/bootloader.img

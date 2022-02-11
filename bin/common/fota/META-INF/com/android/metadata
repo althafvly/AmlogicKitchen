@@ -1,0 +1,9 @@
+ota-property-files=metadata:69:292         
+ota-required-cache=0
+ota-type=BLOCK
+post-build=Model/X2CUBE/X2CUBE:9/PPR1.180610.011/20201105:userdebug/release-keys
+post-build-incremental=20201105
+post-sdk-level=28
+post-security-patch-level=2018-08-05
+post-timestamp=1604569612
+pre-device=X2CUBE

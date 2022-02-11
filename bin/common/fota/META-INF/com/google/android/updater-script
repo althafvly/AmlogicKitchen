@@ -1,0 +1,58 @@
+if ota_zip_check() == "1" then
+backup_data_cache(dtb, /cache/recovery/);
+backup_data_cache(recovery, /cache/recovery/);
+set_bootloader_env("upgrade_step", "3");
+backup_update_package("/dev/block/mmcblk0", "1894");
+package_extract_file("logo.img", "/dev/block/logo");
+write_dtb_image(package_extract_file("dt.img"));
+package_extract_file("recovery.img", "/dev/block/recovery");
+ui_print("update bootloader.img...");
+write_bootloader_image(package_extract_file("bootloader.img"));
+delete_file("/cache/recovery/dtb.img");
+delete_file("/cache/recovery/recovery.img");
+reboot_recovery();
+else
+set_bootloader_env("upgrade_step", "3");
+show_progress(0.650000, 0);
+ui_print("Patching system image unconditionally...");
+block_image_update("/dev/block/system", package_extract_file("system.transfer.list"), "system.new.dat.br", "system.patch.dat") ||
+  abort("E1001: Failed to update system image.");
+show_progress(0.100000, 0);
+ui_print("Patching vendor image unconditionally...");
+block_image_update("/dev/block/vendor", package_extract_file("vendor.transfer.list"), "vendor.new.dat.br", "vendor.patch.dat") ||
+  abort("E2001: Failed to update vendor image.");
+show_progress(0.050000, 5);
+package_extract_file("boot.img", "/dev/block/boot");
+show_progress(0.200000, 10);
+ui_print("Patching odm image unconditionally...");
+block_image_update("/dev/block/odm", package_extract_file("odm.transfer.list"), "odm.new.dat.br", "odm.patch.dat") ||
+  abort("E2001: Failed to update odm image.");
+ui_print("Patching product image unconditionally...");
+block_image_update("/dev/block/product", package_extract_file("product.transfer.list"), "product.new.dat.br", "product.patch.dat") ||
+  abort("E2001: Failed to update product image.");
+ui_print("update logo.img...");
+package_extract_file("logo.img", "/dev/block/logo");
+ui_print("update dtbo.img...");
+package_extract_file("dtbo.img", "/dev/block/dtbo");
+ui_print("update dtb.img...");
+backup_data_cache(dtb, /cache/recovery/);
+backup_data_cache(recovery, /cache/recovery/);
+write_dtb_image(package_extract_file("dt.img"));
+ui_print("update recovery.img...");
+package_extract_file("recovery.img", "/dev/block/recovery");
+ui_print("update vbmeta.img...");
+package_extract_file("vbmeta.img", "/dev/block/vbmeta");
+ui_print("update bootloader.img...");
+write_bootloader_image(package_extract_file("bootloader.img"));
+if get_update_stage() == "2" then
+format("ext4", "EMMC", "/dev/block/metadata", "0", "/metadata");
+format("ext4", "EMMC", "/dev/block/tee", "0", "/tee");
+wipe_cache();
+set_update_stage("0");
+endif;
+set_bootloader_env("upgrade_step", "1");
+delete_file("/cache/recovery/dtb.img");
+delete_file("/cache/recovery/recovery.img");
+set_bootloader_env("force_auto_update", "false");
+endif;
+set_progress(1.000000);

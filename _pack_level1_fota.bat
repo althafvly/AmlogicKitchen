@@ -28,7 +28,7 @@ if exist level1\super.PARTITION (
     exit
 )
 
-bin\windows\7za x bin\common\update.zip -otmp
+robocopy bin\common\fota tmp\ /E
 
 FOR %%A IN (boot dtbo logo recovery vbmeta) DO (
     if exist level1\%%A.PARTITION (
