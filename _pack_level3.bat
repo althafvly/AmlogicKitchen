@@ -74,13 +74,21 @@ if exist level3\logo\ (
 bin\windows\imgpack -r level3\logo level1\logo.PARTITION
 )
 
-if exist level3\devtree\ (
+@echo off
+set cnt=0
+for %%A in (level3\devtree\*.dts) do set /a cnt+=1
+echo File count = %cnt%
+
+bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
+
+if %count% gtr 1 (
 for %%x in (level3\devtree\*.dts) do (
   bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x
   del %%x
 )
-bin\windows\dtbTool -p bin\windows\ -v level3/devtree/ -o _aml_dtb
+bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb
 )
+
 call :size _aml_dtb
 if %SIZE% gtr 196607 (
   bin\windows\gzip -nc _aml_dtb > level1\_aml_dtb.PARTITION

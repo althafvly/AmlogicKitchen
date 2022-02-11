@@ -19,10 +19,10 @@ fi
 for part in boot recovery
 do
     if [ -f level1/${part}.PARTITION ]; then
-    mkdir level3/$part
-    bin/linux/aik/unpackimg.sh level1/${part}.PARTITION
-    mv -i bin/linux/aik/ramdisk level3/$part/
-    mv -i bin/linux/aik/split_img level3/$part/
+        mkdir level3/$part
+        bin/linux/aik/unpackimg.sh level1/${part}.PARTITION
+        mv -i bin/linux/aik/ramdisk level3/$part/
+        mv -i bin/linux/aik/split_img level3/$part/
     fi
 done
 
@@ -34,12 +34,16 @@ fi
 if [ -f level1/_aml_dtb.PARTITION ]; then
     mkdir level3/devtree
     bin/linux/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
-    for filename in level3/devtree/*.dtb; do
-    [ -e "$filename" ] || continue
-    name=$(basename $filename .dtb)
-    dtc -I dtb -O dts level3/devtree/$name.dtb -o "`echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/'`"
-    rm level3/devtree/$name.dtb
-    done
+    DIR='level3/devtree/'
+    if [ "$(ls -A $DIR)" ]; then
+        for filename in level3/devtree/*.dtb; do
+        [ -e "$filename" ] || continue
+        name=$(basename $filename .dtb)
+        dtc -I dtb -O dts level3/devtree/$name.dtb -o "`echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/'`"
+        done
+    else
+        dtc -I dtb -O dts level1/_aml_dtb.PARTITION -o "`echo level3/devtree/single.dts | sed -e s'/\.dtb/\.dts/'`"
+    fi
 fi
 
 echo "Done."

@@ -18,9 +18,9 @@ fi
 for part in system system_ext vendor product odm oem
 do
     if [ -f level1/$part.PARTITION ]; then
-    echo "Extracting $part"
-    bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
-    python3 $imgextractor "level2/$part.raw.img" "level2"
+        echo "Extracting $part"
+        bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
+        python3 $imgextractor "level2/$part.raw.img" "level2"
     fi
 done
 

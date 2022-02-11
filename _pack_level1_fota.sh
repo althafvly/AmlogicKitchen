@@ -6,8 +6,8 @@ if [ ! -d level1 ]; then
 fi
 
 if [ "$JAVA_HOME" != "" ]; then
-	echo "Install Java first"
-	exit 0
+    echo "Install Java first"
+    exit 0
 fi
 
 if [ ! -d out ]; then
@@ -36,18 +36,18 @@ fi
 for part in boot dtbo logo recovery vbmeta
 do
     if [ -f level1/${part}.PARTITION ]; then
-    cp level1/${part}.PARTITION tmp/${part}.img
+        cp level1/${part}.PARTITION tmp/${part}.img
     fi
 done
 
 for part in system system_ext vendor product odm oem
 do
     if [ -f level1/$part.PARTITION ]; then
-	cp level1/$part.PARTITION tmp/$part.img
-	bin/linux/img2sdat tmp/$part.img -o tmp -v 4 -p $part
-	bin/linux/brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
-	rm -rf tmp/$part.img tmp/$part.new.dat
-    echo "Done compressing $part"
+        cp level1/$part.PARTITION tmp/$part.img
+        bin/linux/img2sdat tmp/$part.img -o tmp -v 4 -p $part
+        bin/linux/brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
+        rm -rf tmp/$part.img tmp/$part.new.dat
+        echo "Done compressing $part"
     fi
 done
 
