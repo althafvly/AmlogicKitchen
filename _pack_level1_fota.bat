@@ -22,6 +22,12 @@ md tmp
 
 for /R %%f in (in\*.img) do (set filename=%%~nf)
 
+if exist level1\super.PARTITION (
+    echo Does not support Super Image at the moment
+    pause
+    exit
+)
+
 bin\windows\7za x bin\common\update.zip -otmp
 
 FOR %%A IN (boot dtbo logo recovery vbmeta) DO (
