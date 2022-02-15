@@ -28,7 +28,7 @@ if exist level1\super.PARTITION (
     if exist level2\%%A.img (
 		call :setsize level2\%%A.img
 		if !size! GTR 1024 (
-			bin\windows\imgextractor "level2\%%A.img" "level2\%%A"
+			python bin\common\imgextractor.py "level2\%%A.img" "level2"
 			del level2\%%A.img
 		)
     )

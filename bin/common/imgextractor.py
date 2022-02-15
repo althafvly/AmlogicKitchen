@@ -483,7 +483,6 @@ class Extractor(object):
                     self.fsconfig.insert(1, dirr + ' 0 2000 0755')
                 elif dirr == 'system':
                     self.fsconfig.insert(0, '/' + ' 0 0 0755')
-                    self.fsconfig.insert(1, '/' + 'lost+found' + ' 0 0 0700')
                     self.fsconfig.insert(2, dirr + ' 0 0 0755')
                 else:
                     self.fsconfig.insert(0, '/' + ' 0 0 0755')
@@ -498,12 +497,10 @@ class Extractor(object):
                         self.context.insert(0, '/' + ' ' + c.split(" ")[1])                    
                         self.context.insert(1, '/' + dirr +'(/.*)? ' + c.split(" ")[1])
                         self.context.insert(2, '/' + dirr + ' ' + c.split(" ")[1])
-                        self.context.insert(3, '/' + dirr + '/lost\+found' + ' ' + c.split(" ")[1])
                         break
 
                 for c in self.context:
                     if re.search('/system/system/build..prop ', c):
-                        self.context.insert(3, '/lost\+found' + ' u:object_r:rootfs:s0')
                         self.context.insert(4, '/' + dirr + '/' + dirr + '(/.*)? ' + c.split(" ")[1])
                         break
                 self.__appendf('\n'.join(self.context), contexts) #11.05.18

@@ -832,10 +832,12 @@ class Inode:
             if force_inline or xattrs_header.h_magic == 0xEA020000:
                 offset = 4 * ((ctypes.sizeof(
                     ext4_xattr_ibody_header) + 3) // 4)  # The ext4_xattr_entry following the header is aligned on a 4-byte boundary
+            try:    
                 for xattr_name, xattr_value in self._parse_xattrs(inline_data[offset:], 0,
                                                                   prefix_override=prefix_override):
                     yield (xattr_name, xattr_value)
-
+            except:
+                pass
         # xattr block(s)
         if check_block and self.inode.i_file_acl != 0:
             xattrs_block_start = self.inode.i_file_acl * self.volume.block_size
@@ -843,12 +845,15 @@ class Inode:
 
             xattrs_header = ext4_xattr_header.from_buffer_copy(xattrs_block)
             if not self.volume.ignore_magic and xattrs_header.h_magic != 0xEA020000:
-                raise MagicError(
-                    "Invalid magic value in xattrs block header at offset 0x{xattrs_block_start:X} of inode {inode:d}: 0x{xattrs_header} (expected 0xEA020000)".format(
-                        inode=self.inode_idx,
-                        xattrs_block_start=xattrs_block_start,
-                        xattrs_header=xattrs_header.h_magic
-                    ))
+                try:
+                    raise MagicError(
+                        "Invalid magic value in xattrs block header at offset 0x{xattrs_block_start:X} of inode {inode:d}: 0x{xattrs_header} (expected 0xEA020000)".format(
+                            inode=self.inode_idx,
+                            xattrs_block_start=xattrs_block_start,
+                            xattrs_header=xattrs_header.h_magic
+                        ))
+                except:
+                        pass        
 
             if xattrs_header.h_blocks != 1:
                 raise Ext4Error(
