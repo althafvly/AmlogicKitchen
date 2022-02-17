@@ -2,6 +2,7 @@
 
 cls
 
+>nul 2>nul assoc .py && echo Python installed || echo Python not available && exit /b 0
 if exist level1 goto pass
 echo Unpack level 1 first
 pause
