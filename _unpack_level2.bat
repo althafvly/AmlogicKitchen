@@ -15,7 +15,9 @@ md level2
 FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
         bin\windows\imgextractor level1\%%A.PARTITION level2\%%A
-        del level1\%%A.raw.img
+        if exist level1\%%A.raw.img (
+            del level1\%%A.raw.img
+        )
     )
 )
 
