@@ -25,7 +25,8 @@ TODO:
 - SuperImage tools - LonelyFool
 - Aml dtb, unpack tools - LineageOS
 - simg2img - anestisb
-- img2sdat - xpirt
+- img2sdat, sdat2img - xpirt
+- simg2img - A.S._id
 
 # Working with the first level of Amlogic firmware
 --------------------------------------------------
