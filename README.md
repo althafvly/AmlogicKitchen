@@ -20,6 +20,7 @@ Credits:
 - SuperImage tools - LonelyFool
 - Aml dtb, unpack tools - LineageOS
 - simg2img - anestisb
+- img2sdat - xpirt
 
 # Working with the first level of Amlogic firmware
 --------------------------------------------------

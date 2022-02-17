@@ -51,7 +51,7 @@ if exist level1\_aml_dtb.PARTITION (
 FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
         copy level1\%%A.PARTITION tmp\%%A.img
-        bin\windows\img2sdat tmp\%%A.img -o tmp -v 4 -p %%A
+        python bin\common\img2sdat.py tmp\%%A.img -o tmp -v 4 -p %%A
         bin\windows\brotli.exe --in tmp\%%A.new.dat --out tmp\%%A.new.dat.br --quality 6 -w 24
         del tmp\%%A.img tmp\%%A.new.dat
     )
