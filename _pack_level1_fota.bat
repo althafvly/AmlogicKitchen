@@ -61,7 +61,7 @@ FOR %%A IN (odm oem product vendor system system_ext) DO (
 bin\windows\7za a out\update_tmp.zip .\tmp\*
 
 echo Signing...
-java -jar bin\common\zipsigner.jar bin\common\testkey.jks testkey testkey testkey out\update_tmp.zip "out\%filename%_fota.zip"
+java -jar bin\common\zipsigner.jar bin\common\testkey.x509.pem bin\common\testkey.pk8 out\update_tmp.zip "out\%filename%_fota.zip"
 
 del out\update_tmp.zip
 if exist tmp rmdir /q /s tmp
