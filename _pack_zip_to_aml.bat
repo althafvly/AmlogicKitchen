@@ -3,17 +3,9 @@
 cls
 
 >nul 2>nul assoc .py && echo Python installed || echo Python not available && exit /b 0
-if exist level1 goto pass
-echo Unpack level 1 first
-pause
-exit
 
-if "%JAVA_HOME%" != "" goto pass
-echo Install Java first
-pause
-exit
-
-:pass
+if exist out rmdir /q /s level1
+md level1
 
 if exist out rmdir /q /s out
 md out
