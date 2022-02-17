@@ -10,7 +10,7 @@ else
         echo "Created out folder"
         mkdir out
     fi
-    file_name=$(basename in/*.img)
-    bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$file_name"
+    file_name=$(cat level1/projectname.txt)
+    bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$file_name.img"
     echo "Done."
 fi
