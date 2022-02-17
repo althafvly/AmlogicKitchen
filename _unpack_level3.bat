@@ -35,9 +35,9 @@ exit
 :pass
 
 if exist level3 rmdir /q /s level3
-md level3 level3\boot level3\recovery level3\logo level3\devtree
+md level3 level3\boot level3\boot_a level3\recovery level3\recovery_a level3\logo level3\devtree
 
-FOR %%A IN (recovery boot) DO (
+FOR %%A IN (recovery boot recovery_a boot_a) DO (
     if exist level1\%%A.PARTITION (
         copy level1\%%A.PARTITION bin\windows\aik\%%A.img
         call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img

@@ -36,7 +36,7 @@ exit
 
 :pass
 
-FOR %%A IN (recovery boot) DO (
+FOR %%A IN (recovery boot recovery_a boot_a) DO (
     if exist level3\%%A\ (
         call bin\windows\aik\cleanup.bat
         if exist level3\%%A\ramdisk\ (
