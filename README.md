@@ -12,6 +12,15 @@ TODO:
 - Add support for super image unpack/repack
 - Add support for a/b images
 
+Credits: 
+
+- 7-Zip - Igor Pavlov
+- ImgExtractor - unix3dgforce, blackeange and xiaoxindada
+- AIK - osm0sis
+- SuperImage tools - LonelyFool
+- Aml dtb, unpack tools - LineageOS
+- simg2img - anestisb
+
 # Working with the first level of Amlogic firmware
 --------------------------------------------------
 
