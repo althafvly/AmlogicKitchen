@@ -2,7 +2,12 @@
 
 cls
 
->nul 2>nul assoc .py && echo Python installed || echo Python not available && exit /b 0
+python --version 2>NUL
+if errorlevel 1 (
+echo Error^: Python not installed
+pause
+exit
+)
 if exist level1 goto pass
 echo Unpack level 1 first
 pause
