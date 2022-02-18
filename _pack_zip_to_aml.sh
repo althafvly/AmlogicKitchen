@@ -5,7 +5,7 @@ if [ -z "$version" ]; then
     echo "No Python installed!" 
 fi
 
-for dir in out level1 tmp
+for dir in level1 tmp
 do
     if [ -d $dir ]; then
         echo "Deleting existing $dir"
@@ -15,14 +15,43 @@ do
     fi
 done
 
+if [ ! -d $dir ]; then
+	mkdir $dir
+fi
+
+echo "....................."
+echo "Amlogic Kitchen"
+echo "....................."
+if [ ! -d in ]; then
+	echo "Can't find /in folder"
+	echo "Creating /in folder"
+	mkdir in
+fi
 count_file=$(ls -1 in/*.zip 2>/dev/null | wc -l)
 if [ "$count_file" = 0 ]; then
-    echo "No files found in /in"
-elif [ "$count_file" -ne 1 ]; then
-    echo "Too many files found"
-else
-    bin/linux/7za x in/*.zip -otmp
+	echo "No files found in /in"
+	exit 0
 fi
+echo "Files in input dir (*.zip)"
+count=0
+for entry in `ls in/*.zip`; do
+	count=$(($count + 1))
+	name=$(basename in/$entry .zip)
+	echo $count - $name
+done
+echo "....................."
+echo "Enter a file name :"
+read projectname
+echo $projectname> level1/projectname.txt
+
+if [ ! -f in/$projectname.zip ]
+then
+	echo "Can't find the file"
+	exit 0
+fi
+
+filename=$(cat level1/projectname.txt)
+bin/linux/7za x in/${filename}.zip -otmp
 
 for file in compatibility.zip file_contexts.bin
 do
@@ -114,7 +143,6 @@ done
 
 echo "[LIST_VERIFY]" >> $configname
 
-file_name=$(basename in/* .zip)
-bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$file_name.img"
+bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
 echo "Done."
 

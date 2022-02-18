@@ -1,5 +1,7 @@
 @echo off
 
+setlocal EnableDelayedExpansion
+
 cls
 
 >nul 2>nul assoc .py && echo Python installed || echo Python not available && exit /b 0
@@ -7,13 +9,37 @@ cls
 if exist out rmdir /q /s level1
 md level1
 
-if exist out rmdir /q /s out
-md out
+if not exist out md out
 
 if exist tmp rmdir /q /s tmp
 md tmp
 
-for /R %%f in (in\*.zip) do (set filename=%%~nf)
+echo .....................
+echo Amlogic Kitchen
+echo .....................
+echo Files in input dir (*.zip)
+if not exist in\*.zip (
+  echo Can't find zips
+  if not exist in\ (
+    mkdir in
+  )
+  pause
+  exit 0
+)
+
+SET /A COUNT=0
+for %%a in (in\*.zip) do set /a count += 1 && echo !count! - %%~na
+echo .....................
+set /P projectname=Enter a file name :
+echo %projectname%> level1\projectname.txt
+
+if not exist in\%projectname%.zip (
+echo Can't find the file
+pause
+exit 0
+)
+
+set /p filename=< level1\projectname.txt
 
 bin\windows\7za x in\%filename%.zip -otmp
 

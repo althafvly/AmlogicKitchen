@@ -15,13 +15,10 @@ exit
 
 :pass
 
-if exist out rmdir /q /s out
-md out
+if not exist out md out
 
 if exist tmp rmdir /q /s tmp
 md tmp
-
-for /R %%f in (in\*.img) do (set filename=%%~nf)
 
 if exist level1\super.PARTITION (
     echo Does not support Super Image at the moment
@@ -61,6 +58,7 @@ FOR %%A IN (odm oem product vendor system system_ext) DO (
 bin\windows\7za a out\update_tmp.zip .\tmp\*
 
 echo Signing...
+set /p filename=< level1\projectname.txt
 java -jar bin\common\zipsigner.jar bin\common\testkey.x509.pem bin\common\testkey.pk8 out\update_tmp.zip "out\%filename%_fota.zip"
 
 del out\update_tmp.zip
