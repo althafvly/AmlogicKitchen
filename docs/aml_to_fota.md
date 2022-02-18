@@ -10,6 +10,6 @@ If the name is confusing, rename it to something simple, like S905X.img
 
 2) run _unpack_level1
 
-3) to create full OTA recovery flashable zip, run _pack_level1_fota
+3) to create full OTA recovery flashable zip, run pack_level1_fota
 
 4) take packed zip file from out

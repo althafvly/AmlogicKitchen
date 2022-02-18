@@ -5,7 +5,7 @@ Instructions:
 
 1) To work with the second level, you must unpack level 1 first
 
-2) run _unpack_level2
+2) run unpack and select 2
 
 3) In the level2 folder, we replace/correct the files in the folders:
 
@@ -22,9 +22,9 @@ Instructions:
 - odm_* - odm A/B section
 - oem_* - oem A/B section
 
-4) run _pack_level2
+4) run pack and select level 2
 
-5) then to pack level 1 run _pack_level1 or to create full OTA, run _pack_level1_fota
+5) then to pack level 1 run pack and select level1 or to create full OTA, run pack_level1_fota
 
 Notes:
 
