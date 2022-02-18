@@ -159,17 +159,9 @@ if exist level1\logo.PARTITION (
     bin\windows\imgpack -d level1\logo.PARTITION level3\logo
 )
 
-set file="level1\_aml_dtb.PARTITION"
-set maxbytesize=80000
-
-FOR /F "usebackq" %%A IN ('%file%') DO set size=%%~zA
-
-if %size% LSS %maxbytesize% (
-    bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION
-) ELSE (
-    bin\windows\7za x level1\_aml_dtb.PARTITION -y > NUL:
-    bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\
-)
+bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION
+bin\windows\7za x level1\_aml_dtb.PARTITION -y > NUL:
+bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\
 
 if exist _aml_dtb (
     bin\windows\dtbSplit _aml_dtb level3\devtree\
