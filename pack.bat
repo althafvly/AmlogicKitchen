@@ -172,12 +172,20 @@ for %%A in (level3\devtree\*.dts) do set /a cnt+=1
 echo File count = !cnt!
 
 if !cnt! gtr 1 (
-for %%x in (level3\devtree\*.dts) do (
-  bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x
-)
-bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb
+    for %%x in (level3\devtree\*.dts) do (
+        bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x
+    )
+    bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb
 ) else (
-bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
+    bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
+)
+
+if exist level3\meson1\ (
+    for %%x in (level3\meson1\*.dts) do (
+        bin\windows\dtc.exe -I dts -O dtb -o level3\meson1\%%~nx.dtb %%x
+    )
+    bin\windows\dtbTool -p bin\windows\ -v level3\meson1\ -o level1\meson1.dtb
+    del level3\meson1\*.dtb
 )
 
 set file="_aml_dtb"
