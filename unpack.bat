@@ -100,7 +100,8 @@ md level2\config\
 
 FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
-        bin\windows\imgextractor level1\%%A.PARTITION level2\%%A
+        bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img
+        python bin\common\imgextractor.py "level2\%%A.img" "level2"
         if exist level1\%%A.raw.img (
             del level1\%%A.raw.img
         )
