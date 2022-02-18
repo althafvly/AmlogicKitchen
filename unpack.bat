@@ -96,7 +96,7 @@ exit
 :pass2
 
 if exist level2 rmdir /q /s level2
-md level2
+md level2\config\
 
 FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
@@ -109,6 +109,7 @@ FOR %%A IN (odm oem product vendor system system_ext) DO (
 
 if exist level1\super.PARTITION (
     bin\windows\simg2img level1\super.PARTITION level2\super.img
+    bin\windows\du -sb level2\super.img | bin\windows\cut -f1> level2\config\super_size.txt
     bin\windows\super\lpunpack -slot=0 level2\super.img level2\
     del level2\super.img
 
@@ -117,7 +118,6 @@ if exist level1\super.PARTITION (
         call :setsize level2\%%A.img
         if !size! GTR 1024 (
             python bin\common\imgextractor.py "level2\%%A.img" "level2"
-            del level2\%%A.img
         )
     )
     )
