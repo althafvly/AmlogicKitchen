@@ -29,12 +29,79 @@ setlocal EnableDelayedExpansion
 
 cls
 
-if exist level3 goto pass
-echo Unpack level 3 first
+
+echo .....................
+echo Amlogic Kitchen
+echo .....................
+set /P level=Select level 1,2 or 3: 
+IF %level% == 1 GOTO level1
+IF %level% == 2 GOTO level2
+IF %level% == 3 GOTO level3
+ELSE echo Invalid option
+echo Unpack level 1 first
+pause
+exit
+
+:level1
+
+if exist level1 goto pass
+echo Unpack level 1 first
 pause
 exit
 
 :pass
+
+if exist out rmdir /q /s out
+md out
+
+set /p filename=< level1\projectname.txt
+if exist level1\image.cfg (
+    bin\windows\AmlImagePack -r level1\image.cfg level1 "out\%filename%.img"
+    echo Done.
+) else (
+    echo Can't find image.cfg
+)
+
+pause
+exit
+
+:level2
+
+if exist level2 goto pass2
+echo Unpack level 2 first
+pause
+exit
+
+:pass2
+
+FOR %%A IN (odm oem product vendor system system_ext) DO (
+    if exist level2\%%A\ (
+        set /p size=<"level2\%%A_size"
+        bin\windows\make_ext4fs -s -J -L %%A -T -1 -S level2\%%A_file_contexts -C level2\%%A_fs_config -l !size! -a %%A level1\%%A.PARTITION level2\%%A\
+    )
+)
+
+if exist level1\super.PARTITION (
+    FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b) DO (
+        if exist level2\%%A\ (
+            set /p size=<"level2\config\%%A_size.txt"
+            bin\windows\make_ext4fs -s -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level2\%%A.img level2\%%A\
+        )
+    )
+)
+
+echo Done.
+pause
+exit
+
+:level3
+
+if exist level3 goto pass3
+echo Unpack level 3 first
+pause
+exit
+
+:pass3
 
 FOR %%A IN (recovery boot recovery_a boot_a) DO (
     if exist level3\%%A\ (
@@ -73,8 +140,10 @@ bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb
 bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
 )
 
-call :size _aml_dtb
-if %SIZE% gtr 196607 (
+set file="_aml_dtb"
+FOR /F "usebackq" %%A IN ('%file%') DO set size=%%~zA
+
+if %size% gtr 196607 (
   bin\windows\gzip -nc _aml_dtb > level1\_aml_dtb.PARTITION
 ) else (
   copy _aml_dtb level1\_aml_dtb.PARTITION
@@ -89,7 +158,3 @@ if exist _aml_dtb (
 echo Done.
 pause
 exit
-
-:size
-set SIZE=%~z1
-goto :eof
