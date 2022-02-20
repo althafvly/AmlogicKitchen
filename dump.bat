@@ -18,8 +18,11 @@ md dtb
 if exist dump rmdir /s /q dump
 md dump
 
-bin\windows\update mread store bootloader normal 4194304 dump\bootloader.img
-bin\windows\update mread store _aml_dtb normal 262144 dtb\dtb.img
+echo .....................
+set /P blsize=Input bootloader size in bytes (most are: 4194304) :
+set /P dtbsize=Input dtb size in bytes (most are: 262144) :
+bin\windows\update mread store bootloader normal !blsize! dump\bootloader.img
+bin\windows\update mread store _aml_dtb normal !dtbsize! dtb\dtb.img
 
 if exist dtb\dtb.img (
     bin\windows\dtc -I dtb -O dts -o dtb\single.dts dtb\dtb.img
