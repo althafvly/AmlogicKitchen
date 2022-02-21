@@ -8,13 +8,12 @@ Supported features
 - Create flashable zip from amlogic image
 - Unpack/repack recovery,boot,logo and dtb
 - Create aml image from supported flashable zips
+- Support for super image unpack/repack
+- Dump os from device through mask mode
 
 NOTE:
 - Ignore some errors with dtb (some conditions are missing). decompiling/compiling dtb should work fine.
-
-TODO:
-- Add support for super image unpack/repack
-- Dump os from device through adb/flash/mask mode
+- We only tested this tool in certain firmware/device, report if theres any issue
 
 [Docs](docs)
 
