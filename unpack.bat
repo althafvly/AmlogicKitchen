@@ -142,6 +142,10 @@ if exist level1\super.PARTITION (
         if !size! GTR 1024 (
             python bin\common\imgextractor.py "level2\%%A.img" "level2"
         )
+        if exist level2\config\%%A_file_contexts (
+            bin\windows\sed -n "G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P" level2\config\%%A_file_contexts > level2\config\%%A_sorted_file_contexts
+            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts
+        )
     )
     )
 )
