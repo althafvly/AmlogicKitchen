@@ -60,7 +60,7 @@ if exist dtb\dtb.img (
     bin\windows\grep -P "\tpname" dtb\!dtsfile!.dts | bin\windows\grep -oP "(?<="")\w+">dump\partitions.txt
 
     for /f "tokens=*" %%s in (dump\partitions.txt) do (
-        bin\windows\sed -n "/%%s {/,/};/p" dtb\single.dts | bin\windows\grep -A 3 "pname" | bin\windows\grep "size" |  bin\windows\grep -oP "(?<=0x0 )\w+">dump\%%s_size.txt
+        bin\windows\sed -n "/%%s {/,/};/p" dtb\!dtsfile!.dts | bin\windows\grep -A 3 "pname" | bin\windows\grep "size" |  bin\windows\grep -oP "(?<=0x0 )\w+">dump\%%s_size.txt
         set /p size=<"dump\%%s_size.txt"
         bin\windows\update mread store %%s normal !size! dump\%%s.img
         del dump\%%s_size.txt
