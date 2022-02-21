@@ -91,14 +91,15 @@ if exist level1\super.PARTITION (
     )
 )
 
+set metadata_size=65536
+set metadata_slot=3
+set supername=super
+
 if exist level1\super.PARTITION (
-    set metadata_size=65536
-    set metadata_slot=3
-    set supername=super
     set /p supersize=<"level2\config\super_size.txt"
     bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
     set /p superusage1=<"level2\superusage.txt"
-    set command=bin\windows\super\lpmake --metadata-size %metadata_size% --super-name super --metadata-slots %metadata_slot% --device %supername%:!supersize! --group amlogic_dynamic_partitions_a:!superusage1!
+    set command=bin\windows\super\lpmake --metadata-size %metadata_size% --super-name %supername% --metadata-slots %metadata_slot% --device %supername%:!supersize! --group amlogic_dynamic_partitions_a:!superusage1!
 
     FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a) DO (
         if exist level2\%%A.img (
