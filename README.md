@@ -1,3 +1,7 @@
+<p align="left">
+  <img src="docs/logo.png" width="350" >
+</p>
+
 # Kitchen for working with Amlogic firmware
 Used for unpacking/packing amlogic images
 
