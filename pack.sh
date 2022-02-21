@@ -43,15 +43,52 @@ elif [ $level = 2 ]; then
 		for part in system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b
 		do
 			if [ -d level2/$part ]; then
-				size=$(cat level2/config/${part}_size.txt)
-				foldersize=$(du -shb level2/$part | cut -f1)
+				msize=$(du -sk level2/$part | cut -f1 | gawk '{$1*=1024;$1=int($1*1.06);printf $1}')
 				fs=level2/config/${part}_fs_config
 				fc=level2/config/${part}_file_contexts
-				echo "Creating ${part} image"
-				bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level2/$part.img level2/$part/
+				echo "Creating $part image"
+				bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
 				echo "Done."
 			fi
 		done
+	fi
+
+	metadata_size=65536
+	metadata_slot=3
+	supername="super"
+	supersize=$(cat level2/config/super_size.txt)
+	superusage1=$(du -csk level2/*.img | grep total | cut -f1| gawk '{$1*=1024;$1=int($1*1.08);printf $1}')
+	command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
+	command="$command --device $supername:$supersize --group amlogic_dynamic_partitions_a:$superusage1"
+
+	for part in system_ext_a system_a odm_a product_a vendor_a
+	do
+		if [ -f level2/$part.img ]; then
+			asize=$(du -k level2/$part.img | cut -f1| gawk '{$1*=1024;$1=int($1*1.06);printf $1}')
+			if [ $asize -gt 0 ]; then 
+				command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions_a --image $part=level2/$part.img"
+			fi
+		fi
+	done
+
+	superusage2=$(expr $supersize - $superusage1)
+	command="$command --group amlogic_dynamic_partitions_b:$superusage2"
+
+	for part in system_ext_b system_b odm_b product_b vendor_b
+	do
+		if [ -f level2/$part.img ]; then
+			bsize=$(du -skb level2/$part.img | cut -f1)
+			if [ $bsize -eq 0 ]; then 
+				command="$command --partition $part:readonly:$bsize:amlogic_dynamic_partitions_b"
+			fi
+		fi
+	done
+
+	rm -rf  level2/*.txt
+
+	command="$command --virtual-ab --sparse --output level1/super.PARTITION"
+	if [ -f level1/super.PARTITION ]; then
+		$($command)
 	fi
 elif [ $level = 3 ]; then
 	if [ ! `which dtc` ]; then

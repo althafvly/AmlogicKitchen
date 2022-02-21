@@ -94,7 +94,6 @@ elif [ $level = 2 ]; then
 				if [ $size -ge 1024 ]; then
 					python3 $imgextractor "level2/$part.img" "level2"
 					awk -i inplace '!seen[$0]++' level2/config/*
-					rm -rf level2/$part.img
 				fi
 			fi
 		done
