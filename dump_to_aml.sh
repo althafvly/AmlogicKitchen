@@ -2,8 +2,18 @@
 
 
 echo "....................."
-echo "Amlogic Dumper"
+echo "Amlogic Dump to Image script"
 echo "....................."
+
+version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
+if [ -z "$version" ]; then
+    echo "No Python installed!" 
+fi
+
+if [ -f dump/super.img ]; then
+    echo "super image isn't supported yet"
+    exit 0
+fi
 
 for dir in level1 level2 level3
 do
@@ -15,6 +25,10 @@ do
     fi
 done
 
+if [ ! -d out ]; then
+    mkdir out
+fi
+
 for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext
 do
     if [ -f dump/$part.img ]; then
@@ -23,7 +37,7 @@ do
 done
 
 if [ -f dump/dtb.img ]; then
-	cp dump/dtb.img level1/_aml_dtb.PARTITION
+    cp dump/dtb.img level1/_aml_dtb.PARTITION
 fi
 
 cp bin/common/aml_sdc_burn.ini level1/aml_sdc_burn.ini
