@@ -15,8 +15,7 @@ if [ -f dump/super.img ]; then
     exit 0
 fi
 
-for dir in level1 level2 level3
-do
+for dir in level1 level2 level3; do
     if [ -d $dir ]; then
         echo "Deleting existing $dir"
         rm -rf $dir && mkdir $dir
@@ -29,8 +28,7 @@ if [ ! -d out ]; then
     mkdir out
 fi
 
-for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext
-do
+for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext; do
     if [ -f dump/$part.img ]; then
         cp dump/$part.img level1/$part.PARTITION
     fi
@@ -86,8 +84,7 @@ done
 
 echo "[LIST_VERIFY]" >> $configname
 
-for part in system system_ext vendor product odm oem
-do
+for part in system system_ext vendor product odm oem; do
     if [ -f level1/$part.PARTITION ]; then
         echo "Unpacking $part"
         python3 bin/common/imgextractor.py "level1/$part.PARTITION" "level2" > /dev/null 2>&1
@@ -100,8 +97,7 @@ do
     fi
 done
 
-for part in boot recovery boot_a recovery_a
-do
+for part in boot recovery boot_a recovery_a; do
     if [ -f level1/${part}.PARTITION ]; then
         mkdir level3/$part
         echo "Repacking $part"

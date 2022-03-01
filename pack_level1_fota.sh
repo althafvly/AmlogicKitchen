@@ -43,8 +43,7 @@ if [ -f level1/_aml_dtb.PARTITION ]; then
     cp level1/_aml_dtb.PARTITION tmp/dt.img
 fi
 
-for part in boot dtbo logo recovery vbmeta
-do
+for part in boot dtbo logo recovery vbmeta; do
     if [ -f level1/${part}.PARTITION ]; then
         cp level1/${part}.PARTITION tmp/${part}.img
     fi
@@ -55,8 +54,7 @@ echo "Compress with brolti?"
 echo "input y default n: "
 read compress
 
-for part in system system_ext vendor product odm oem
-do
+for part in system system_ext vendor product odm oem; do
     if [ -f level1/$part.PARTITION ]; then
         cp level1/$part.PARTITION tmp/$part.img
         python bin/common/img2sdat.py tmp/$part.img -o tmp -v 4 -p $part
@@ -73,8 +71,7 @@ script="tmp/META-INF/com/google/android/updater-script"
 echo "set_bootloader_env(\"upgrade_step\", \"3\");">$script
 echo "show_progress(0.650000, 0);">>$script
 
-for part in system system_ext vendor product odm oem
-do
+for part in system system_ext vendor product odm oem; do
     if [ -f tmp/$part.new.dat.br ]; then
         echo "ui_print(\"Patching $part image unconditionally...\");">>$script
         echo "block_image_update(\"/dev/block/$part\", package_extract_file(\"$part.transfer.list\"), \"$part.new.dat.br\", \"$part.patch.dat\") ||">>$script

@@ -102,6 +102,7 @@ echo .....................
 echo choose a method to unpack firmware
 echo some newer/older firmwares doesn't work properly
 echo retry with different version if you have issues
+echo For super image we will use python for unpacking
 echo .....................
 echo 1 - vortex
 echo 2 - python

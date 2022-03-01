@@ -5,8 +5,7 @@ if [ -z "$version" ]; then
     echo "No Python installed!" 
 fi
 
-for dir in level1 tmp
-do
+for dir in level1 tmp; do
     if [ -d $dir ]; then
         echo "Deleting existing $dir"
         rm -rf $dir && mkdir $dir
@@ -16,59 +15,55 @@ do
 done
 
 if [ ! -d $dir ]; then
-	mkdir $dir
+    mkdir $dir
 fi
 
 echo "....................."
 echo "Amlogic Kitchen"
 echo "....................."
 if [ ! -d in ]; then
-	echo "Can't find /in folder"
-	echo "Creating /in folder"
-	mkdir in
+    echo "Can't find /in folder"
+    echo "Creating /in folder"
+    mkdir in
 fi
 count_file=$(ls -1 in/*.zip 2>/dev/null | wc -l)
 if [ "$count_file" = 0 ]; then
-	echo "No files found in /in"
-	exit 0
+    echo "No files found in /in"
+    exit 0
 fi
 echo "Files in input dir (*.zip)"
 count=0
 for entry in `ls in/*.zip`; do
-	count=$(($count + 1))
-	name=$(basename in/$entry .zip)
-	echo $count - $name
+    count=$(($count + 1))
+    name=$(basename in/$entry .zip)
+    echo $count - $name
 done
 echo "....................."
 echo "Enter a file name :"
 read projectname
 echo $projectname> level1/projectname.txt
 
-if [ ! -f in/$projectname.zip ]
-then
-	echo "Can't find the file"
-	exit 0
+if [ ! -f in/$projectname.zip ]; then
+    echo "Can't find the file"
+    exit 0
 fi
 
 filename=$(cat level1/projectname.txt)
 bin/linux/7za x in/${filename}.zip -otmp
 
-for file in compatibility.zip file_contexts.bin
-do
+for file in compatibility.zip file_contexts.bin; do
     if [ -f tmp/$file ]; then
         rm -rf tmp/$file
     fi
 done
 
-for dir in META-INF system
-do
+for dir in META-INF system; do
     if [ -d tmp/$dir ]; then
         rm -rf tmp/$dir
     fi
 done
 
-for part in odm oem product vendor system system_ext
-do
+for part in odm oem product vendor system system_ext; do
     if [ -f tmp/$part.transfer.list ]; then
         if [ -f tmp/$part.new.dat.br ]; then
             bin/linux/brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
@@ -88,8 +83,7 @@ if [ -f tmp/dt.img ]; then
     cp tmp/dt.img level1/_aml_dtb.PARTITION
 fi
 
-for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext
-do
+for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext; do
     if [ -f tmp/$part.img ]; then
         mv tmp/$part.img level1/$part.PARTITION
     fi
@@ -134,8 +128,7 @@ if [ -f level1/platform.conf ]; then
     echo "file=\"platform.conf\"		main_type=\"conf\"		sub_type=\"platform\"" >> $configname
 fi
 
-for part in boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta
-do
+for part in boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta; do
     if [ -f level1/$part.PARTITION ]; then
         echo "file=\"$part.PARTITION\"		main_type=\"PARTITION\"		sub_type=\"$part\"" >> $configname
     fi
