@@ -41,14 +41,15 @@ elif [ $level = 2 ]; then
     if [ -f level1/super.PARTITION ]; then
         for part in system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
             if [ -d level2/$part ]; then
-                msize=$(du -sk level2/$part | cut -f1 | gawk '{$1*=1024;$1=int($1*1.06);printf $1}')
+                msize=$(du -sk level2/$part | cut -f1 | gawk '{$1*=1024;$1=int($1*1.08);printf $1}')
                 fs=level2/config/${part}_fs_config
                 fc=level2/config/${part}_file_contexts
                 echo "Creating $part image"
                 if [ $msize -lt 1048576 ]; then
                     msize=1048576
                 fi
-                bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
+                bin/linux/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
+                bin/linux/ext4/resize2fs -M level2/${part}.img
                 echo "Done."
             fi
         done
@@ -58,13 +59,13 @@ elif [ $level = 2 ]; then
     metadata_slot=3
     supername="super"
     supersize=$(cat level2/config/super_size.txt)
-    superusage1=$(du -csk level2/*.img | grep total | cut -f1| gawk '{$1*=1024;$1=int($1*1.08);printf $1}')
+    superusage1=$(du -cb level2/*.img | grep total | cut -f1)
     command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
     command="$command --device $supername:$supersize --group amlogic_dynamic_partitions_a:$superusage1"
 
     for part in system_ext_a system_a odm_a product_a vendor_a; do
         if [ -f level2/$part.img ]; then
-            asize=$(du -k level2/$part.img | cut -f1| gawk '{$1*=1024;$1=int($1*1.06);printf $1}')
+            asize=$(du -skb level2/$part.img | cut -f1)
             if [ $asize -gt 0 ]; then 
                 command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions_a --image $part=level2/$part.img"
             fi

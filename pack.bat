@@ -91,6 +91,7 @@ if exist level1\super.PARTITION (
                 echo 1048576> level2\config\%%A_dir_size.txt
             )
             bin\windows\make_ext4fs -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level2\%%A.img level2\%%A\
+            bin\windows\ext4\resize2fs.exe -M level2\%%A.img
         )
     )
 )
