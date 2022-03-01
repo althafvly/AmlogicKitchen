@@ -131,6 +131,15 @@ if exist level1\super.PARTITION (
         )
     )
 
+    if !superusage1! GEQ !supersize! (
+        echo Unable to create super image, recreated images are too big.
+        echo Cleanup some files before retrying
+        echo Needed space: !superusage1!
+        echo Available maximum space: !supersize!
+        pause
+        exit
+    )
+
     set command=!command! --virtual-ab --sparse --output level1\super.PARTITION
     !command!
 )

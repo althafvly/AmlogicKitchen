@@ -83,6 +83,14 @@ elif [ $level = 2 ]; then
         fi
     done
 
+    if [ $superusage1 -ge $supersize ]; then 
+        echo "Unable to create super image, recreated images are too big."
+        echo "Cleanup some files before retrying"
+        echo "Needed space: $superusage1"
+        echo "Available maximum space: $supersize"
+        exit 0
+    fi
+
     rm -rf  level2/*.txt
 
     command="$command --virtual-ab --sparse --output level1/super.PARTITION"
