@@ -47,6 +47,9 @@ elif [ $level = 2 ]; then
 				fs=level2/config/${part}_fs_config
 				fc=level2/config/${part}_file_contexts
 				echo "Creating $part image"
+				if [ $msize -lt 1048576 ]; then
+					msize=1048576
+				fi
 				bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
 				echo "Done."
 			fi

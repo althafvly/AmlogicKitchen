@@ -86,6 +86,10 @@ if exist level1\super.PARTITION (
         if exist level2\%%A\ (
             bin\windows\du -sk level2\%%A | bin\windows\cut -f1 | bin\windows\gawk "{$1*=1024;$1=int($1*1.08)};echo $1"> level2\config\%%A_dir_size.txt
             set /p size=<"level2\config\%%A_dir_size.txt"
+            IF !size! LSS 1048576 (
+                SET size=1048576
+                echo 1048576> level2\config\%%A_dir_size.txt
+            )
             bin\windows\make_ext4fs -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level2\%%A.img level2\%%A\
         )
     )
