@@ -2,7 +2,7 @@
 ----------
 
 - Base kitchen (vtx_kitchen) - Vortex
-- gnuwin32 for linux binary ports
+- gnuwin32 and cygwin for linux binary ports
 - aml update tool - osmc
 - 7-Zip - Igor Pavlov
 - ImgExtractor - unix3dgforce, blackeange and xiaoxindada
