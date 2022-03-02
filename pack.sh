@@ -139,12 +139,34 @@ elif [ $level = 3 ]; then
         fi
     fi
 
+    if [ -d level3/meson1 ]; then
+        DIR='level3/meson1/'
+        count=$(ls -1U $DIR | wc -l)
+        if [ $count -gt 1 ]; then
+            for filename in level3/meson1/*.dts; do
+                [ -e "$filename" ] || continue
+                name=$(basename $filename .dts)
+                dtc -I dts -O dtb level3/meson1/$name.dts -o "`echo level3/meson1/$name.dtb | sed -e s'/\.dts/\.dtb/'`"
+                bin/linux/dtbTool -o level1/meson1.dtb level3/meson1/
+            done
+        else
+            dtc -I dts -O dtb level3/meson1/single.dts -o "`echo level1/meson1.dtb | sed -e s'/\.dts/\.dtb/'`"
+        fi
+    fi
+
     size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
     if [ $size -gt 196607 ]; then
         gzip -nc level1/_aml_dtb.PARTITION > level1/_aml_dtb.PARTITION.gzip
         mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
     fi
     rm level3/devtree/*.dtb
+
+    msize=$(du -b level1/meson1.dtb | cut -f1)
+    if [ $msize -gt 196607 ]; then
+        gzip -nc level1/meson1.dtb > level1/meson1.dtb.gzip
+        mv level1/meson1.dtb.gzip level1/meson1.dtb
+    fi
+    rm level3/meson1/*.dtb
 
     echo "Done."
 fi

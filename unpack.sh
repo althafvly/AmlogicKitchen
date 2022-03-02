@@ -145,6 +145,22 @@ elif [ $level = 3 ]; then
         fi
     fi
 
+    if [ -f level1/meson1.dtb ]; then
+        mkdir level3/meson1
+        bin/linux/dtbSplit level1/meson1.dtb level3/meson1/
+        DIR='level3/meson1/'
+        if [ "$(ls -A $DIR)" ]; then
+            for filename in level3/meson1/*.dtb; do
+            [ -e "$filename" ] || continue
+            name=$(basename $filename .dtb)
+            dtc -I dtb -O dts level3/meson1/$name.dtb -o "`echo level3/meson1/$name.dts | sed -e s'/\.dtb/\.dts/'`"
+            rm -rf level3/meson1/$name.dtb
+            done
+        else
+            dtc -I dtb -O dts level1/meson1.dtb -o "`echo level3/meson1/single.dts | sed -e s'/\.dtb/\.dts/'`"
+        fi
+    fi
+
     echo "Done."
 fi
 
