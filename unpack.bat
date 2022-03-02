@@ -127,6 +127,10 @@ if !extracttype! EQU 1 (
         if exist level1\%%A.raw.img (
             del level1\%%A.raw.img
         )
+        if exist level2\config\%%A_file_contexts (
+            bin\windows\sed -n "G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P" level2\config\%%A_file_contexts > level2\config\%%A_sorted_file_contexts
+            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts
+        )
     )
     )
 )
