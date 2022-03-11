@@ -115,6 +115,18 @@ if [ -f level1/logo.PARTITION ]; then
     bin/linux/imgpack -r level3/logo level1/logo.PARTITION > /dev/null 2>&1
 fi
 
+if [ ! -f level1/_aml_dtb.PARTITION ]; then
+    if [ -f level3/boot*/split_img/*-dtb ]; then
+        cp level3/boot*/split_img/*-dtb level1/_aml_dtb.PARTITION
+    elif [ -f level3/boot*/split_img/*-second ]; then
+        cp level3/boot*/split_img/*-second level1/_aml_dtb.PARTITION
+    elif [ -f level3/recovery*/split_img/*-dtb ]; then
+        cp level3/recovery*/split_img/*-dtb level1/_aml_dtb.PARTITION
+    elif [ -f level3/recovery*/split_img/*-second ]; then
+        cp level3/recovery*/split_img/*-second level1/_aml_dtb.PARTITION
+    fi
+fi
+
 if [ -f level1/_aml_dtb.PARTITION ]; then
     echo "Repacking dtb"
     mkdir level3/devtree

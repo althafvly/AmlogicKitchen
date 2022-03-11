@@ -126,6 +126,18 @@ elif [ $level = 3 ]; then
         bin/linux/imgpack -d level1/logo.PARTITION level3/logo
     fi
 
+    if [ ! -f level1/_aml_dtb.PARTITION ]; then
+        if [ -f level3/boot*/split_img/*-dtb ]; then
+            cp level3/boot*/split_img/*-dtb level1/_aml_dtb.PARTITION
+        elif [ -f level3/boot*/split_img/*-second ]; then
+            cp level3/boot*/split_img/*-second level1/_aml_dtb.PARTITION
+        elif [ -f level3/recovery*/split_img/*-dtb ]; then
+            cp level3/recovery*/split_img/*-dtb level1/_aml_dtb.PARTITION
+        elif [ -f level3/recovery*/split_img/*-second ]; then
+            cp level3/recovery*/split_img/*-second level1/_aml_dtb.PARTITION
+        fi
+    fi
+
     if [ -f level1/_aml_dtb.PARTITION ]; then
         mkdir level3/devtree
         bin/linux/7za x level1/_aml_dtb.PARTITION -y

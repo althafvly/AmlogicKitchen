@@ -143,6 +143,27 @@ if exist level1\logo.PARTITION (
     bin\windows\imgpack -d level1\logo.PARTITION level3\logo
 )
 
+:: i dont have no idea to simplify this
+if not exist level1\_aml_dtb.PARTITION (
+    if exist level3\boot\split_img\boot.img-dtb (
+        copy level3\boot\split_img\boot.img-dtb level1\_aml_dtb.PARTITION
+    ) else if exist level3\boot_a\split_img\boot_a.img-dtb (
+        copy level3\boot_a\split_img\boot_a.img-dtb level1\_aml_dtb.PARTITION
+    ) else if exist level3\boot\split_img\boot.img-second (
+        copy level3\boot\split_img\boot.img-second level1\_aml_dtb.PARTITION
+    ) else if exist level3\boot_a\split_img\boot_a.img-second (
+        copy level3\boot_a\split_img\boot_a.img-second level1\_aml_dtb.PARTITION
+    ) else if exist level3\recovery\split_img\recovery.img-dtb (
+        copy level3\recovery\split_img\recovery.img-dtb level1\_aml_dtb.PARTITION
+    ) else if exist level3\recovery_a\split_img\recovery_a.img-dtb (
+        copy level3\recovery_a\split_img\recovery_a.img-dtb level1\_aml_dtb.PARTITION
+    ) else if exist level3\recovery\split_img\recovery.img-second (
+        copy level3\recovery\split_img\recovery.img-second level1\_aml_dtb.PARTITION
+    ) else if exist level3\recovery_a\split_img\recovery_a.img-second (
+        copy level3\recovery_a\split_img\recovery_a.img-second level1\_aml_dtb.PARTITION
+    )
+)
+
 bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION
 bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\
 
