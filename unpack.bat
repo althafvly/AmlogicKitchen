@@ -73,7 +73,8 @@ exit 0
 
 set /p filename=< level1\projectname.txt
 
-bin\windows\AmlImagePack -d "in\%filename%.img" level1
+echo Extracting %filename%
+bin\windows\AmlImagePack -d "in\%filename%.img" level1 >nul 2>&1
 
 pause
 exit
@@ -111,9 +112,10 @@ set /P extracttype=Enter a number :
 if !extracttype! EQU 1 (
     FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
-        bin\windows\imgextractor level1\%%A.PARTITION level2\%%A
-        move level2\%%A_size level2\config\%%A_size.txt
-        move level2\%%A_* level2\config\
+        echo Extracting %%A
+        bin\windows\imgextractor level1\%%A.PARTITION level2\%%A >nul 2>&1
+        move level2\%%A_size level2\config\%%A_size.txt >nul 2>&1
+        move level2\%%A_* level2\config\ >nul 2>&1
         if exist level1\%%A.raw.img (
             del level1\%%A.raw.img
         )
@@ -122,42 +124,43 @@ if !extracttype! EQU 1 (
 ) else (
     FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level1\%%A.PARTITION (
-        bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img
-        python bin\common\imgextractor.py "level2\%%A.img" "level2"
+        echo Extracting %%A
+        bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img >nul 2>&1
+        python bin\common\imgextractor.py "level2\%%A.img" "level2" >nul 2>&1
         if exist level1\%%A.raw.img (
             del level1\%%A.raw.img
         )
         if exist level2\config\%%A_file_contexts (
             bin\windows\sed -n "G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P" level2\config\%%A_file_contexts > level2\config\%%A_sorted_file_contexts
-            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts
+            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts >nul 2>&1
         )
     )
     )
 )
 
 if exist level1\super.PARTITION (
-    bin\windows\simg2img level1\super.PARTITION level2\super.img
+    echo Extracting super
+    bin\windows\simg2img level1\super.PARTITION level2\super.img >nul 2>&1
     bin\windows\du -sb level2\super.img | bin\windows\cut -f1> level2\config\super_size.txt
-    bin\windows\super\lpunpack -slot=0 level2\super.img level2\
+    bin\windows\super\lpunpack -slot=0 level2\super.img level2\ >nul 2>&1
     del level2\super.img
 
     FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b) DO (
     if exist level2\%%A.img (
-        call :setsize level2\%%A.img
-        if !size! GTR 1024 (
-            python bin\common\imgextractor.py "level2\%%A.img" "level2"
+        bin\windows\du level2\%%A.img | bin\windows\cut -f1>image_size.txt
+        set /p msize=<"image_size.txt"
+        if !msize! GTR 0 (
+            echo Extracting %%A
+            python bin\common\imgextractor.py "level2\%%A.img" "level2" >nul 2>&1
         )
+        del image_size.txt >nul 2>&1
         if exist level2\config\%%A_file_contexts (
             bin\windows\sed -n "G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P" level2\config\%%A_file_contexts > level2\config\%%A_sorted_file_contexts
-            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts
+            move level2\config\%%A_sorted_file_contexts level2\config\%%A_file_contexts >nul 2>&1
         )
     )
     )
 )
-
-:setsize
-set size=%~z1
-goto :eof
 
 echo Done.
 pause
@@ -177,18 +180,20 @@ md level3 level3\boot level3\boot_a level3\recovery level3\recovery_a level3\log
 
 FOR %%A IN (recovery boot recovery_a boot_a) DO (
     if exist level1\%%A.PARTITION (
-        copy level1\%%A.PARTITION bin\windows\aik\%%A.img
-        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img
+        echo Extracting %%A
+        copy level1\%%A.PARTITION bin\windows\aik\%%A.img >nul 2>&1
+        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img >nul 2>&1
         if exist bin\windows\aik\ramdisk\ (
-            move bin\windows\aik\ramdisk level3\%%A\
+            move bin\windows\aik\ramdisk level3\%%A\ >nul 2>&1
         )
-        move bin\windows\aik\split_img level3\%%A\
-        del bin\windows\aik\%%A.img
+        move bin\windows\aik\split_img level3\%%A\ >nul 2>&1
+        del bin\windows\aik\%%A.img >nul 2>&1
     )
 )
 
 if exist level1\logo.PARTITION (
-    bin\windows\imgpack -d level1\logo.PARTITION level3\logo
+    echo Extracting logo
+    bin\windows\imgpack -d level1\logo.PARTITION level3\logo >nul 2>&1
 )
 
 :: i dont have no idea to simplify this
@@ -212,30 +217,31 @@ if not exist level1\_aml_dtb.PARTITION (
     )
 )
 
-bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION
-bin\windows\7za x level1\_aml_dtb.PARTITION -y > NUL:
-bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\
+echo Extracting dtb
+bin\windows\dtc -I dtb -O dts -o level3\devtree\single.dts level1\_aml_dtb.PARTITION >nul 2>&1
+bin\windows\7za x level1\_aml_dtb.PARTITION -y > NUL: >nul 2>&1
+bin\windows\dtbSplit level1\_aml_dtb.PARTITION level3\devtree\ >nul 2>&1
 
 if exist level1\meson1.dtb (
-    bin\windows\dtbSplit level1\meson1.dtb level3\meson1\
+    bin\windows\dtbSplit level1\meson1.dtb level3\meson1\ >nul 2>&1
 )
 
 if exist _aml_dtb (
-    bin\windows\dtbSplit _aml_dtb level3\devtree\
-    del _aml_dtb
+    bin\windows\dtbSplit _aml_dtb level3\devtree\ >nul 2>&1
+    del _aml_dtb >nul 2>&1
 )
 
 for %%x in (level3\devtree\*.dtb) do (
-    bin\windows\dtc -I dtb -O dts -o level3\devtree\%%~nx.dts %%x
-    del %%x
+    bin\windows\dtc -I dtb -O dts -o level3\devtree\%%~nx.dts %%x >nul 2>&1
+    del %%x >nul 2>&1
 )
 
 for %%x in (level3\meson1\*.dtb) do (
-    bin\windows\dtc -I dtb -O dts -o level3\meson1\%%~nx.dts %%x
-    del %%x
+    bin\windows\dtc -I dtb -O dts -o level3\meson1\%%~nx.dts %%x >nul 2>&1
+    del %%x >nul 2>&1
 )
 
-ROBOCOPY level3 level3 /S /MOVE /NFL /NDL /NJH /NJS /nc /ns /np
+ROBOCOPY level3 level3 /S /MOVE /NFL /NDL /NJH /NJS /nc /ns /np >nul 2>&1
 
 echo Done.
 pause
