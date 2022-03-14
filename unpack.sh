@@ -83,7 +83,13 @@ elif [ $level = 2 ]; then
         bin/linux/super/lpunpack -slot=0 level2/super.img level2/
         rm -rf level2/super.img
 
-        for part in system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
+        if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then
+            echo "3">level2/config/super_type.txt
+        else
+            echo "2">level2/config/super_type.txt
+        fi
+
+        for part in system system_ext vendor product odm oem system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
             if [ -f level2/$part.img ]; then
                 size=$(du -b level2/$part.img | cut -f1)
                 if [ $size -ge 1024 ]; then
