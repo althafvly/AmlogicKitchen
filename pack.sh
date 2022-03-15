@@ -100,7 +100,7 @@ elif [ $level = 2 ]; then
         if [ -f level1/super.PARTITION ]; then
             $($command)
         fi
-    elif [ $supertype == "2" ]; then
+    elif [ $supertype -eq "2" ]; then
         metadata_size=65536
         metadata_slot=2
         supername="super"
