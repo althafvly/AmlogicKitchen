@@ -46,36 +46,29 @@ echo "[LIST_NORMAL]" > $configname
 
 if [ -f level1/DDR.USB ]; then
     echo "file=\"DDR.USB\"		main_type=\"USB\"		sub_type=\"DDR\"" >> $configname
-else
-    echo "file=\"bootloader.PARTITION\"		main_type=\"USB\"		sub_type=\"DDR\"" >> $configname
 fi
 
 if [ -f level1/UBOOT.USB ]; then
     echo "file=\"UBOOT.USB\"		main_type=\"USB\"		sub_type=\"UBOOT\"" >> $configname
-else
-    echo "file=\"bootloader.PARTITION\"		main_type=\"USB\"		sub_type=\"UBOOT\"" >> $configname
 fi
 
 if [ -f level1/aml_sdc_burn.UBOOT ]; then
     echo "file=\"aml_sdc_burn.UBOOT\"		main_type=\"UBOOT\"		sub_type=\"aml_sdc_burn\"" >> $configname
-else
-    echo "file=\"bootloader.PARTITION\"		main_type=\"UBOOT\"		sub_type=\"aml_sdc_burn\"" >> $configname
 fi
 
 if [ -f level1/aml_sdc_burn.ini ]; then
     echo "file=\"aml_sdc_burn.ini\"		main_type=\"ini\"		sub_type=\"aml_sdc_burn\"" >> $configname
 fi
 
-if [ -f level1/_aml_dtb.PARTITION ]; then
-    echo "file=\"_aml_dtb.PARTITION\"		main_type=\"dtb\"		sub_type=\"meson1\"" >> $configname
-    echo "file=\"_aml_dtb.PARTITION\"		main_type=\"PARTITION\"		sub_type=\"_aml_dtb\"" >> $configname
+if [ -f level1/meson1.PARTITION ]; then
+    echo "file=\"meson1.PARTITION\"		main_type=\"dtb\"		sub_type=\"meson1\"" >> $configname
 fi
 
 if [ -f level1/platform.conf ]; then
     echo "file=\"platform.conf\"		main_type=\"conf\"		sub_type=\"platform\"" >> $configname
 fi
 
-for part in boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta
+for part in _aml_dtb boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta
 do
     if [ -f level1/$part.PARTITION ]; then
         echo "file=\"$part.PARTITION\"		main_type=\"PARTITION\"		sub_type=\"$part\"" >> $configname

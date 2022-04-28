@@ -70,36 +70,28 @@ echo [LIST_NORMAL] > %configname%
 
 if exist level1\DDR.USB (
     echo file="DDR.USB"		main_type="USB"		sub_type="DDR" >> %configname%
-) else (
-    echo file="bootloader.PARTITION"		main_type="USB"		sub_type="DDR" >> %configname%
 )
 
 if exist level1\UBOOT.USB (
     echo file="UBOOT.USB"		main_type="USB"		sub_type="UBOOT" >> %configname%
-) else (
-    echo file="bootloader.PARTITION"		main_type="USB"		sub_type="UBOOT" >> %configname%
 )
-
 if exist level1\aml_sdc_burn.UBOOT (
     echo file="aml_sdc_burn.UBOOT"		main_type="UBOOT"		sub_type="aml_sdc_burn" >> %configname%
-) else (
-    echo file="bootloader.PARTITION"		main_type="UBOOT"		sub_type="aml_sdc_burn" >> %configname%
 )
 
 if exist level1\aml_sdc_burn.ini (
     echo file="aml_sdc_burn.ini"		main_type="ini"		sub_type="aml_sdc_burn" >> %configname%
 )
 
-if exist level1\_aml_dtb.PARTITION (
-    echo file="_aml_dtb.PARTITION"		main_type="dtb"		sub_type="meson1" >> %configname%
-    echo file="_aml_dtb.PARTITION"		main_type="PARTITION"		sub_type="_aml_dtb" >> %configname%
+if exist level1\meson1.PARTITION (
+    echo file="meson1.PARTITION"		main_type="dtb"		sub_type="meson1" >> %configname%
 )
 
 if exist level1\platform.conf (
     echo file="platform.conf"		main_type="conf"		sub_type="platform" >> %configname%
 )
 
-FOR %%A IN (boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta) DO (
+FOR %%A IN (_aml_dtb boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta) DO (
     if exist level1\%%A.PARTITION (
         echo file="%%A.PARTITION"		main_type="PARTITION"		sub_type="%%A" >> %configname%
     )
