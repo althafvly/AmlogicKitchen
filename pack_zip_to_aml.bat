@@ -99,12 +99,27 @@ set configname=level1\image.cfg
 
 echo [LIST_NORMAL] > %configname%
 
+if not exist level1\DDR.USB (
+    echo "DDR.USB is missing, copy DDR.USB to level1 dir"
+    pause
+)
+
 if exist level1\DDR.USB (
     echo file="DDR.USB"		main_type="USB"		sub_type="DDR" >> %configname%
 )
 
+if not exist level1\UBOOT.USB (
+    echo "UBOOT.USB is missing, copy UBOOT.USB to level1 dir"
+    pause
+)
+
 if exist level1\UBOOT.USB (
     echo file="UBOOT.USB"		main_type="USB"		sub_type="UBOOT" >> %configname%
+)
+
+if not exist level1\aml_sdc_burn.UBOOT (
+    echo "aml_sdc_burn.UBOOT is missing, copy aml_sdc_burn.UBOOT to level1 dir"
+    pause
 )
 
 if exist level1\aml_sdc_burn.UBOOT (
@@ -115,8 +130,18 @@ if exist level1\aml_sdc_burn.ini (
     echo file="aml_sdc_burn.ini"		main_type="ini"		sub_type="aml_sdc_burn" >> %configname%
 )
 
+if not exist level1\meson1.PARTITION (
+    echo "meson1.PARTITION is missing, copy meson1.PARTITION to level1 dir"
+    pause
+)
+
 if exist level1\meson1.PARTITION (
     echo file="meson1.PARTITION"		main_type="dtb"		sub_type="meson1" >> %configname%
+)
+
+if not exist level1\platform.conf (
+    echo "platform.conf is missing, copy platform.conf to level1 dir"
+    pause
 )
 
 if exist level1\platform.conf (

@@ -97,12 +97,27 @@ configname="level1/image.cfg"
 
 echo "[LIST_NORMAL]" > $configname
 
+if [ ! -f level1/DDR.USB ]; then
+    echo "DDR.USB is missing, DDR.USB to level1 dir"
+    read -p "Press enter to continue"
+fi
+
 if [ -f level1/DDR.USB ]; then
     echo "file=\"DDR.USB\"		main_type=\"USB\"		sub_type=\"DDR\"" >> $configname
 fi
 
+if [ ! -f level1/UBOOT.USB ]; then
+    echo "UBOOT.USB is missing, UBOOT.USB to level1 dir"
+    read -p "Press enter to continue"
+fi
+
 if [ -f level1/UBOOT.USB ]; then
     echo "file=\"UBOOT.USB\"		main_type=\"USB\"		sub_type=\"UBOOT\"" >> $configname
+fi
+
+if [ ! -f level1/aml_sdc_burn.UBOOT ]; then
+    echo "aml_sdc_burn.UBOOT is missing, aml_sdc_burn.UBOOT to level1 dir"
+    read -p "Press enter to continue"
 fi
 
 if [ -f level1/aml_sdc_burn.UBOOT ]; then
@@ -113,8 +128,18 @@ if [ -f level1/aml_sdc_burn.ini ]; then
     echo "file=\"aml_sdc_burn.ini\"		main_type=\"ini\"		sub_type=\"aml_sdc_burn\"" >> $configname
 fi
 
+if [ ! -f level1/meson1.PARTITION ]; then
+    echo "meson1.PARTITION is missing, meson1.PARTITION to level1 dir"
+    read -p "Press enter to continue"
+fi
+
 if [ -f level1/meson1.PARTITION ]; then
     echo "file=\"meson1.PARTITION\"		main_type=\"dtb\"		sub_type=\"meson1\"" >> $configname
+fi
+
+if [ ! -f level1/platform.conf ]; then
+    echo "platform.conf is missing, platform.conf to level1 dir"
+    read -p "Press enter to continue"
 fi
 
 if [ -f level1/platform.conf ]; then
