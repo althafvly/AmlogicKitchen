@@ -72,6 +72,7 @@ elif [ $level = 2 ]; then
             echo "Extracting $part"
             bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
             python3 $imgextractor "level2/$part.raw.img" "level2"
+            awk -i inplace '!seen[$0]++' level2/config/*
         fi
     done
 
