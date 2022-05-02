@@ -31,10 +31,13 @@ elif [ $level = 2 ]; then
     if [ ! -f level1/super.PARTITION ]; then
         for part in system system_ext vendor product odm oem; do
             if [ -d level2/$part ]; then
+                echo "Creating $part image"
                 size=$(cat level2/config/${part}_size.txt)
                 fs=level2/config/${part}_fs_config
                 fc=level2/config/${part}_file_contexts
-                bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$part.PARTITION level2/$part/
+                if [ ! -z "$size" ]; then
+                    bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$part.PARTITION level2/$part
+                fi
                 echo "Done."
             fi
         done
@@ -57,8 +60,10 @@ elif [ $level = 2 ]; then
         done
     fi
 
-    supertype=$(cat level2/config/super_type.txt)
-    if [ $supertype -eq "3" ]; then
+    if [ -f level2/config/super_type.txt ]; then
+        supertype=$(cat level2/config/super_type.txt)
+    fi
+    if [ ! -z "$supertype" ] && [ $supertype -eq "3" ]; then
         metadata_size=65536
         metadata_slot=3
         supername="super"
@@ -100,7 +105,7 @@ elif [ $level = 2 ]; then
         if [ -f level1/super.PARTITION ]; then
             $($command)
         fi
-    elif [ $supertype -eq "2" ]; then
+    elif [ ! -z "$supertype" ] && [ $supertype -eq "2" ]; then
         metadata_size=65536
         metadata_slot=2
         supername="super"
