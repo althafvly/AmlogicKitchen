@@ -4,7 +4,7 @@ echo "....................."
 echo "Amlogic Kitchen"
 echo "....................."
 echo "....................."
-echo "Select level 1,2 or 3: "
+echo "Select level 1,2,3 or q/Q to exit: "
 read level
 
 if [ $level = 1 ]; then
@@ -211,4 +211,8 @@ elif [ $level = 3 ]; then
     rm level3/meson1/*.dtb
 
     echo "Done."
+elif [ $level = "q" -o $level = "Q" ]; then
+    exit
 fi
+
+while true; do ./pack.sh && break; done

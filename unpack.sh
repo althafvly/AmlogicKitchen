@@ -4,7 +4,7 @@ echo "....................."
 echo "Amlogic Kitchen"
 echo "....................."
 echo "....................."
-echo "Select level 1,2 or 3: "
+echo "Select level 1,2,3 or q/Q to exit: "
 read level
 if [ $level = 1 ]; then
     if [ -d level1 ]; then
@@ -181,5 +181,8 @@ elif [ $level = 3 ]; then
     fi
 
     echo "Done."
+elif [ $level = "q" -o $level = "Q" ]; then
+    exit
 fi
 
+while true; do ./unpack.sh && break; done
