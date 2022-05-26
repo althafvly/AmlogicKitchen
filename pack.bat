@@ -56,8 +56,7 @@ md out
 
 set /p filename=< level1\projectname.txt
 if exist level1\image.cfg (
-    echo Packing %filename%
-    bin\windows\AmlImagePack -r level1\image.cfg level1 "out\%filename%.img" >nul 2>&1
+    bin\windows\AmlImagePack -r level1\image.cfg level1 "out\%filename%.img"
     echo Done.
 ) else (
     echo Can't find image.cfg
@@ -77,24 +76,22 @@ exit
 
 FOR %%A IN (odm oem product vendor system system_ext) DO (
     if exist level2\%%A\ (
-        echo Packing %%A
         set /p size=<"level2\config\%%A_size.txt"
-        bin\windows\make_ext4fs -s -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level1\%%A.PARTITION level2\%%A\ >nul 2>&1
+        bin\windows\make_ext4fs -s -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level1\%%A.PARTITION level2\%%A\
     )
 )
 
 if exist level1\super.PARTITION (
     FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b) DO (
         if exist level2\%%A\ (
-            echo Packing %%A
             bin\windows\du -sk level2\%%A | bin\windows\cut -f1 | bin\windows\gawk "{$1*=1024;$1=int($1*1.08)};echo $1"> level2\config\%%A_dir_size.txt
             set /p size=<"level2\config\%%A_dir_size.txt"
             IF !size! LSS 1048576 (
                 SET size=1048576
                 echo 1048576> level2\config\%%A_dir_size.txt
             )
-            bin\windows\make_ext4fs -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level2\%%A.img level2\%%A\ >nul 2>&1
-            bin\windows\ext4\resize2fs.exe -M level2\%%A.img >nul 2>&1
+            bin\windows\make_ext4fs -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level2\%%A.img level2\%%A\
+            bin\windows\ext4\resize2fs.exe -M level2\%%A.img
         )
     )
 )
@@ -104,7 +101,6 @@ set metadata_slot=3
 set supername=super
 
 if exist level1\super.PARTITION (
-    echo Packing super
     set /p supersize=<"level2\config\super_size.txt"
     bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
     set /p superusage1=<"level2\superusage.txt"
@@ -119,7 +115,7 @@ if exist level1\super.PARTITION (
             if !size! GTR 0 (
                 set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions_a --image %%A=level2\%%A.img
             )
-            del level2\*.txt >nul 2>&1
+            del level2\*.txt
         )
     )
     set /a superusage2=!supersize!-!superusage1!
@@ -132,7 +128,7 @@ if exist level1\super.PARTITION (
             if !size! EQU 0 (
                 set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions_b
             )
-            del level2\*.txt >nul 2>&1
+            del level2\*.txt
         )
     )
 
@@ -146,7 +142,7 @@ if exist level1\super.PARTITION (
     )
 
     set command=!command! --virtual-ab --sparse --output level1\super.PARTITION
-    !command! >nul 2>&1
+    !command!
 )
 
 echo Done.
@@ -164,64 +160,63 @@ exit
 
 FOR %%A IN (recovery boot recovery_a boot_a) DO (
     if exist level3\%%A\ (
-        echo Packing %%A
-        call bin\windows\aik\cleanup.bat >nul 2>&1
+        call bin\windows\aik\cleanup.bat
         if exist level3\%%A\ramdisk\ (
-            move level3\%%A\ramdisk bin\windows\aik\ >nul 2>&1
+            move level3\%%A\ramdisk bin\windows\aik\
         )
-        move level3\%%A\split_img bin\windows\aik\ >nul 2>&1
-        call bin\windows\aik\repackimg.bat>nul 2>&1
-        move bin\windows\aik\image-new.img bin\windows\aik\%%A.img >nul 2>&1
-        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img >nul 2>&1
+        move level3\%%A\split_img bin\windows\aik\
+        call bin\windows\aik\repackimg.bat
+        move bin\windows\aik\image-new.img bin\windows\aik\%%A.img
+        call bin\windows\aik\unpackimg.bat bin\windows\aik\%%A.img
         if exist bin\windows\aik\ramdisk\ (
-            move bin\windows\aik\ramdisk level3\%%A\ >nul 2>&1
+            move bin\windows\aik\ramdisk level3\%%A\
         )
-        move bin\windows\aik\split_img  level3\%%A\ >nul 2>&1
-        move bin\windows\aik\%%A.img level1\%%A.PARTITION >nul 2>&1
-        call bin\windows\aik\cleanup.bat >nul 2>&1
+        move bin\windows\aik\split_img  level3\%%A\
+        move bin\windows\aik\%%A.img level1\%%A.PARTITION
+        call bin\windows\aik\cleanup.bat
     )
 )
 
 if exist level3\logo\ (
-    echo Packing logo
-    bin\windows\imgpack -r level3\logo level1\logo.PARTITION >nul 2>&1
+bin\windows\imgpack -r level3\logo level1\logo.PARTITION
 )
 
-echo Packing dtb
 @echo off
 set cnt=0
 for %%A in (level3\devtree\*.dts) do set /a cnt+=1
+echo File count = !cnt!
 
 if !cnt! gtr 1 (
     for %%x in (level3\devtree\*.dts) do (
-        bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x >nul 2>&1
+        bin\windows\dtc.exe -I dts -O dtb -o level3\devtree\%%~nx.dtb %%x
     )
-    bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb >nul 2>&1
+    bin\windows\dtbTool -p bin\windows\ -v level3\devtree\ -o _aml_dtb
 ) else (
-    bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts >nul 2>&1
+    bin\windows\dtc -I dts -O dtb -o level1\_aml_dtb.PARTITION level3\devtree\single.dts 
 )
 
 if exist level3\meson1\ (
     for %%x in (level3\meson1\*.dts) do (
-        bin\windows\dtc.exe -I dts -O dtb -o level3\meson1\%%~nx.dtb %%x >nul 2>&1
+        bin\windows\dtc.exe -I dts -O dtb -o level3\meson1\%%~nx.dtb %%x
     )
-    bin\windows\dtbTool -p bin\windows\ -v level3\meson1\ -o level1\meson1.dtb >nul 2>&1
-    del level3\meson1\*.dtb >nul 2>&1
+    bin\windows\dtbTool -p bin\windows\ -v level3\meson1\ -o level1\meson1.dtb
+    del level3\meson1\*.dtb
 )
+
+set file="_aml_dtb"
+FOR /F "usebackq" %%A IN ('%file%') DO set size=%%~zA
+
+if %size% gtr 196607 (
+  bin\windows\gzip -nc _aml_dtb > level1\_aml_dtb.PARTITION
+) else (
+  copy _aml_dtb level1\_aml_dtb.PARTITION
+)
+
+del level3\devtree\*.dtb
 
 if exist _aml_dtb (
-    bin\windows\du -b _aml_dtb | bin\windows\cut -f1>aml_size.txt
-    set /p msize=<"aml_size.txt"
-    if !msize! gtr 196607 (
-        bin\windows\gzip -nc _aml_dtb>level1\_aml_dtb.PARTITION
-    ) else (
-        copy _aml_dtb level1\_aml_dtb.PARTITION >nul 2>&1
-    )
-    del _aml_dtb >nul 2>&1
-    del aml_size.txt >nul 2>&1
+  del _aml_dtb
 )
-
-del level3\devtree\*.dtb >nul 2>&1
 
 echo Done.
 pause
