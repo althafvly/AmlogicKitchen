@@ -67,7 +67,7 @@ elif [ $level = 2 ]; then
         mkdir -p level2/config
     fi
 
-    for part in system system_ext vendor product odm oem; do
+    for part in system system_ext vendor product odm oem odm_ext_a odm_ext_b; do
         if [ -f level1/$part.PARTITION ]; then
             echo "Extracting $part"
             bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
