@@ -74,7 +74,7 @@ exit
 
 :pass2
 
-FOR %%A IN (odm oem product vendor system system_ext) DO (
+FOR %%A IN (odm oem product vendor system system_ext odm_ext_a odm_ext_b) DO (
     if exist level2\%%A\ (
         set /p size=<"level2\config\%%A_size.txt"
         bin\windows\make_ext4fs -s -J -L %%A -T -1 -S level2\config\%%A_file_contexts -C level2\config\%%A_fs_config -l !size! -a %%A level1\%%A.PARTITION level2\%%A\

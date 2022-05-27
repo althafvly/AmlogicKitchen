@@ -109,7 +109,7 @@ echo 2 - python
 echo .....................
 set /P extracttype=Enter a number :
 if !extracttype! EQU 1 (
-    FOR %%A IN (odm oem product vendor system system_ext) DO (
+    FOR %%A IN (odm oem product vendor system system_ext odm_ext_a odm_ext_b) DO (
     if exist level1\%%A.PARTITION (
         bin\windows\imgextractor level1\%%A.PARTITION level2\%%A
         move level2\%%A_size level2\config\%%A_size.txt
@@ -120,7 +120,7 @@ if !extracttype! EQU 1 (
     )
     )
 ) else (
-    FOR %%A IN (odm oem product vendor system system_ext) DO (
+    FOR %%A IN (odm oem product vendor system system_ext odm_ext_a odm_ext_b) DO (
     if exist level1\%%A.PARTITION (
         bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img
         python bin\common\imgextractor.py "level2\%%A.img" "level2"
