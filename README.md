@@ -19,7 +19,7 @@ Supported features:
 - This tool is tested only in some firmwares and devices.
 - Theres no guarantee that packed flashable zips or amlogic images will flash successfully.
 - This tool is meant to run on windows (10 and 11) or linux (tested on Ubuntu 20) machines only. Even if it's working in any other platform, we can't guarantee full functionality. (Most of the binaries are compiled for linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
-  
+- Some of the features are yet to be ported to windows, due to missing binaries.
 
 # Disclaimer:
 
