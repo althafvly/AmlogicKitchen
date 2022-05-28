@@ -9,9 +9,13 @@ case $1 in
 esac;
 
 case $(uname -s) in
+  Darwin|Macintosh)
+    plat="macos";
+    readlink() { perl -MCwd -e 'print Cwd::abs_path shift' "$2"; }
+  ;;
   *) plat="linux";;
 esac;
-arch=$plat/x86_64;
+arch=$plat/`uname -m`;
 
 aik="${BASH_SOURCE:-$0}";
 aik="$(dirname "$(readlink -f "$aik")")";
@@ -19,6 +23,21 @@ bin="$aik/bin";
 cur="$(readlink -f "$PWD")";
 
 case $plat in
+  macos)
+    cpio="env DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/cpio"";
+    statarg="-f %Su";
+    dd() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/dd" "$@"; }
+    lzop() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/lzop" "$@"; }
+    truncate() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/truncate" "$@"; }
+    xz() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/xz" "$@"; }
+
+    javaver=$(java -version 2>&1 | head -n1 | cut -d\" -f2);
+    javamaj=$(echo $javaver | cut -d. -f1);
+    javamin=$(echo $javaver | cut -d. -f2);
+    if [ "$javamaj" -lt 9 ] && [ "$javamaj" -eq 1 -a "$javamin" -lt 8 ]; then
+      java() { "/Library/Internet Plug-Ins/JavaAppletPlugin.plugin/Contents/Home/bin/java" "$@"; }
+    fi;
+  ;;
   linux)
     cpio=cpio;
     [ "$(cpio --version | head -n1 | rev | cut -d\  -f1 | rev)" = "2.13" ] && cpiowarning=1;
@@ -31,7 +50,7 @@ case $1 in
   *) cd "$aik";;
 esac;
 chmod -R 755 "$bin" "$aik/"*.sh;
-chmod 644 "$bin/magic" "$bin/androidbootimg.magic" "$bin/boot_signer.jar" "$bin/avb/"*;
+chmod 644 "$bin/magic" "$bin/androidbootimg.magic" "$bin/boot_signer.jar" "$bin/avb/"* "$bin/chromeos/"*;
 
 if [ -z "$(ls split_img/* 2>/dev/null)" -o ! -e ramdisk ]; then
   echo "No files found to be packed/built.";
@@ -325,6 +344,7 @@ if [ -f split_img/*-sigtype ]; then
       cat blob.tmp >> image-new.img;
       rm -f blob.tmp;
     ;;
+    CHROMEOS) "$bin/$arch/futility" vbutil_kernel --pack image-new.img --keyblock "$bin/chromeos/kernel.keyblock" --signprivate "$bin/chromeos/kernel_data_key.vbprivk" --version 1 --vmlinuz unsigned-new.img --bootloader "$bin/chromeos/empty" --config "$bin/chromeos/empty" --arch arm --flags 0x1;;
     DHTB)
       "$bin/$arch/dhtbsign" -i unsigned-new.img -o image-new.img >/dev/null;
       rm -f split_img/*-tailtype 2>/dev/null;

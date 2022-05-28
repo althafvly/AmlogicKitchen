@@ -362,6 +362,7 @@ if "%sigtype%" == "BLOB" (
   type blob.tmp >> image-new.img
   del /q blob.tmp >nul
 )
+if "%sigtype%" == "CHROMEOS" "%bin%"\futility vbutil_kernel --pack image-new.img --keyblock "%bin%\chromeos\kernel.keyblock" --signprivate "%bin%\chromeos\kernel_data_key.vbprivk" --version 1 --vmlinuz unsigned-new.img --bootloader "%bin%\chromeos\empty" --config "%bin%\chromeos\empty" --arch arm --flags 0x1
 if "%sigtype%" == "DHTB" "%bin%"\dhtbsign -i unsigned-new.img -o image-new.img >nul & del split_img\*-tailtype 2>nul
 if "%sigtype%" == "NOOK" type "split_img\*-master_boot.key" unsigned-new.img > image-new.img 2>nul
 if "%sigtype%" == "NOOKTAB" type "split_img\*-master_boot.key" unsigned-new.img > image-new.img 2>nul
@@ -430,5 +431,5 @@ set "exitcode=1"
 :end
 echo.
 echo %cmdcmdline% | findstr /i pushd >nul
-if errorlevel 1 echo Done
+if errorlevel 1 pause
 exit /b %exitcode%

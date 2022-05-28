@@ -18,9 +18,13 @@ if [ ! "$nosudo" ]; then
 fi;
 
 case $(uname -s) in
+  Darwin|Macintosh)
+    plat="macos";
+    readlink() { perl -MCwd -e 'print Cwd::abs_path shift' "$2"; }
+  ;;
   *) plat="linux";;
 esac;
-arch=$plat/x86_64;
+arch=$plat/`uname -m`;
 
 aik="${BASH_SOURCE:-$0}";
 aik="$(dirname "$(readlink -f "$aik")")";
@@ -28,6 +32,17 @@ bin="$aik/bin";
 cur="$(readlink -f "$PWD")";
 
 case $plat in
+  macos)
+    cpio="env DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/cpio"";
+    statarg="-f %Su";
+    dd() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/dd" "$@"; }
+    file() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/file" "$@"; }
+    lzma() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/xz" "$@"; }
+    lzop() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/lzop" "$@"; }
+    tail() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/tail" "$@"; }
+    truncate() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/truncate" "$@"; }
+    xz() { DYLD_LIBRARY_PATH="$bin/$arch" "$bin/$arch/xz" "$@"; }
+  ;;
   linux)
     cpio=cpio;
     [ "$(cpio --version | head -n1 | rev | cut -d\  -f1 | rev)" = "2.13" ] && cpiowarning=1;
@@ -39,7 +54,7 @@ if [ ! "$local" ]; then
   cd "$aik";
 fi;
 chmod -R 755 "$bin" "$aik"/*.sh;
-chmod 644 "$bin/magic" "$bin/androidbootimg.magic" "$bin/boot_signer.jar" "$bin/avb/"*;
+chmod 644 "$bin/magic" "$bin/androidbootimg.magic" "$bin/boot_signer.jar" "$bin/avb/"* "$bin/chromeos/"*;
 
 img="$1";
 [ -f "$cur/$1" ] && img="$cur/$1";
@@ -97,6 +112,7 @@ if [ "$(echo $imgtest | awk '{ print $2 }' | cut -d, -f1)" = "signing" ]; then
       "$bin/$arch/blobunpack" "$file" | tail -n+5 | cut -d" " -f2 | dd bs=1 count=3 > "$file-blobtype" 2>/dev/null;
       mv -f "$file."* "$file";
     ;;
+    CHROMEOS) "$bin/$arch/futility" vbutil_kernel --get-vmlinuz "$img" --vmlinuz-out "$file";;
     DHTB) dd bs=4096 skip=512 iflag=skip_bytes conv=notrunc if="$img" of="$file" 2>/dev/null;;
     NOOK)
       dd bs=1048576 count=1 conv=notrunc if="$img" of="$file-master_boot.key" 2>/dev/null;

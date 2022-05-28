@@ -78,6 +78,7 @@ if "%sigtype%" == "BLOB" (
   move /y "%~nx1.SOS" "%~nx1" >nul 2>&1
   set "file=%~nx1"
 )
+if "%sigtype%" == "CHROMEOS" "%bin%"\futility vbutil_kernel --get-vmlinuz "%file%" --vmlinuz-out "%~nx1" & set "file=%~nx1"
 if "%sigtype%" == "DHTB" "%bin%"\dd bs=4096 skip=512 iflag=skip_bytes conv=notrunc if="%file%" of="%~nx1" 2>nul & set "file=%~nx1"
 if "%sigtype%" == "NOOK" (
   "%bin%"\dd bs=1048576 count=1 conv=notrunc if="%file%" of="%~nx1-master_boot.key" 2>nul
@@ -335,5 +336,5 @@ set "exitcode=1"
 :end
 echo.
 echo %cmdcmdline% | findstr /i pushd >nul
-if errorlevel 1 echo Failed
+if errorlevel 1 pause
 exit /b %exitcode%
