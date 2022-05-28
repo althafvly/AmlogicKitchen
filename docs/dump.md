@@ -10,3 +10,5 @@ Note: run `bat` or `sh` depending on HOST OS
 2) run dump 
 
 4) take dumped images from dump folder
+
+Note: Not supported in newer amlogic model devices
