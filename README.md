@@ -5,7 +5,10 @@
 # Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).
 Used for unpacking/packing amlogic images.
 
-Supported features:
+Supported features (Rockchip) - Linux only:
+- Unpack/repack Rockchip images.
+
+Supported features (Amlogic):
 - Unpack/repack Amlogic images.
 - Unpack/repack partitions (system,product,system_ext,oem and odm).
 - Create flashable zip from amlogic image.
