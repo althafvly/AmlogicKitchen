@@ -17,7 +17,20 @@ if [ $level = 1 ]; then
             mkdir out
         fi
         echo "Supported models:"
-        cat bin/common/rk_chips.txt
+        echo "px30            RKPX30"
+        echo "px3se           RK312A"
+        echo "rk1808          RK180A"
+        echo "rk3036          RK303A"
+        echo "rk3128h         RK312X"
+        echo "rk3128          RK312A"
+        echo "rk312x          RK312A"
+        echo "rk3229          RK3229"
+        echo "rk3288          RK320A"
+        echo "rk3308          RK3308"
+        echo "rk3326          RK3326"
+        echo "rk3328          RK322H"
+        echo "rk3399          RK330C"
+        echo "rv1126_rv1109   RK1126"
         echo "Enter your chip model, Eg: RK312X:"
         read chip
         file_name=$(cat level1/projectname.txt)
