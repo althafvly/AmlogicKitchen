@@ -82,7 +82,7 @@ FOR %%A IN (odm oem product vendor system system_ext odm_ext_a odm_ext_b) DO (
 )
 
 if exist level1\super.PARTITION (
-    FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b) DO (
+    FOR %%A IN (system system_ext vendor product odm oem system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b) DO (
         if exist level2\%%A\ (
             bin\windows\du -sk level2\%%A | bin\windows\cut -f1 | bin\windows\gawk "{$1*=1024;$1=int($1*1.08)};echo $1"> level2\config\%%A_dir_size.txt
             set /p size=<"level2\config\%%A_dir_size.txt"
@@ -96,15 +96,15 @@ if exist level1\super.PARTITION (
     )
 )
 
-set metadata_size=65536
-set metadata_slot=3
-set supername=super
+set /p supertype=< level2\config\super_type.txt
+
+if %supertype% EQU 3 (
 
 if exist level1\super.PARTITION (
     set /p supersize=<"level2\config\super_size.txt"
     bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
     set /p superusage1=<"level2\superusage.txt"
-    set command=bin\windows\super\lpmake --metadata-size %metadata_size% --super-name %supername% --metadata-slots %metadata_slot% --device %supername%:!supersize! --group amlogic_dynamic_partitions_a:!superusage1!
+    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 3 --device super:!supersize! --group amlogic_dynamic_partitions_a:!superusage1!
 
     FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a) DO (
         if exist level2\%%A.img (
@@ -144,7 +144,39 @@ if exist level1\super.PARTITION (
     set command=!command! --virtual-ab --sparse --output level1\super.PARTITION
     !command!
 )
+) else (
 
+    set /p supersize=<"level2\config\super_size.txt"
+    bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
+    set /p superusage=<"level2\superusage.txt"
+    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:!supersize! --group amlogic_dynamic_partitions:!superusage!
+
+    FOR %%A IN (system system_ext vendor product odm oem) DO (
+        if exist level2\%%A.img (
+            bin\windows\du -skb level2\%%A.img | bin\windows\cut -f1> level2\%%A_size.txt
+            set /p size=<"level2\%%A_size.txt"
+            echo %%A | bin\windows\sed "s/.\{3\}$//">level2\%%A.txt
+            set /p name=<"level2\%%A.txt"
+            if !size! GTR 0 (
+                set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions_a --image %%A=level2\%%A.img
+            )
+            del level2\*.txt
+        )
+    )
+
+    if !superusage! GEQ !supersize! (
+        echo Unable to create super image, recreated images are too big.
+        echo Cleanup some files before retrying
+        echo Needed space: !superusage!
+        echo Available maximum space: !supersize!
+        pause
+        exit
+    )
+
+    set command=!command! --virtual-ab --sparse --output level1\super.PARTITION
+    !command!
+)
+)
 echo Done.
 pause
 exit

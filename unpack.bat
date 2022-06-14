@@ -155,6 +155,17 @@ if exist level1\super.PARTITION (
     )
 )
 
+set cnt=0
+for %%A in (level2\*_a.img) do set /a cnt+=1
+if exist level1\super.PARTITION (
+    echo %cnt%
+    if %cnt% GTR 0 (
+        echo 3 > level2\config\super_type.txt
+    ) else (
+        echo 2 > level2\config\super_type.txt
+    )
+)
+
 :setsize
 set size=%~z1
 goto :eof
