@@ -16,9 +16,19 @@ if [ $level = 1 ]; then
             echo "Created out folder"
             mkdir out
         fi
+        echo "Supported models:"
+        cat bin/common/rk_chips.txt
+        echo "Enter your chip model, Eg: RK312X:"
+        read chip
         file_name=$(cat level1/projectname.txt)
-        bin/linux/afptool -pack level1/ level1/Image/update.img
-        bin/linux/rkImageMaker -RK322H level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos || pause
+        if [ $chip ]; then
+            bin/linux/afptool -pack level1/ level1/Image/update.img
+            bin/linux/rkImageMaker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
+        else
+            echo "Error: Chip is invalid, must be started with RK"
+            exit 0
+        fi
+
         echo "Done."
     fi
 elif [ $level = 2 ]; then
