@@ -164,17 +164,6 @@ elif [ $level = 3 ]; then
         exit 0
     fi
 
-    for part in boot recovery boot_a recovery_a; do
-        if [ -d level3/${part} ]; then
-            bin/linux/aik/cleanup.sh
-            cp -r level3/$part/ramdisk bin/linux/aik/
-            cp -r level3/$part/split_img bin/linux/aik/
-            bin/linux/aik/repackimg.sh
-            mv bin/linux/aik/image-new.img level1/${part}.PARTITION
-            bin/linux/aik/cleanup.sh
-        fi
-    done
-
     if [ -d level3/logo ]; then
         bin/linux/imgpack -r level3/logo level1/logo.PARTITION
     fi
@@ -222,6 +211,23 @@ elif [ $level = 3 ]; then
         mv level1/meson1.dtb.gzip level1/meson1.dtb
     fi
     rm level3/meson1/*.dtb
+
+    for part in "boot/split_img/boot.PARTITION-dtb" "boot/split_img/boot.PARTITION-second" "recovery/split_img/recovery.PARTITION-dtb" "recovery/split_img/recovery.PARTITION-second"; do
+        if [ -f level3/$part ]; then
+            cp level1/_aml_dtb.PARTITION level3/$part
+        fi
+    done
+
+    for part in boot recovery boot_a recovery_a; do
+        if [ -d level3/${part} ]; then
+            bin/linux/aik/cleanup.sh
+            cp -r level3/$part/ramdisk bin/linux/aik/
+            cp -r level3/$part/split_img bin/linux/aik/
+            bin/linux/aik/repackimg.sh
+            mv bin/linux/aik/image-new.img level1/${part}.PARTITION
+            bin/linux/aik/cleanup.sh
+        fi
+    done
 
     echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then
