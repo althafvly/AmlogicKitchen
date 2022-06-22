@@ -336,5 +336,3 @@ set "exitcode=1"
 :end
 echo.
 echo %cmdcmdline% | findstr /i pushd >nul
-if errorlevel 1 pause
-exit /b %exitcode%

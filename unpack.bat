@@ -30,16 +30,19 @@ setlocal EnableDelayedExpansion
 cls
 
 
+goto level
+:level
+
 echo .....................
 echo Amlogic Kitchen
 echo .....................
-set /P level=Select level 1,2 or 3: 
+set /P level=Select level 1,2,3 or q/Q to exit: 
 IF %level% == 1 GOTO level1
 IF %level% == 2 GOTO level2
 IF %level% == 3 GOTO level3
-echo Unpack level 1 first
-pause
-exit
+IF %level% == q exit
+IF %level% == Q exit
+ELSE goto level
 
 :level1
 
@@ -75,8 +78,7 @@ set /p filename=< level1\projectname.txt
 
 bin\windows\AmlImagePack -d "in\%filename%.img" level1
 
-pause
-exit
+goto level
 
 
 :level2
@@ -153,6 +155,8 @@ if exist level1\super.PARTITION (
         )
     )
     )
+) else (
+goto level
 )
 
 set cnt=0
@@ -171,8 +175,7 @@ set size=%~z1
 goto :eof
 
 echo Done.
-pause
-exit
+goto level
 
 :level3
 
@@ -249,5 +252,4 @@ for %%x in (level3\meson1\*.dtb) do (
 ROBOCOPY level3 level3 /S /MOVE /NFL /NDL /NJH /NJS /nc /ns /np
 
 echo Done.
-pause
-exit
+goto level

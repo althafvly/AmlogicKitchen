@@ -29,18 +29,19 @@ setlocal EnableDelayedExpansion
 
 cls
 
+goto level
+:level
 
 echo .....................
 echo Amlogic Kitchen
 echo .....................
-set /P level=Select level 1,2 or 3: 
+set /P level=Select level 1,2,3 or q/Q to exit: 
 IF %level% == 1 GOTO level1
 IF %level% == 2 GOTO level2
 IF %level% == 3 GOTO level3
-ELSE echo Invalid option
-echo Unpack level 1 first
-pause
-exit
+IF %level% == q exit
+IF %level% == Q exit
+ELSE goto level
 
 :level1
 
@@ -62,8 +63,7 @@ if exist level1\image.cfg (
     echo Can't find image.cfg
 )
 
-pause
-exit
+goto level
 
 :level2
 
@@ -94,6 +94,8 @@ if exist level1\super.PARTITION (
             bin\windows\ext4\resize2fs.exe -M level2\%%A.img
         )
     )
+) else (
+goto level
 )
 
 set /p supertype=< level2\config\super_type.txt
@@ -178,8 +180,7 @@ if exist level1\super.PARTITION (
 )
 )
 echo Done.
-pause
-exit
+goto level
 
 :level3
 
@@ -216,7 +217,6 @@ bin\windows\imgpack -r level3\logo level1\logo.PARTITION
 @echo off
 set cnt=0
 for %%A in (level3\devtree\*.dts) do set /a cnt+=1
-echo File count = !cnt!
 
 if !cnt! gtr 1 (
     for %%x in (level3\devtree\*.dts) do (
@@ -235,21 +235,26 @@ if exist level3\meson1\ (
     del level3\meson1\*.dtb
 )
 
+if exist level3\devtree\*.dtb (
+  del level3\devtree\*.dtb
+)
+
+if not exist _aml_dtb (
+  goto level
+)
+
 set file="_aml_dtb"
 FOR /F "usebackq" %%A IN ('%file%') DO set size=%%~zA
 
-if %size% gtr 196607 (
+if !size! gtr 196607 (
   bin\windows\gzip -nc _aml_dtb > level1\_aml_dtb.PARTITION
 ) else (
   copy _aml_dtb level1\_aml_dtb.PARTITION
 )
-
-del level3\devtree\*.dtb
 
 if exist _aml_dtb (
   del _aml_dtb
 )
 
 echo Done.
-pause
-exit
+goto level
