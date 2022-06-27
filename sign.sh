@@ -1,7 +1,13 @@
+#!/usr/bin/sudo bash
+
 # Resign to AOSP keys
 echo "Resigning to AOSP keys"
 dir=$(echo "$(pwd)")
 security=$(echo "$(pwd)/ROM_resigner/AOSP_security")
+
+if [ -d $dir/custom_keys ]; then
+    security=$(echo "$(pwd)/custom_keys")
+fi
 
 for part in system_a system_ext_a vendor_a product_a odm_a system system_ext vendor product odm; do
     if [ -d $dir/level2/$part ]; then
