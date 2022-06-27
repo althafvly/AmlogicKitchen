@@ -1,0 +1,3 @@
+[submodule "ROM_resigner"]
+	path = ROM_resigner
+	url = https://github.com/althafvly/ROM_resigner
