@@ -124,8 +124,12 @@ if !extracttype! EQU 1 (
 ) else (
     FOR %%A IN (odm oem product vendor system system_ext odm_ext_a odm_ext_b) DO (
     if exist level1\%%A.PARTITION (
-        bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img
-        python bin\common\imgextractor.py "level2\%%A.img" "level2"
+        bin\windows\file level1\%%A.PARTITION | findstr /C:"sparse">nul && (
+            bin\windows\simg2img level1\%%A.PARTITION level2\%%A.img
+            python bin\common\imgextractor.py "level2\%%A.img" "level2"
+        ) || (
+            python bin\common\imgextractor.py "level1\%%A.PARTITION" "level2"
+        )
         if exist level1\%%A.raw.img (
             del level1\%%A.raw.img
         )
