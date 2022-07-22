@@ -5,6 +5,10 @@
 # Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).
 Used for unpacking/packing amlogic images.
 
+Pull submodules:
+
+     git submodule update --init --recursive
+
 Supported features (Rockchip):
 - Unpack/repack Rockchip images.
 
