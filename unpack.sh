@@ -70,8 +70,12 @@ elif [ $level = 2 ]; then
     for part in system system_ext vendor product odm oem odm_ext_a odm_ext_b; do
         if [ -f level1/$part.PARTITION ]; then
             echo "Extracting $part"
-            bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
-            python3 $imgextractor "level2/$part.raw.img" "level2"
+            if echo $(file level1/$part.PARTITION) | grep -q "sparse"; then
+                bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
+                python3 $imgextractor "level2/$part.raw.img" "level2"
+            else
+                python3 $imgextractor "level1/$part.PARTITION" "level2"
+            fi
             awk -i inplace '!seen[$0]++' level2/config/*
         fi
     done
