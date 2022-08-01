@@ -2,37 +2,42 @@
   <img src="docs/logo.png" width="350" >
 </p>
 
-# Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).
-Used for unpacking/packing amlogic images.
+<b>Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).</b>
+- Used for unpacking/packing amlogic images.
 
-Pull submodules:
+<b>Disclaimer:</b>
+
+     - The user takes sole responsibility for any damage that might arise due to use of this tool.
+     - This includes physical damage (to device), injury, data loss, and also legal matters.
+     - This project was made as a learning initiative and the developer or organization cannot
+       be held liable in any way for the use of this tool.
+
+<b>Pull submodules:</b>
 
      git submodule update --init --recursive
 
-Supported features (Rockchip):
+<b>Supported features (Rockchip):</b>
 - Unpack/repack Rockchip images.
 
-Supported features (Amlogic):
+<b>Supported features (Amlogic):</b>
 - Unpack/repack Amlogic images.
-- Unpack/repack partitions (system,product,system_ext,oem and odm).
 - Create flashable zip from amlogic image.
-- Unpack/repack recovery,boot,logo and dtb.
 - Create aml image from supported flashable zips.
+- Dump ROM from device through mask mode.
+
+<b>Common features (Rockchip/Amlogic):</b>
+- Unpack/repack partitions (system,product,system_ext,oem and odm).
+- Unpack/repack recovery,boot,logo and dtb.
 - Support for super image unpack/repack.
-- Dump os from device through mask mode.
+- Sign ROM with custom key
 
 <b>NOTE:</b>
 - Ignore some errors with dtb (some conditions are missing), decompiling/compiling dtb should work fine.
-- This tool is tested only in some firmwares and devices.
-- Theres no guarantee that packed flashable zips or amlogic images will flash successfully.
-- This tool is meant to run on windows (10 and 11) or linux (tested on Ubuntu 20) machines only. Even if it's working in any other platform, we can't guarantee full functionality. (Most of the binaries are compiled for linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
-- Some of the features are yet to be ported to windows, due to missing binaries.
-
-# Disclaimer:
-
-- <b>The user takes sole responsibility for any damage that might arise due to use of this tool. <br/>
-- This includes physical damage (to device), injury, data loss, and also legal matters. <br/>
-- This project was made as a learning initiative and the developer or organization cannot be held liable in any way for the use of it.</b>
+- This tool is only tested in some firmwares, devices and processors.
+- There is no guarantee that the packed flashable zip or amlogic/rockship image will flash successfully.
+- This tool is only tested on windows and linux (Ubuntu) machines. Even if it's working in any other platform, 
+  there is can't guarantee for full functionality.
+  (Most of the binaries are compiled for linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
 
 [Docs](docs)<br/>
 [Credits](docs/credits.md)<br/>
