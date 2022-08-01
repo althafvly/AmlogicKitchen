@@ -88,7 +88,7 @@ elif [ $level = 2 ]; then
         for part in system_ext_a system_a odm_a product_a vendor_a; do
             if [ -f level2/$part.img ]; then
                 asize=$(du -skb level2/$part.img | cut -f1)
-                if [ $asize -gt 0 ]; then 
+                if [ $asize -gt 0 ]; then
                     command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions_a --image $part=level2/$part.img"
                 fi
             fi
@@ -100,13 +100,13 @@ elif [ $level = 2 ]; then
         for part in system_ext_b system_b odm_b product_b vendor_b; do
             if [ -f level2/$part.img ]; then
                 bsize=$(du -skb level2/$part.img | cut -f1)
-                if [ $bsize -eq 0 ]; then 
+                if [ $bsize -eq 0 ]; then
                     command="$command --partition $part:readonly:$bsize:amlogic_dynamic_partitions_b"
                 fi
             fi
         done
 
-        if [ $superusage2 -ge $supersize ]; then 
+        if [ $superusage2 -ge $supersize ]; then
             echo "Unable to create super image, recreated images are too big."
             echo "Cleanup some files before retrying"
             echo "Needed space: $superusage1"
@@ -130,13 +130,13 @@ elif [ $level = 2 ]; then
         for part in system_ext system odm product vendor; do
             if [ -f level2/$part.img ]; then
                 asize=$(du -skb level2/$part.img | cut -f1)
-                if [ $asize -gt 0 ]; then 
+                if [ $asize -gt 0 ]; then
                     command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions --image $part=level2/$part.img"
                 fi
             fi
         done
 
-        if [ $superusage -ge $supersize ]; then 
+        if [ $superusage -ge $supersize ]; then
             echo "Unable to create super image, recreated images are too big."
             echo "Cleanup some files before retrying"
             echo "Needed space: $superusage1"
@@ -152,9 +152,9 @@ elif [ $level = 2 ]; then
         exit 0
     fi
 
-    rm -rf  level2/*.txt
+    rm -rf level2/*.txt
 elif [ $level = 3 ]; then
-    if [ ! `which dtc` ]; then
+    if [ ! $(which dtc) ]; then
         echo "install dtc, please (apt-get install device-tree-compiler)"
         exit 0
     fi
@@ -175,11 +175,11 @@ elif [ $level = 3 ]; then
             for filename in level3/devtree/*.dts; do
                 [ -e "$filename" ] || continue
                 name=$(basename $filename .dts)
-                dtc -I dts -O dtb level3/devtree/$name.dts -o "`echo level3/devtree/$name.dtb | sed -e s'/\.dts/\.dtb/'`"
+                dtc -I dts -O dtb level3/devtree/$name.dts -o "$(echo level3/devtree/$name.dtb | sed -e s'/\.dts/\.dtb/')"
                 bin/linux/dtbTool -o level1/_aml_dtb.PARTITION level3/devtree/
             done
         else
-            dtc -I dts -O dtb level3/devtree/single.dts -o "`echo level1/_aml_dtb.PARTITION | sed -e s'/\.dts/\.dtb/'`"
+            dtc -I dts -O dtb level3/devtree/single.dts -o "$(echo level1/_aml_dtb.PARTITION | sed -e s'/\.dts/\.dtb/')"
         fi
     fi
 
@@ -190,24 +190,24 @@ elif [ $level = 3 ]; then
             for filename in level3/meson1/*.dts; do
                 [ -e "$filename" ] || continue
                 name=$(basename $filename .dts)
-                dtc -I dts -O dtb level3/meson1/$name.dts -o "`echo level3/meson1/$name.dtb | sed -e s'/\.dts/\.dtb/'`"
+                dtc -I dts -O dtb level3/meson1/$name.dts -o "$(echo level3/meson1/$name.dtb | sed -e s'/\.dts/\.dtb/')"
                 bin/linux/dtbTool -o level1/meson1.dtb level3/meson1/
             done
         else
-            dtc -I dts -O dtb level3/meson1/single.dts -o "`echo level1/meson1.dtb | sed -e s'/\.dts/\.dtb/'`"
+            dtc -I dts -O dtb level3/meson1/single.dts -o "$(echo level1/meson1.dtb | sed -e s'/\.dts/\.dtb/')"
         fi
     fi
 
     size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
     if [ $size -gt 196607 ]; then
-        gzip -nc level1/_aml_dtb.PARTITION > level1/_aml_dtb.PARTITION.gzip
+        gzip -nc level1/_aml_dtb.PARTITION >level1/_aml_dtb.PARTITION.gzip
         mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
     fi
     rm level3/devtree/*.dtb
 
     msize=$(du -b level1/meson1.dtb | cut -f1)
     if [ $msize -gt 196607 ]; then
-        gzip -nc level1/meson1.dtb > level1/meson1.dtb.gzip
+        gzip -nc level1/meson1.dtb >level1/meson1.dtb.gzip
         mv level1/meson1.dtb.gzip level1/meson1.dtb
     fi
     rm level3/meson1/*.dtb

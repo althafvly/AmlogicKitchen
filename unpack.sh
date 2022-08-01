@@ -29,7 +29,7 @@ if [ $level = 1 ]; then
     fi
     echo "Files in input dir (*.img)"
     count=0
-    for entry in `ls in/*.img`; do
+    for entry in $(ls in/*.img); do
         count=$(($count + 1))
         name=$(basename in/$entry .img)
         echo $count - $name
@@ -37,7 +37,7 @@ if [ $level = 1 ]; then
     echo "....................."
     echo "Enter a file name :"
     read projectname
-    echo $projectname> level1/projectname.txt
+    echo $projectname >level1/projectname.txt
 
     if [ ! -f in/$projectname.img ]; then
         echo "Can't find the file"
@@ -52,7 +52,7 @@ elif [ $level = 2 ]; then
 
     version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
     if [ -z "$version" ]; then
-        echo "No Python installed!" 
+        echo "No Python installed!"
     fi
 
     if [ ! -d level1 ]; then
@@ -84,14 +84,14 @@ elif [ $level = 2 ]; then
 
     if [ -f level1/super.PARTITION ]; then
         bin/linux/simg2img level1/super.PARTITION level2/super.img
-        echo $(du -b level2/super.img | cut -f1) > level2/config/super_size.txt
+        echo $(du -b level2/super.img | cut -f1) >level2/config/super_size.txt
         bin/linux/super/lpunpack -slot=0 level2/super.img level2/
         rm -rf level2/super.img
 
         if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then
-            echo "3">level2/config/super_type.txt
+            echo "3" >level2/config/super_type.txt
         else
-            echo "2">level2/config/super_type.txt
+            echo "2" >level2/config/super_type.txt
         fi
 
         for part in system system_ext vendor product odm oem system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
@@ -107,7 +107,7 @@ elif [ $level = 2 ]; then
 
     echo "Done."
 elif [ $level = 3 ]; then
-    if [ ! `which dtc` ]; then
+    if [ ! $(which dtc) ]; then
         echo "install dtc, please (apt-get install device-tree-compiler)"
         exit 0
     fi
@@ -158,13 +158,13 @@ elif [ $level = 3 ]; then
         DIR='level3/devtree/'
         if [ "$(ls -A $DIR)" ]; then
             for filename in level3/devtree/*.dtb; do
-            [ -e "$filename" ] || continue
-            name=$(basename $filename .dtb)
-            dtc -I dtb -O dts level3/devtree/$name.dtb -o "`echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/'`"
-            rm -rf level3/devtree/$name.dtb
+                [ -e "$filename" ] || continue
+                name=$(basename $filename .dtb)
+                dtc -I dtb -O dts level3/devtree/$name.dtb -o "$(echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/')"
+                rm -rf level3/devtree/$name.dtb
             done
         else
-            dtc -I dtb -O dts level1/_aml_dtb.PARTITION -o "`echo level3/devtree/single.dts | sed -e s'/\.dtb/\.dts/'`"
+            dtc -I dtb -O dts level1/_aml_dtb.PARTITION -o "$(echo level3/devtree/single.dts | sed -e s'/\.dtb/\.dts/')"
         fi
     fi
 
@@ -174,13 +174,13 @@ elif [ $level = 3 ]; then
         DIR='level3/meson1/'
         if [ "$(ls -A $DIR)" ]; then
             for filename in level3/meson1/*.dtb; do
-            [ -e "$filename" ] || continue
-            name=$(basename $filename .dtb)
-            dtc -I dtb -O dts level3/meson1/$name.dtb -o "`echo level3/meson1/$name.dts | sed -e s'/\.dtb/\.dts/'`"
-            rm -rf level3/meson1/$name.dtb
+                [ -e "$filename" ] || continue
+                name=$(basename $filename .dtb)
+                dtc -I dtb -O dts level3/meson1/$name.dtb -o "$(echo level3/meson1/$name.dts | sed -e s'/\.dtb/\.dts/')"
+                rm -rf level3/meson1/$name.dtb
             done
         else
-            dtc -I dtb -O dts level1/meson1.dtb -o "`echo level3/meson1/single.dts | sed -e s'/\.dtb/\.dts/'`"
+            dtc -I dtb -O dts level1/meson1.dtb -o "$(echo level3/meson1/single.dts | sed -e s'/\.dtb/\.dts/')"
         fi
     fi
 

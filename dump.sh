@@ -1,13 +1,11 @@
 #!/usr/bin/sudo sh
 
-
 echo "....................."
 echo "Amlogic Dumper"
 echo "....................."
 echo "Before going any further"
 echo "Please connect your amlogic box in mask mode"
 echo "....................."
-
 
 if [ -d dtb ]; then
     echo "Deleting existing dtb"
@@ -32,7 +30,7 @@ bin/linux/update mread store bootloader normal $blsize dump/bootloader.img
 bin/linux/update mread store _aml_dtb normal $dtbsize dtb/dtb.img
 
 if [ -f dtb/dtb.img ]; then
-    if [ ! `which dtc` ]; then
+    if [ ! $(which dtc) ]; then
         echo "install dtc, please (apt-get install device-tree-compiler)"
         exit 0
     fi
@@ -46,15 +44,15 @@ if [ -f dtb/dtb.img ]; then
     for filename in dtb/*.dtb; do
         [ -e "$filename" ] || continue
         name=$(basename $filename .dtb)
-        dtc -I dtb -O dts dtb/$name.dtb -o "`echo dtb/$name.dts | sed -e s'/\.dtb/\.dts/'`"
+        dtc -I dtb -O dts dtb/$name.dtb -o "$(echo dtb/$name.dts | sed -e s'/\.dtb/\.dts/')"
         rm -rf dtb/$name.dtb
     done
-    dtc -I dtb -O dts dtb/dtb.img -o "`echo dtb/single.dts | sed -e s'/\.dtb/\.dts/'`"
+    dtc -I dtb -O dts dtb/dtb.img -o "$(echo dtb/single.dts | sed -e s'/\.dtb/\.dts/')"
     mv dtb/dtb.img dump/
 
     echo "Files in input dir (*.dts)"
     count=0
-    for entry in `ls dtb/*.dts`; do
+    for entry in $(ls dtb/*.dts); do
         count=$(($count + 1))
         name=$(basename dtb/$entry .dts)
         echo $count - $name
@@ -68,10 +66,10 @@ if [ -f dtb/dtb.img ]; then
         exit 0
     fi
 
-    grep -P "\tpname" dtb/$dtsname.dts | grep -oP "(?<="")\w+"|sort | uniq | awk '{gsub("pname", "");print}'|sed -r '/^\s*$/d'>dump/partitions.txt
+    grep -P "\tpname" dtb/$dtsname.dts | grep -oP "(?<="")\w+" | sort | uniq | awk '{gsub("pname", "");print}' | sed -r '/^\s*$/d' >dump/partitions.txt
 
-    for entry in `cat dump/partitions.txt`; do
-        size=$(grep -A 3 "pname" dtb/$dtsname.dts | grep -A 3 "$entry" |grep "size" | grep -oP '(?<=0x00 )\w+')
+    for entry in $(cat dump/partitions.txt); do
+        size=$(grep -A 3 "pname" dtb/$dtsname.dts | grep -A 3 "$entry" | grep "size" | grep -oP '(?<=0x00 )\w+')
         bin/linux/update mread store $entry normal $size dump/$entry.img
     done
 fi
