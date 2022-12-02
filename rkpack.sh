@@ -17,29 +17,26 @@ if [ $level = 1 ]; then
             mkdir out
         fi
         echo "Supported models:"
-        echo "px30            rk29"
-        echo "px3se           rk29"
-        echo "rk1808          rk29"
-        echo "rk3036          rk30"
-        echo "rk3128h         rk31"
-        echo "rk3128          rk31"
-        echo "rk312x          rk31"
-        echo "rk3229          rk32"
-        echo "rk3288          rk32"
-        echo "rk3308          rk33"
-        echo "rk3326          rk33"
-        echo "rk3328          rk33"
-        echo "rk3399          rk33"
-        echo "rv1126_rv1109   rk29"
-        echo "Enter your chip model, Eg: rk32:"
+        echo "px30            RKPX30"
+        echo "px3se           RK312A"
+        echo "rk1808          RK180A"
+        echo "rk3036          RK303A"
+        echo "rk3128h         RK312X"
+        echo "rk3128          RK312A"
+        echo "rk312x          RK312A"
+        echo "rk3229          RK3229"
+        echo "rk3288          RK320A"
+        echo "rk3308          RK3308"
+        echo "rk3326          RK3326"
+        echo "rk3328          RK322H"
+        echo "rk3399          RK330C"
+        echo "rv1126_rv1109   RK1126"
+        echo "Enter your chip model, Eg: RK312X:"
         read chip
         file_name=$(cat level1/projectname.txt)
         if [ $chip ]; then
-            if [ -f level1/Image/parameter.txt ]; then
-                cp level1/Image/parameter.txt level1/parameter
-            fi
-            bin/linux/afptool -pack level1 level1/Image/update.img
-            bin/linux/rkImg_maker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img"
+            bin/linux/afptool -pack level1/ level1/Image/update.img
+            bin/linux/rkImageMaker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
         else
             echo "Error: Chip is invalid, must be started with RK"
             exit 0

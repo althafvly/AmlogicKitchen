@@ -45,10 +45,12 @@ if [ $level = 1 ]; then
     fi
 
     filename=$(cat level1/projectname.txt)
-    bin/linux/rkImg_unpack in/$filename.img level1
-    bin/linux/afptool -unpack level1/update.img level1
+    bin/linux/rkImageMaker -unpack in/$filename.img level1
+    bin/linux/afptool -unpack level1/firmware.img level1
+    mv -i level1/parameter.txt level1/Image/
+    mv -i level1/MiniLoaderAll.bin level1/Image/
     rm -rf level1/boot.bin
-    rm -rf level1/update.img
+    rm -rf level1/firmware.img
 
     echo "Done."
 elif [ $level = 2 ]; then
