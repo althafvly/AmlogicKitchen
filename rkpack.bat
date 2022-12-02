@@ -61,15 +61,18 @@ echo px3se           RK312A
 echo rk1808          RK180A
 echo rk3036          RK303A
 echo rk3128h         RK312X
-echo rk3128          RK312A
-echo rk312x          RK312A
+echo rk312*          RK312A
+echo rk322*          RK322A
 echo rk3229          RK3229
 echo rk3288          RK320A
 echo rk3308          RK3308
 echo rk3326          RK3326
 echo rk3328          RK322H
-echo rk3399          RK330C
+echo rk3368          RK330A
+echo rk3399*         RK330C
+echo rk356*          RK3568
 echo rv1126_rv1109   RK1126
+echo If your model starts with rk312* then its RK312A
 set /P chip=Enter your chip model, Eg: RK312X:
 IF "%chip%"=="" echo Error: Chip is invalid, must be started with RK && pause && exit
 bin\windows\afptool.exe -pack level1\ level1\Image\update.img
