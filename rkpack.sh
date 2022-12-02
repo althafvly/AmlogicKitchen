@@ -38,6 +38,11 @@ if [ $level = 1 ]; then
         read chip
         file_name=$(cat level1/projectname.txt)
         if [ $chip ]; then
+            if grep -q trust.img "level1/package-file"; then
+                if [ ! -f "level1/Image/trust.img" ]; then
+                    touch level1/Image/trust.img
+                fi
+            fi
             bin/linux/afptool -pack level1/ level1/Image/update.img
             bin/linux/rkImageMaker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
         else
