@@ -75,6 +75,14 @@ echo rv1126_rv1109   RK1126
 echo If your model starts with rk312* then its RK312A
 set /P chip=Enter your chip model, Eg: RK312X:
 IF "%chip%"=="" echo Error: Chip is invalid, must be started with RK && pause && exit
+
+findstr /m "trust.img" level1\package-file >Nul
+if %errorlevel%==0 (
+    if not exist level1\Image\trust.img (
+        fsutil file createnew level1\Image\trust.img 102400
+    )
+)
+
 bin\windows\afptool.exe -pack level1\ level1\Image\update.img
 bin\windows\rkImageMaker.exe -%chip% level1\Image\MiniLoaderAll.bin level1\Image\update.img "out\%filename%.img" -os_type:androidos
 

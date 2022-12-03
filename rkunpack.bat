@@ -75,6 +75,8 @@ set /p filename=< level1\projectname.txt
 
 bin\windows\rkImageMaker.exe -unpack "in\%filename%.img" level1
 bin\windows\afptool.exe -unpack level1\firmware.img level1
+del level1\boot.bin
+del level1\firmware.img
 
 pause
 exit
