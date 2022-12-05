@@ -34,9 +34,9 @@
 <b>NOTE:</b>
 - Ignore some errors with dtb (some conditions are missing), decompiling/compiling dtb should work fine.
 - This tool is only tested in some firmwares, devices and processors.
-- There is no guarantee that the packed flashable zip or amlogic/rockship image will flash successfully.
-- This tool is only tested on windows and linux (Ubuntu) machines. Even if it's working in any other platform, 
-  there is can't guarantee for full functionality.
+- There is no guarantee that packed flashable zip or amlogic/rockship image will flash successfully.
+- This tool is only tested on windows and linux (Ubuntu) machines. Even if it's works on any other platform, 
+  there's no can't guarantee for full functionality.
   (Most of the binaries are compiled for linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
 
 [Docs](docs)<br/>
