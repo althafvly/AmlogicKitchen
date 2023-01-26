@@ -1,5 +1,6 @@
-# Credits: 
-----------
+# Credits:
+
+---
 
 - Base kitchen (vtx_kitchen) - Vortex
 - gnuwin32 and cygwin for linux binary ports
@@ -11,5 +12,5 @@
 - Aml dtb, unpack tools - LineageOS
 - simg2img - anestisb
 - img2sdat, sdat2img - xpirt
-- simg2img - A.S._id
+- simg2img - A.S.\_id
 - ROM_resigner - erfanoabdi
