@@ -4,11 +4,11 @@
 
 <b>Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).</b>
 
-- Used for unpacking/packing amlogic images.
+- Used for unpacking/packing Amlogic images.
 
 <b>Disclaimer:</b>
 
-     - The user takes sole responsibility for any damage that might arise due to use of this tool.
+     - The user takes sole responsibility for any damage that might arise due to the use of this tool.
      - This includes physical damage (to device), injury, data loss, and also legal matters.
      - This project was made as a learning initiative and the developer or organization cannot
        be held liable in any way for the use of this tool.
@@ -19,30 +19,31 @@
 
 <b>Supported features (Rockchip):</b>
 
-- Unpack/repack Rockchip images.
+- Unpack/pack Rockchip images.
 
 <b>Supported features (Amlogic):</b>
 
-- Unpack/repack Amlogic images.
-- Create flashable zip from amlogic image.
-- Create aml image from supported flashable zips.
+- Unpack/pack Amlogic images.
+- Create flashable zip from Amlogic image.
+- Create Amlogic image from supported flashable zips.
 - Dump ROM from device through mask mode.
 
 <b>Common features (Rockchip/Amlogic):</b>
 
-- Unpack/repack partitions (system,product,system_ext,oem and odm).
-- Unpack/repack recovery,boot,logo and dtb.
-- Support for super image unpack/repack.
+- Unpack/pack partitions (system,product,system_ext,oem and odm).
+- Unpack/pack recovery,boot,logo and DTB.
+- Support for super image unpack/pack.
 - Sign ROM with custom key
 
 <b>NOTE:</b>
 
-- Ignore some errors with dtb (some conditions are missing), decompiling/compiling dtb should work fine.
+- Some binaries for windows are too old/missing. Always try to use Linux or wsl (Ubuntu) in windows.
+- Ignore some errors with DTB (some conditions are missing), decompiling/compiling dtb should work fine.
 - This tool is only tested in some firmwares, devices and processors.
-- There is no guarantee that packed flashable zip or amlogic/rockship image will flash successfully.
-- This tool is only tested on windows and linux (Ubuntu) machines. Even if it's works on any other platform,
+- There's no guarantee that packed flashable zip or Amlogic/Rockchip image will flash successfully.
+- This tool is only tested on windows and Linux (Ubuntu) machines. Even if it works on any other platform,
   there's no can't guarantee for full functionality.
-  (Most of the binaries are compiled for linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
+  (Most of the binaries are compiled for Linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
 
 [Docs](docs)<br/>
 [Credits](docs/credits.md)<br/>
