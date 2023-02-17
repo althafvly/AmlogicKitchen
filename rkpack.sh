@@ -190,6 +190,9 @@ elif [ $level = 3 ]; then
     fi
 
     for part in boot recovery boot_a recovery_a; do
+        if [ -d "level3/resource_${part}" ]; then
+            bin/linux/resource_tool --pack --root=level3/resource_${part} --image=level3/$part/split_img/$part.img-second `find level3/resource_${part} -type f|sort`
+        fi
         if [ -d level3/${part} ]; then
             bin/linux/aik/cleanup.sh
             cp -r level3/$part/ramdisk bin/linux/aik/

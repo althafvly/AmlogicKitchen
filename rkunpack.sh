@@ -128,6 +128,10 @@ elif [ $level = 3 ]; then
             bin/linux/aik/unpackimg.sh level1/Image/${part}.img
             mv -i bin/linux/aik/ramdisk level3/$part/
             mv -i bin/linux/aik/split_img level3/$part/
+            if [ -f level3/$part/split_img/$part.img-second ]; then
+                mkdir -p level3/resource_$part
+                bin/linux/resource_tool --unpack --verbose --image=level3/$part/split_img/$part.img-second level3/resource_$part 2>&1|grep entry|sed "s/^.*://"|xargs echo
+            fi
         fi
     done
 
