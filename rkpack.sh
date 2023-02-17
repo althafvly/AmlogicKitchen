@@ -189,6 +189,10 @@ elif [ $level = 3 ]; then
         exit 0
     fi
 
+    if [ -d "level3/resource" ]; then
+        bin/linux/resource_tool --pack --root=level3/resource --image=level1/Image/resource.img `find level3/resource -type f|sort`
+    fi
+
     for part in boot recovery boot_a recovery_a; do
         if [ -d "level3/resource_${part}" ]; then
             bin/linux/resource_tool --pack --root=level3/resource_${part} --image=level3/$part/split_img/$part.img-second `find level3/resource_${part} -type f|sort`

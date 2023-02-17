@@ -135,6 +135,11 @@ elif [ $level = 3 ]; then
         fi
     done
 
+    if [ -f level1/Image/resource.img ]; then
+        mkdir -p level3/resource
+        bin/linux/resource_tool --unpack --verbose --image=level1/Image/resource.img level3/resource 2>&1|grep entry|sed "s/^.*://"|xargs echo
+    fi
+
     echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then
     exit
