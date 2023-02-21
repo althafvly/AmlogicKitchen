@@ -1,4 +1,4 @@
-# Working with the second level of Amlogic/Rockchip firmware
+# Working with the second level of Amlogic/Rockchip/AllWinner firmware
 
 ---
 
@@ -8,7 +8,7 @@ Note: run `bat` or `sh` depending on HOST OS
 
 1. To work with the second level, you must unpack level 1 first
 
-2. run unpack/rkunpack and select 2
+2. run unpack/rkunpack/awunpack and select 2
 
 3. In the level2 folder, we replace/correct the files in the folders:
 
@@ -25,7 +25,7 @@ Note: run `bat` or `sh` depending on HOST OS
 - odm\_\* - odm A/B section
 - oem\_\* - oem A/B section
 
-4. run pack/rkpack and select level 2
+4. run pack/rkpack/awpack and select level 2
 
 5. then to pack level 1 run pack and select level1 or to create full OTA, run pack_level1_fota
 

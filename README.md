@@ -2,9 +2,9 @@
   <img src="docs/logo.png" width="350" >
 </p>
 
-<b>Kitchen for working with Amlogic firmware (WINDOWS/LINUX only).</b>
+<b>Kitchen for working with Amlogic/Rockchip/AllWinner firmware (WINDOWS/LINUX only).</b>
 
-- Used for unpacking/packing Amlogic images.
+- Used for unpacking/packing Amlogic/Rockchip/AllWinner images.
 
 <b>Disclaimer:</b>
 
@@ -28,7 +28,7 @@
 - Create Amlogic image from supported flashable zips.
 - Dump ROM from device through mask mode.
 
-<b>Common features (Rockchip/Amlogic):</b>
+<b>Common features (Rockchip/Amlogic/AllWinner):</b>
 
 - Unpack/pack partitions (system,product,system_ext,oem and odm).
 - Unpack/pack recovery,boot,logo and DTB.
