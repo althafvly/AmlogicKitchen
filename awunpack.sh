@@ -143,4 +143,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
     exit
 fi
 
-while true; do ./awunpack.sh && break; done
+while true; do ./write_perm.sh && ./awunpack.sh && break; done

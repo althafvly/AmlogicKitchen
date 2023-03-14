@@ -189,4 +189,5 @@ read filename
 bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
 echo "....................."
 echo "Done."
+./write_perm.sh
 exit

@@ -146,4 +146,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
     exit
 fi
 
-while true; do ./rkunpack.sh && break; done
+while true; do ./write_perm.sh && ./rkunpack.sh && break; done

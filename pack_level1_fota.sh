@@ -148,3 +148,5 @@ rm -rf out/update_tmp.zip
 if [ -d tmp ]; then
     rm -rf tmp
 fi
+
+./write_perm.sh

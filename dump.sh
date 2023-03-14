@@ -82,5 +82,7 @@ if [ -d dtb ]; then
     rm -rf dtb
 fi
 
+./write_perm.sh
+
 echo "Done."
 exit

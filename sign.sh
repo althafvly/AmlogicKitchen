@@ -25,3 +25,5 @@ for part in system_a system_ext_a vendor_a product_a odm_a system system_ext ven
         fi
     fi
 done
+
+./write_perm.sh
