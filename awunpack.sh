@@ -27,6 +27,7 @@ if [ $level = 1 ]; then
         echo "No files found in /in"
         exit 0
     fi
+    rename 's/ /_/g' in/*.img
     echo "Files in input dir (*.img)"
     count=0
     for entry in $(ls in/*.img); do
