@@ -148,8 +148,6 @@ elif [ $level = 2 ]; then
         if [ -f level1/super.PARTITION ]; then
             $($command)
         fi
-    else
-        exit 0
     fi
 
     rm -rf level2/*.txt

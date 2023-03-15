@@ -150,8 +150,6 @@ elif [ $level = 2 ]; then
         if [ -f level1/$foldername/super.fex ]; then
             $($command)
         fi
-    else
-        exit 0
     fi
 
     rm -rf level2/*.txt
