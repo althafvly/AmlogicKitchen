@@ -177,6 +177,8 @@ elif [ $level = 3 ]; then
         fi
     done
 
+    ./aw_boot-resource.sh
+
     echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then
     exit
