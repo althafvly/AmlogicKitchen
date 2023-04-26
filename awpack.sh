@@ -177,7 +177,12 @@ elif [ $level = 3 ]; then
         fi
     done
 
-    ./aw_boot-resource.sh
+    if [ -d "level3/boot-resource" ]; then
+        cd "level3"
+        ../bin/linux/fsbuild200/fsbuild ../bin/common/boot-resource.ini "../level1/$foldername/split_xxxx.fex"
+        mv "boot-resource.fex" "../level1/$foldername/boot-resource.fex"
+        cd ..
+    fi
 
     echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then

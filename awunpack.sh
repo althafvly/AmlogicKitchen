@@ -138,7 +138,15 @@ elif [ $level = 3 ]; then
         fi
     done
 
-    ./aw_boot-resource.sh
+    if [ -f "level1/$foldername/boot-resource.fex" ]; then
+        echo "Extracting boot-resource in level3"
+        tmp_mount_dir=$(mktemp -d)
+        mount -o loop -t vfat "level1/$foldername/boot-resource.fex" "$tmp_mount_dir"
+        cp -a "$tmp_mount_dir"/. "level3/boot-resource/"
+        umount "$tmp_mount_dir"
+        rmdir "$tmp_mount_dir"
+        rm -f "level3/boot-resource/magic.bin"
+    fi
 
     echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then
