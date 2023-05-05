@@ -57,7 +57,8 @@ elif [ $level = 2 ]; then
     done
 
     if [ -f level1/super.PARTITION ]; then
-        for part in system system_ext vendor product odm oem system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
+        for filename in level2/*.img; do
+            part="$(basename "$filename" .img)"
             if [ -d level2/$part ]; then
                 msize=$(du -sk level2/$part | cut -f1 | gawk '{$1*=1024;$1=int($1*1.08);printf $1}')
                 fs=level2/config/${part}_fs_config
@@ -85,7 +86,8 @@ elif [ $level = 2 ]; then
         command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
         command="$command --device $supername:$supersize --group amlogic_dynamic_partitions_a:$superusage1"
 
-        for part in system_ext_a system_a odm_a product_a vendor_a; do
+        for filename in level2/*_a.img; do
+            part="$(basename "$filename" .img)"
             if [ -f level2/$part.img ]; then
                 asize=$(du -skb level2/$part.img | cut -f1)
                 if [ $asize -gt 0 ]; then
@@ -97,7 +99,8 @@ elif [ $level = 2 ]; then
         superusage2=$(expr $supersize - $superusage1)
         command="$command --group amlogic_dynamic_partitions_b:$superusage2"
 
-        for part in system_ext_b system_b odm_b product_b vendor_b; do
+        for filename in level2/*_b.img; do
+            part="$(basename "$filename" .img)"
             if [ -f level2/$part.img ]; then
                 bsize=$(du -skb level2/$part.img | cut -f1)
                 if [ $bsize -eq 0 ]; then
