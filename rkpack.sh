@@ -43,6 +43,12 @@ if [ $level = 1 ]; then
                     touch level1/Image/trust.img
                 fi
             fi
+            if [ -f "level1/parameter.txt" ] && grep -q "Image/parameter.txt" "level1/package-file"; then
+                mv "level1/parameter.txt" "level1/Image/parameter.txt"
+            fi
+            if [ -f "level1/MiniLoaderAll.bin" ] && grep -q "Image/MiniLoaderAll.bin" "level1/package-file"; then
+                mv "level1/MiniLoaderAll.bin" "level1/Image/MiniLoaderAll.bin"
+            fi
             bin/linux/afptool -pack level1/ level1/Image/update.img
             bin/linux/rkImageMaker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
         else
