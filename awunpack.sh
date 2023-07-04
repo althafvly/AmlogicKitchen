@@ -48,6 +48,7 @@ if [ $level = 1 ]; then
     filename=$(cat level1/projectname.txt)
     cp in/$filename.img level1/$filename.img
     bin/linux/imgrepacker level1/$filename.img
+    rm level1/$filename.img
     echo "Done."
 elif [ $level = 2 ]; then
     imgextractor="bin/common/imgextractor.py"

@@ -19,7 +19,6 @@ if [ $level = 1 ]; then
         file_name=$(cat level1/projectname.txt)
         bin/linux/imgrepacker level1/$file_name.img.dump
         mv level1/$file_name.img out/$file_name.img
-        mv level1/$file_name.img.bak level1/$file_name.img
         echo "Done."
     fi
 elif [ $level = 2 ]; then
