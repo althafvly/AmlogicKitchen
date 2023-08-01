@@ -77,7 +77,7 @@ elif [ $level = 2 ]; then
             else
                 python3 $imgextractor "level1/$part.PARTITION" "level2"
             fi
-            awk -i inplace '!seen[$0]++' level2/config/*
+            awk -i inplace '!seen[$0]++' level2/config/${part}_f*
         fi
     done
 
@@ -100,7 +100,7 @@ elif [ $level = 2 ]; then
                 size=$(du -b level2/$part.img | cut -f1)
                 if [ $size -ge 1024 ]; then
                     python3 $imgextractor "level2/$part.img" "level2"
-                    awk -i inplace '!seen[$0]++' level2/config/*
+                    awk -i inplace '!seen[$0]++' level2/config/${part}_f*
                 fi
             fi
         done
