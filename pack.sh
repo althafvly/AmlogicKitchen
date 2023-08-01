@@ -199,19 +199,23 @@ elif [ $level = 3 ]; then
         fi
     fi
 
-    size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
-    if [ $size -gt 196607 ]; then
-        gzip -nc level1/_aml_dtb.PARTITION >level1/_aml_dtb.PARTITION.gzip
-        mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
+    if [ -f level1/_aml_dtb.PARTITION ]; then
+        size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
+        if [ $size -gt 196607 ]; then
+            gzip -nc level1/_aml_dtb.PARTITION >level1/_aml_dtb.PARTITION.gzip
+            mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
+        fi
+        rm -rf level3/devtree/*.dtb
     fi
-    rm level3/devtree/*.dtb
 
-    msize=$(du -b level1/meson1.dtb | cut -f1)
-    if [ $msize -gt 196607 ]; then
-        gzip -nc level1/meson1.dtb >level1/meson1.dtb.gzip
-        mv level1/meson1.dtb.gzip level1/meson1.dtb
+    if [ -f level1/meson1.dtb ]; then
+        msize=$(du -b level1/meson1.dtb | cut -f1)
+        if [ $msize -gt 196607 ]; then
+            gzip -nc level1/meson1.dtb >level1/meson1.dtb.gzip
+            mv level1/meson1.dtb.gzip level1/meson1.dtb
+        fi
+        rm -rf level3/meson1/*.dtb
     fi
-    rm level3/meson1/*.dtb
 
     for part in "boot/split_img/boot.PARTITION-dtb" "boot/split_img/boot.PARTITION-second" "recovery/split_img/recovery.PARTITION-dtb" "recovery/split_img/recovery.PARTITION-second"; do
         if [ -f level3/$part ]; then
