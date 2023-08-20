@@ -37,6 +37,8 @@
 
 <b>NOTE:</b>
 
+- Windows scripts are deprecated and not maintained (Feel free to do PRs).
+- Only rockchip and amlogic supported in windows.
 - Some binaries for windows are too old/missing. Always try to use Linux or wsl (Ubuntu) in windows.
 - Ignore some errors with DTB (some conditions are missing), decompiling/compiling dtb should work fine.
 - This tool is only tested in some firmwares, devices and processors.
