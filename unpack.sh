@@ -147,6 +147,10 @@ elif [ $level = 3 ]; then
             cp level3/recovery*/split_img/*-dtb level1/_aml_dtb.PARTITION
         elif [ -f level3/recovery*/split_img/*-second ]; then
             cp level3/recovery*/split_img/*-second level1/_aml_dtb.PARTITION
+        elif [ -f level3/vendor_boot*/split_img/*-dtb ]; then
+            cp level3/vendor_boot*/split_img/*-dtb level1/_aml_dtb.PARTITION
+        elif [ -f level3/vendor_boot*/split_img/*-second ]; then
+            cp level3/vendor_boot*/split_img/*-second level1/_aml_dtb.PARTITION
         fi
     fi
 
