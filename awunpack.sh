@@ -130,7 +130,7 @@ elif [ $level = 3 ]; then
 
     foldername=$(cat level1/projectname.txt).img.dump
 
-    for part in boot recovery boot_a recovery_a; do
+    for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -f level1/$foldername/${part}.fex ]; then
             mkdir level3/$part
             bin/linux/aik/unpackimg.sh level1/$foldername/${part}.fex

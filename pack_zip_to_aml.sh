@@ -83,7 +83,7 @@ if [ -f tmp/dt.img ]; then
     cp tmp/dt.img level1/_aml_dtb.PARTITION
 fi
 
-for part in boot recovery logo dtbo vbmeta bootloader odm oem product vendor system system_ext; do
+for part in boot recovery logo dtbo vbmeta bootloader odm odm_ext oem product vendor system system_ext vendor_boot vbmeta_system; do
     if [ -f tmp/$part.img ]; then
         mv tmp/$part.img level1/$part.PARTITION
     fi
@@ -146,7 +146,7 @@ if [ -f level1/platform.conf ]; then
     echo "file=\"platform.conf\"		main_type=\"conf\"		sub_type=\"platform\"" >>$configname
 fi
 
-for part in _aml_dtb boot recovery bootloader dtbo logo odm oem product vendor system system_ext vbmeta; do
+for part in _aml_dtb boot recovery vendor_boot bootloader dtbo logo odm odm_ext oem product vendor system system_ext vbmeta vbmeta_system; do
     if [ -f level1/$part.PARTITION ]; then
         echo "file=\"$part.PARTITION\"		main_type=\"PARTITION\"		sub_type=\"$part\"" >>$configname
     fi

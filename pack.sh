@@ -223,7 +223,7 @@ elif [ $level = 3 ]; then
         fi
     done
 
-    for part in boot recovery boot_a recovery_a; do
+    for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -d level3/${part} ]; then
             bin/linux/aik/cleanup.sh
             cp -r level3/$part/ramdisk bin/linux/aik/
