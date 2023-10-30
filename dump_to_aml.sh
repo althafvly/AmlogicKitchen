@@ -44,7 +44,7 @@ configname="level1/image.cfg"
 echo "[LIST_NORMAL]" >$configname
 
 if [ ! -f level1/DDR.USB ]; then
-    echo "DDR.USB is missing, DDR.USB to level1 dir"
+    echo "DDR.USB is missing, copy DDR.USB to level1 dir"
     read -p "Press enter to continue"
 fi
 
@@ -53,7 +53,7 @@ if [ -f level1/DDR.USB ]; then
 fi
 
 if [ ! -f level1/UBOOT.USB ]; then
-    echo "UBOOT.USB is missing, UBOOT.USB to level1 dir"
+    echo "UBOOT.USB is missing, copy UBOOT.USB to level1 dir"
     read -p "Press enter to continue"
 fi
 
@@ -62,7 +62,7 @@ if [ -f level1/UBOOT.USB ]; then
 fi
 
 if [ ! -f level1/aml_sdc_burn.UBOOT ]; then
-    echo "aml_sdc_burn.UBOOT is missing, aml_sdc_burn.UBOOT to level1 dir"
+    echo "aml_sdc_burn.UBOOT is missing, copy aml_sdc_burn.UBOOT to level1 dir"
     read -p "Press enter to continue"
 fi
 
@@ -75,7 +75,7 @@ if [ -f level1/aml_sdc_burn.ini ]; then
 fi
 
 if [ ! -f level1/meson1.PARTITION ]; then
-    echo "meson1.PARTITION is missing, meson1.PARTITION to level1 dir"
+    echo "meson1.PARTITION is missing, copy meson1.PARTITION to level1 dir"
     read -p "Press enter to continue"
 fi
 
@@ -84,7 +84,7 @@ if [ -f level1/meson1.PARTITION ]; then
 fi
 
 if [ ! -f level1/platform.conf ]; then
-    echo "platform.conf is missing, platform.conf to level1 dir"
+    echo "platform.conf is missing, copy platform.conf to level1 dir"
     read -p "Press enter to continue"
 fi
 

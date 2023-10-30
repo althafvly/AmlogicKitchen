@@ -137,7 +137,7 @@ fi
 bin/linux/7za a out/update_tmp.zip ./tmp/*
 
 filename=$(cat level1/projectname.txt)
-echo "Signing..."
+echo "Signing with AOSP test keys..."
 if [ -f out/$filename_fota.zip ]; then
     rm -rf out/$filename_fota.zip
 fi
