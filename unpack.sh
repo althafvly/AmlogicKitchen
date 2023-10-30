@@ -139,19 +139,16 @@ elif [ $level = 3 ]; then
     fi
 
     if [ ! -f level1/_aml_dtb.PARTITION ]; then
-        if [ -f level3/boot*/split_img/*-dtb ]; then
-            cp level3/boot*/split_img/*-dtb level1/_aml_dtb.PARTITION
-        elif [ -f level3/boot*/split_img/*-second ]; then
-            cp level3/boot*/split_img/*-second level1/_aml_dtb.PARTITION
-        elif [ -f level3/recovery*/split_img/*-dtb ]; then
-            cp level3/recovery*/split_img/*-dtb level1/_aml_dtb.PARTITION
-        elif [ -f level3/recovery*/split_img/*-second ]; then
-            cp level3/recovery*/split_img/*-second level1/_aml_dtb.PARTITION
-        elif [ -f level3/vendor_boot*/split_img/*-dtb ]; then
-            cp level3/vendor_boot*/split_img/*-dtb level1/_aml_dtb.PARTITION
-        elif [ -f level3/vendor_boot*/split_img/*-second ]; then
-            cp level3/vendor_boot*/split_img/*-second level1/_aml_dtb.PARTITION
-        fi
+        for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
+            if [ -f level1/_aml_dtb.PARTITION ]; then
+                break
+            fi
+            if [ -f "level3/$part/split_img/$part.PARTITION-dtb" ]; then
+                cp "level3/$part/split_img/$part.PARTITION-dtb" level1/_aml_dtb.PARTITION
+            elif [ -f "level3/$part/split_img/$part.PARTITION-second" ]; then
+                cp "level3/$part/split_img/$part.PARTITION-second" level1/_aml_dtb.PARTITION
+            fi
+        done
     fi
 
     if [ -f level1/_aml_dtb.PARTITION ]; then

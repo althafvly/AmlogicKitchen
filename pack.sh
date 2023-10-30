@@ -217,20 +217,14 @@ elif [ $level = 3 ]; then
         rm -rf level3/meson1/*.dtb
     fi
 
-    for part in "boot/split_img/boot.PARTITION-dtb" "boot/split_img/boot.PARTITION-second" "recovery/split_img/recovery.PARTITION-dtb" "recovery/split_img/recovery.PARTITION-second" "vendor_boot/split_img/vendor_boot.PARTITION-dtb" "vendor_boot/split_img/vendor_boot.PARTITION-second"; do
-        if [ -f level3/$part ]; then
-            cp level1/_aml_dtb.PARTITION level3/$part
-        fi
-    done
-
-    for part in "boot_a/split_img/boot_a.PARTITION-dtb" "boot_a/split_img/boot_a.PARTITION-second" "recovery_a/split_img/recovery_a.PARTITION-dtb" "recovery_a/split_img/recovery_a.PARTITION-second" "vendor_boot_a/split_img/vendor_boot_a.PARTITION-dtb" "vendor_boot_a/split_img/vendor_boot_a.PARTITION-second"; do
-        if [ -f level3/$part ]; then
-            cp level1/_aml_dtb.PARTITION level3/$part
-        fi
-    done
-
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -d level3/${part} ]; then
+            if [ -f "level3/$part/split_img/$part.PARTITION-dtb" ]; then
+                cp level1/_aml_dtb.PARTITION "level3/$part/split_img/$part.PARTITION-dtb"
+            fi
+            if [ -f "level3/$part/split_img/$part.PARTITION-second" ]; then
+                cp level1/_aml_dtb.PARTITION "level3/$part/split_img/$part.PARTITION-second"
+            fi
             bin/linux/aik/cleanup.sh
             cp -r level3/$part/ramdisk bin/linux/aik/
             cp -r level3/$part/split_img bin/linux/aik/
