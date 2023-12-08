@@ -17,20 +17,26 @@ partitions=(
     system system_ext vendor product odm
 )
 
+# Function to sign files
+sign_files() {
+    local partition_path=$1
+    local selinux_path=$2
+    local security_type=$3
+
+    if [ -d "$partition_path/$selinux_path" ] && compgen -G "$partition_path/$selinux_path/*mac_permissions.xml" > /dev/null; then
+        python "$dir/ROM_resigner/resign.py" "$partition_path" "$security" "$security_type"
+    fi
+}
+
 # Loop through system partitions
 for part in "${partitions[@]}"; do
     if [ -d "$dir/level2/$part" ]; then
-        if { [ "$part" == "system_a" ] || [ "$part" == "system" ]; } && [ -d "$dir/level2/$part/system" ]; then
-            if [ -d "$dir/level2/$part/system/etc/selinux" ] && [ -f "$dir/level2/$part/system/etc/selinux/*_mac_permissions.xml" ]; then
-                python "$dir/ROM_resigner/resign.py" "$dir/level2/$part/system" "$security" selinux
-            fi
+        echo "Signing apks/jar in $part partition"
+        if [[ "$part" == "system_a" || "$part" == "system" ]] && [ -d "$dir/level2/$part/system" ]; then
+            sign_files "$dir/level2/$part/system" "etc/selinux" "selinux"
         else
-            if [ -d "$dir/level2/$part/etc/selinux" ] && [ -f "$dir/level2/$part/etc/selinux/*_mac_permissions.xml" ]; then
-                python "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security" selinux
-            fi
-            if [ -d "$dir/level2/$part/etc/security" ] && [ -f "$dir/level2/$part/etc/security/mac_permissions.xml" ]; then
-                python "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security" security
-            fi
+            sign_files "$dir/level2/$part" "etc/selinux" "selinux"
+            sign_files "$dir/level2/$part" "etc/security" "security"
         fi
     fi
 done
