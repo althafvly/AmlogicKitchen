@@ -128,7 +128,7 @@ if exist level1\Image\super.img (
     set /p supersize=<"level2\config\super_size.txt"
     bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
     set /p superusage1=<"level2\superusage.txt"
-    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 3 --device %supername%:!supersize! --group amlogic_dynamic_partitions_a:!superusage1!
+    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 3 --device %supername%:!supersize! --group rockchip_dynamic_partitions_a:!superusage1!
 
     FOR %%A IN (system_a system_ext_a vendor_a product_a odm_a) DO (
         if exist level2\%%A.img (
@@ -137,20 +137,20 @@ if exist level1\Image\super.img (
             echo %%A | bin\windows\sed "s/.\{3\}$//">level2\%%A.txt
             set /p name=<"level2\%%A.txt"
             if !size! GTR 0 (
-                set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions_a --image %%A=level2\%%A.img
+                set command=!command! --partition %%A:readonly:!size!:rockchip_dynamic_partitions_a --image %%A=level2\%%A.img
             )
             del level2\*.txt
         )
     )
     set /a superusage2=!supersize!-!superusage1!
-    set command=!command! --group amlogic_dynamic_partitions_b:!superusage2!
+    set command=!command! --group rockchip_dynamic_partitions_b:!superusage2!
 
     FOR %%A IN (system_b system_ext_b vendor_b product_b odm_b) DO (
         if exist level2\%%A.img (
             bin\windows\du -skb level2\%%A.img | bin\windows\cut -f1> level2\%%A_size.txt
             set /p size=<"level2\%%A_size.txt"
             if !size! EQU 0 (
-                set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions_b
+                set command=!command! --partition %%A:readonly:!size!:rockchip_dynamic_partitions_b
             )
             del level2\*.txt
         )
@@ -172,7 +172,7 @@ if exist level1\Image\super.img (
     set /p supersize=<"level2\config\super_size.txt"
     bin\windows\du -cb level2/*.img | bin\windows\grep total | bin\windows\cut -f1>level2\superusage.txt
     set /p superusage=<"level2\superusage.txt"
-    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:!supersize! --group amlogic_dynamic_partitions:!superusage!
+    set command=bin\windows\super\lpmake --metadata-size 65536 --super-name super --metadata-slots 2 --device super:!supersize! --group rockchip_dynamic_partitions:!superusage!
 
     FOR %%A IN (odm oem product vendor system system_ext) DO (
         if exist level2\%%A.img (
@@ -181,7 +181,7 @@ if exist level1\Image\super.img (
             echo %%A | bin\windows\sed "s/.\{3\}$//">level2\%%A.txt
             set /p name=<"level2\%%A.txt"
             if !size! GTR 0 (
-                set command=!command! --partition %%A:readonly:!size!:amlogic_dynamic_partitions --image %%A=level2\%%A.img
+                set command=!command! --partition %%A:readonly:!size!:rockchip_dynamic_partitions --image %%A=level2\%%A.img
             )
             del level2\*.txt
         )

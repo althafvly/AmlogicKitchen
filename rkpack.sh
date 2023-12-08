@@ -120,27 +120,27 @@ elif [ $level = 2 ]; then
         supersize=$(cat level2/config/super_size.txt)
         superusage1=$(du -cb level2/*.img | grep total | cut -f1)
         command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
-        command="$command --device $supername:$supersize --group amlogic_dynamic_partitions_a:$superusage1"
+        command="$command --device $supername:$supersize --group rockchip_dynamic_partitions_a:$superusage1"
 
         for filename in level2/*_a.img; do
             part="$(basename "$filename" .img)"
             if [ -f level2/$part.img ]; then
                 asize=$(du -skb level2/$part.img | cut -f1)
                 if [ $asize -gt 0 ]; then
-                    command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions_a --image $part=level2/$part.img"
+                    command="$command --partition $part:readonly:$asize:rockchip_dynamic_partitions_a --image $part=level2/$part.img"
                 fi
             fi
         done
 
         superusage2=$(expr $supersize - $superusage1)
-        command="$command --group amlogic_dynamic_partitions_b:$superusage2"
+        command="$command --group rockchip_dynamic_partitions_b:$superusage2"
 
         for filename in level2/*_b.img; do
             part="$(basename "$filename" .img)"
             if [ -f level2/$part.img ]; then
                 bsize=$(du -skb level2/$part.img | cut -f1)
                 if [ $bsize -eq 0 ]; then
-                    command="$command --partition $part:readonly:$bsize:amlogic_dynamic_partitions_b"
+                    command="$command --partition $part:readonly:$bsize:rockchip_dynamic_partitions_b"
                 fi
             fi
         done
@@ -164,13 +164,13 @@ elif [ $level = 2 ]; then
         supersize=$(cat level2/config/super_size.txt)
         superusage=$(du -cb level2/*.img | grep total | cut -f1)
         command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
-        command="$command --device $supername:$supersize --group amlogic_dynamic_partitions:$superusage"
+        command="$command --device $supername:$supersize --group rockchip_dynamic_partitions:$superusage"
 
         for part in system_ext system odm product vendor; do
             if [ -f level2/$part.img ]; then
                 asize=$(du -skb level2/$part.img | cut -f1)
                 if [ $asize -gt 0 ]; then
-                    command="$command --partition $part:readonly:$asize:amlogic_dynamic_partitions --image $part=level2/$part.img"
+                    command="$command --partition $part:readonly:$asize:rockchip_dynamic_partitions --image $part=level2/$part.img"
                 fi
             fi
         done
