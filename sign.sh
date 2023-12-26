@@ -17,26 +17,14 @@ partitions=(
     system system_ext vendor product odm
 )
 
-# Function to sign files
-sign_files() {
-    local partition_path=$1
-    local selinux_path=$2
-    local security_type=$3
-
-    if [ -d "$partition_path/$selinux_path" ] && compgen -G "$partition_path/$selinux_path/*mac_permissions.xml" > /dev/null; then
-        python "$dir/ROM_resigner/resign.py" "$partition_path" "$security" "$security_type"
-    fi
-}
-
 # Loop through system partitions
 for part in "${partitions[@]}"; do
     if [ -d "$dir/level2/$part" ]; then
         echo "Signing apks/jar in $part partition"
         if [[ "$part" == "system_a" || "$part" == "system" ]] && [ -d "$dir/level2/$part/system" ]; then
-            sign_files "$dir/level2/$part/system" "etc/selinux" "selinux"
+            python "$dir/ROM_resigner/resign.py" "$dir/level2/$part/system" "$security"
         else
-            sign_files "$dir/level2/$part" "etc/selinux" "selinux"
-            sign_files "$dir/level2/$part" "etc/security" "security"
+            python "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security"
         fi
     fi
 done
