@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="docs/logo.png" width="350" >
+  <img src="logo.png" width="350" >
 </p>
 
 <b>Kitchen for working with Amlogic/Rockchip/AllWinner firmware (WINDOWS/LINUX only).</b>
@@ -48,5 +48,5 @@
   (Most of the binaries are compiled for Linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
 
 [Docs](docs)<br/>
-[Credits](docs/credits.md)<br/>
+[Credits](credits.md)<br/>
 [Report issue](https://github.com/xKern/AmlogicKitchen/issues/new)
