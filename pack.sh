@@ -200,21 +200,30 @@ elif [ $level = 3 ]; then
     fi
 
     if [ -f level1/_aml_dtb.PARTITION ]; then
-        size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
-        if [ $size -gt 196607 ]; then
-            gzip -nc level1/_aml_dtb.PARTITION >level1/_aml_dtb.PARTITION.gzip
-            mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
+        echo "Do you want to compress _aml_dtb.PARTITION? (y/n)"
+        read answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            size=$(du -b level1/_aml_dtb.PARTITION | cut -f1)
+            if [ $size -gt 196607 ]; then
+                gzip -nc level1/_aml_dtb.PARTITION >level1/_aml_dtb.PARTITION.gzip
+                mv level1/_aml_dtb.PARTITION.gzip level1/_aml_dtb.PARTITION
+            fi
+            rm -rf level3/devtree/*.dtb
         fi
-        rm -rf level3/devtree/*.dtb
     fi
 
     if [ -f level1/meson1.dtb ]; then
-        msize=$(du -b level1/meson1.dtb | cut -f1)
-        if [ $msize -gt 196607 ]; then
-            gzip -nc level1/meson1.dtb >level1/meson1.dtb.gzip
-            mv level1/meson1.dtb.gzip level1/meson1.dtb
+        echo "Do you want to compress _aml_dtb.PARTITION? (y/n)"
+        echo "Not recommeded if not supported"
+        read answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            msize=$(du -b level1/meson1.dtb | cut -f1)
+            if [ $msize -gt 196607 ]; then
+                gzip -nc level1/meson1.dtb >level1/meson1.dtb.gzip
+                mv level1/meson1.dtb.gzip level1/meson1.dtb
+            fi
+            rm -rf level3/meson1/*.dtb
         fi
-        rm -rf level3/meson1/*.dtb
     fi
 
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
