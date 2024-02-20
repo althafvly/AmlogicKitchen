@@ -139,50 +139,62 @@ elif [ $level = 3 ]; then
     fi
 
     if [ ! -f level1/_aml_dtb.PARTITION ]; then
-        for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-            if [ -f level1/_aml_dtb.PARTITION ]; then
-                break
-            fi
-            if [ -f "level3/$part/split_img/$part.PARTITION-dtb" ]; then
-                cp "level3/$part/split_img/$part.PARTITION-dtb" level1/_aml_dtb.PARTITION
-            elif [ -f "level3/$part/split_img/$part.PARTITION-second" ]; then
-                cp "level3/$part/split_img/$part.PARTITION-second" level1/_aml_dtb.PARTITION
-            fi
-        done
+        echo "Do you want to copy dtb to level1? (y/n)"
+        read answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
+                if [ -f level1/_aml_dtb.PARTITION ]; then
+                    break
+                fi
+                if [ -f "level3/$part/split_img/$part.PARTITION-dtb" ]; then
+                    cp "level3/$part/split_img/$part.PARTITION-dtb" level1/_aml_dtb.PARTITION
+                elif [ -f "level3/$part/split_img/$part.PARTITION-second" ]; then
+                    cp "level3/$part/split_img/$part.PARTITION-second" level1/_aml_dtb.PARTITION
+                fi
+            done
+        fi
     fi
 
     if [ -f level1/_aml_dtb.PARTITION ]; then
-        mkdir level3/devtree
-        bin/linux/7za x level1/_aml_dtb.PARTITION -y
-        bin/linux/dtbSplit _aml_dtb level3/devtree/
-        rm -rf _aml_dtb
-        bin/linux/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
-        DIR='level3/devtree/'
-        if [ "$(ls -A $DIR)" ]; then
-            for filename in level3/devtree/*.dtb; do
-                [ -e "$filename" ] || continue
-                name=$(basename $filename .dtb)
-                dtc -I dtb -O dts level3/devtree/$name.dtb -o "$(echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/')"
-                rm -rf level3/devtree/$name.dtb
-            done
-        else
-            dtc -I dtb -O dts level1/_aml_dtb.PARTITION -o "$(echo level3/devtree/single.dts | sed -e s'/\.dtb/\.dts/')"
+        echo "Do you want to unpack _aml_dtb.PARTITION? (y/n)"
+        read answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            mkdir level3/devtree
+            bin/linux/7za x level1/_aml_dtb.PARTITION -y
+            bin/linux/dtbSplit _aml_dtb level3/devtree/
+            rm -rf _aml_dtb
+            bin/linux/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
+            DIR='level3/devtree/'
+            if [ "$(ls -A $DIR)" ]; then
+                for filename in level3/devtree/*.dtb; do
+                    [ -e "$filename" ] || continue
+                    name=$(basename $filename .dtb)
+                    dtc -I dtb -O dts level3/devtree/$name.dtb -o "$(echo level3/devtree/$name.dts | sed -e s'/\.dtb/\.dts/')"
+                    rm -rf level3/devtree/$name.dtb
+                done
+            else
+                dtc -I dtb -O dts level1/_aml_dtb.PARTITION -o "$(echo level3/devtree/single.dts | sed -e s'/\.dtb/\.dts/')"
+            fi
         fi
     fi
 
     if [ -f level1/meson1.dtb ]; then
-        mkdir level3/meson1
-        bin/linux/dtbSplit level1/meson1.dtb level3/meson1/
-        DIR='level3/meson1/'
-        if [ "$(ls -A $DIR)" ]; then
-            for filename in level3/meson1/*.dtb; do
-                [ -e "$filename" ] || continue
-                name=$(basename $filename .dtb)
-                dtc -I dtb -O dts level3/meson1/$name.dtb -o "$(echo level3/meson1/$name.dts | sed -e s'/\.dtb/\.dts/')"
-                rm -rf level3/meson1/$name.dtb
-            done
-        else
-            dtc -I dtb -O dts level1/meson1.dtb -o "$(echo level3/meson1/single.dts | sed -e s'/\.dtb/\.dts/')"
+        echo "Do you want to unpack meson1.dtb? (y/n)"
+        read answer
+        if [[ "$answer" =~ ^[Yy]$ ]]; then
+            mkdir level3/meson1
+            bin/linux/dtbSplit level1/meson1.dtb level3/meson1/
+            DIR='level3/meson1/'
+            if [ "$(ls -A $DIR)" ]; then
+                for filename in level3/meson1/*.dtb; do
+                    [ -e "$filename" ] || continue
+                    name=$(basename $filename .dtb)
+                    dtc -I dtb -O dts level3/meson1/$name.dtb -o "$(echo level3/meson1/$name.dts | sed -e s'/\.dtb/\.dts/')"
+                    rm -rf level3/meson1/$name.dtb
+                done
+            else
+                dtc -I dtb -O dts level1/meson1.dtb -o "$(echo level3/meson1/single.dts | sed -e s'/\.dtb/\.dts/')"
+            fi
         fi
     fi
 
