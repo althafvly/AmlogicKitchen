@@ -1,4 +1,4 @@
-#!/usr/bin/sudo sh
+#!/usr/bin/sudo bash
 
 for entry in level1 level2 level3 out dump; do
     if [ -d $entry ]; then

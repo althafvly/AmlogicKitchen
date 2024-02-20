@@ -1,4 +1,4 @@
-#!/usr/bin/sudo sh
+#!/usr/bin/sudo bash
 
 echo "....................."
 echo "Rockchip Kitchen"
