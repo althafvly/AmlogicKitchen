@@ -65,7 +65,7 @@ elif [ $level = 2 ]; then
     fi
 
     if [ ! -f level1/Image/super.img ]; then
-        for part in system system_ext vendor product odm oem; do
+        for part in system system_ext vendor product odm oem oem_a; do
             if [ -d level2/$part ]; then
                 echo "Creating $part image"
                 size=$(cat level2/config/${part}_size.txt)
@@ -79,7 +79,7 @@ elif [ $level = 2 ]; then
         done
     fi
 
-    for part in odm_ext_a odm_ext_b; do
+    for part in oem_a odm_ext_a odm_ext_b; do
         if [ -d level2/$part ]; then
             echo "Creating $part image"
             size=$(cat level2/config/${part}_size.txt)
