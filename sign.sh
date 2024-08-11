@@ -22,9 +22,9 @@ for part in "${partitions[@]}"; do
     if [ -d "$dir/level2/$part" ]; then
         echo "Signing apks/jar in $part partition"
         if [[ "$part" == "system_a" || "$part" == "system" ]] && [ -d "$dir/level2/$part/system" ]; then
-            python "$dir/ROM_resigner/resign.py" "$dir/level2/$part/system" "$security"
+            python3 "$dir/ROM_resigner/resign.py" "$dir/level2/$part/system" "$security"
         else
-            python "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security"
+            python3 "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security"
         fi
     fi
 done
