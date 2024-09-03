@@ -13,9 +13,9 @@
      - This project was made as a learning initiative and the developer or organization cannot
        be held liable in any way for the use of this tool.
 
-<b>Pull submodules:</b>
+<b>Clone the repository:</b>
 
-     git submodule update --init --recursive
+     git clone --recurse-submodules https://github.com/althafvly/AmlogicKitchen -b master AmlogicKitchen
 
 <b>Supported features (Rockchip):</b>
 
