@@ -2,7 +2,7 @@
   <img src="logo.png" width="350" >
 </p>
 
-<b>Kitchen for working with Amlogic/Rockchip/AllWinner firmware (WINDOWS/LINUX only).</b>
+<b>Kitchen for working with Amlogic/Rockchip/AllWinner firmware (LINUX only).</b>
 
 - Used for unpacking/packing Amlogic/Rockchip/AllWinner images.
 
@@ -37,15 +37,12 @@
 
 <b>NOTE:</b>
 
-- Windows scripts are deprecated and not maintained (Feel free to do PRs).
-- Only rockchip and amlogic supported in windows.
-- Some binaries for windows are too old/missing. Always try to use Linux or wsl (Ubuntu) in windows.
 - Ignore some errors with DTB (some conditions are missing), decompiling/compiling dtb should work fine.
 - This tool is only tested in some firmwares, devices and processors.
 - There's no guarantee that packed flashable zip or Amlogic/Rockchip image will flash successfully.
-- This tool is only tested on windows and Linux (Ubuntu) machines. Even if it works on any other platform,
+- This tool is only tested Linux (Ubuntu) machines. Even if it works on any other platform,
   there's no can't guarantee for full functionality.
-  (Most of the binaries are compiled for Linux x86_64 and windows 64bit - using gnuwin64 and cygwin)
+  (Most of the binaries are compiled for Linux x86_64)
 
 # Credits:
 
