@@ -46,14 +46,14 @@ if [ $level = 1 ]; then
     fi
 
     filename=$(cat level1/projectname.txt)
-    bin/linux/rkImageMaker -unpack in/$filename.img level1
-    bin/linux/afptool -unpack level1/firmware.img level1
+    bin/rkImageMaker -unpack in/$filename.img level1
+    bin/afptool -unpack level1/firmware.img level1
     rm -rf level1/boot.bin
     rm -rf level1/firmware.img
 
     echo "Done."
 elif [ $level = 2 ]; then
-    imgextractor="bin/common/imgextractor.py"
+    imgextractor="bin/imgextractor.py"
 
     version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
     if [ -z "$version" ]; then
@@ -76,7 +76,7 @@ elif [ $level = 2 ]; then
         if [ -f level1/Image/$part.img ]; then
             echo "Extracting $part"
             if echo $(file level1/Image/$part.img) | grep -q "sparse"; then
-                bin/linux/simg2img level1/Image/$part.img level2/$part.raw.img
+                bin/simg2img level1/Image/$part.img level2/$part.raw.img
                 python3 $imgextractor "level2/$part.raw.img" "level2"
             else
                 python3 $imgextractor level1/Image/$part.img "level2"
@@ -88,9 +88,9 @@ elif [ $level = 2 ]; then
     rm -rf level2/*.raw.img
 
     if [ -f level1/Image/super.img ]; then
-        bin/linux/simg2img level1/Image/super.img level2/super.img
+        bin/simg2img level1/Image/super.img level2/super.img
         echo $(du -b level2/super.img | cut -f1) >level2/config/super_size.txt
-        bin/linux/super/lpunpack -slot=0 level2/super.img level2/
+        bin/super/lpunpack -slot=0 level2/super.img level2/
         rm -rf level2/super.img
 
         if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then
@@ -126,19 +126,19 @@ elif [ $level = 3 ]; then
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -f level1/Image/${part}.img ]; then
             mkdir level3/$part
-            bin/linux/aik/unpackimg.sh level1/Image/${part}.img
-            mv -i bin/linux/aik/ramdisk level3/$part/
-            mv -i bin/linux/aik/split_img level3/$part/
+            bin/aik/unpackimg.sh level1/Image/${part}.img
+            mv -i bin/aik/ramdisk level3/$part/
+            mv -i bin/aik/split_img level3/$part/
             if [ -f level3/$part/split_img/$part.img-second ]; then
                 mkdir -p level3/resource_$part
-                bin/linux/resource_tool --unpack --verbose --image=level3/$part/split_img/$part.img-second level3/resource_$part 2>&1|grep entry|sed "s/^.*://"|xargs echo
+                bin/resource_tool --unpack --verbose --image=level3/$part/split_img/$part.img-second level3/resource_$part 2>&1|grep entry|sed "s/^.*://"|xargs echo
             fi
         fi
     done
 
     if [ -f level1/Image/resource.img ]; then
         mkdir -p level3/resource
-        bin/linux/resource_tool --unpack --verbose --image=level1/Image/resource.img level3/resource 2>&1|grep entry|sed "s/^.*://"|xargs echo
+        bin/resource_tool --unpack --verbose --image=level1/Image/resource.img level3/resource 2>&1|grep entry|sed "s/^.*://"|xargs echo
     fi
 
     echo "Done."

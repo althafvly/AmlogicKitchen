@@ -47,11 +47,11 @@ if [ $level = 1 ]; then
 
     filename=$(cat level1/projectname.txt)
     cp in/$filename.img level1/$filename.img
-    bin/linux/imgrepacker level1/$filename.img
+    bin/imgrepacker level1/$filename.img
     rm level1/$filename.img
     echo "Done."
 elif [ $level = 2 ]; then
-    imgextractor="bin/common/imgextractor.py"
+    imgextractor="bin/imgextractor.py"
 
     version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
     if [ -z "$version" ]; then
@@ -76,7 +76,7 @@ elif [ $level = 2 ]; then
         if [ -f level1/$foldername/$part.fex ]; then
             echo "Extracting $part"
             if echo $(file level1/$foldername/$part.fex) | grep -q "sparse"; then
-                bin/linux/simg2img level1/$foldername/$part.fex level2/$part.raw.img
+                bin/simg2img level1/$foldername/$part.fex level2/$part.raw.img
                 python3 $imgextractor "level2/$part.raw.img" "level2"
             else
                 python3 $imgextractor "level1/$foldername/$part.fex" "level2"
@@ -88,9 +88,9 @@ elif [ $level = 2 ]; then
     rm -rf level2/*.raw.img
 
     if [ -f level1/$foldername/super.fex ]; then
-        bin/linux/simg2img level1/$foldername/super.fex level2/super.img
+        bin/simg2img level1/$foldername/super.fex level2/super.img
         echo $(du -b level2/super.img | cut -f1) >level2/config/super_size.txt
-        bin/linux/super/lpunpack -slot=0 level2/super.img level2/
+        bin/super/lpunpack -slot=0 level2/super.img level2/
         rm -rf level2/super.img
 
         if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then
@@ -133,9 +133,9 @@ elif [ $level = 3 ]; then
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -f level1/$foldername/${part}.fex ]; then
             mkdir level3/$part
-            bin/linux/aik/unpackimg.sh level1/$foldername/${part}.fex
-            mv -i bin/linux/aik/ramdisk level3/$part/
-            mv -i bin/linux/aik/split_img level3/$part/
+            bin/aik/unpackimg.sh level1/$foldername/${part}.fex
+            mv -i bin/aik/ramdisk level3/$part/
+            mv -i bin/aik/split_img level3/$part/
         fi
     done
 

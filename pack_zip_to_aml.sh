@@ -49,7 +49,7 @@ if [ ! -f in/$projectname.zip ]; then
 fi
 
 filename=$(cat level1/projectname.txt)
-bin/linux/7za x in/${filename}.zip -otmp
+bin/7za x in/${filename}.zip -otmp
 
 for file in compatibility.zip file_contexts.bin; do
     if [ -f tmp/$file ]; then
@@ -66,15 +66,15 @@ done
 for part in odm oem product vendor system system_ext; do
     if [ -f tmp/$part.transfer.list ]; then
         if [ -f tmp/$part.new.dat.br ]; then
-            bin/linux/brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
+            bin/brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
             rm -rf tmp/$part.new.dat.br
         fi
-        python bin/common/sdat2img.py tmp/$part.transfer.list tmp/$part.new.dat tmp/$part.img
+        python bin/sdat2img.py tmp/$part.transfer.list tmp/$part.new.dat tmp/$part.img
         rm -rf tmp/$part.new.dat tmp/$part.transfer.list
         if [ -f tmp/$part.patch.dat ]; then
             rm -rf tmp/$part.patch.dat
         fi
-        bin/linux/img2simg tmp/$part.img tmp/${part}_simg.img
+        bin/img2simg tmp/$part.img tmp/${part}_simg.img
         cp tmp/${part}_simg.img tmp/$part.img
     fi
 done
@@ -91,7 +91,7 @@ done
 
 rm -rf tmp
 
-cp bin/common/aml_sdc_burn.ini level1/aml_sdc_burn.ini
+cp bin/aml_sdc_burn.ini level1/aml_sdc_burn.ini
 
 configname="level1/image.cfg"
 
@@ -154,7 +154,7 @@ done
 
 echo "[LIST_VERIFY]" >>$configname
 
-bin/linux/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
+bin/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
 echo "Done."
 
 ./write_perm.sh

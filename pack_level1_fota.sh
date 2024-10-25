@@ -31,7 +31,7 @@ else
     mkdir tmp
 fi
 
-cp -r bin/common/fota/* tmp/
+cp -r bin/fota/* tmp/
 
 if [ -f level1/ddr.USB ]; then
     cp level1/ddr.USB tmp/bootloader.img
@@ -57,9 +57,9 @@ read compress
 for part in system system_ext vendor product odm oem; do
     if [ -f level1/$part.PARTITION ]; then
         cp level1/$part.PARTITION tmp/$part.img
-        python bin/common/img2sdat.py tmp/$part.img -o tmp -v 4 -p $part
+        python bin/img2sdat.py tmp/$part.img -o tmp -v 4 -p $part
         if [ $compress = "y" ]; then
-            bin/linux/brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
+            bin/brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
             rm -rf tmp/$part.img tmp/$part.new.dat
         fi
         echo "Done compressing $part"
@@ -134,14 +134,14 @@ if [ -f out/update_tmp.zip ]; then
     rm -rf out/update_tmp.zip
 fi
 
-bin/linux/7za a out/update_tmp.zip ./tmp/*
+bin/7za a out/update_tmp.zip ./tmp/*
 
 filename=$(cat level1/projectname.txt)
 echo "Signing with AOSP test keys..."
 if [ -f out/$filename_fota.zip ]; then
     rm -rf out/$filename_fota.zip
 fi
-java -jar bin/common/zipsigner.jar bin/common/testkey.x509.pem bin/common/testkey.pk8 out/update_tmp.zip "out/${filename}_fota.zip"
+java -jar bin/zipsigner.jar bin/testkey.x509.pem bin/testkey.pk8 out/update_tmp.zip "out/${filename}_fota.zip"
 
 rm -rf out/update_tmp.zip
 

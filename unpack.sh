@@ -46,10 +46,10 @@ if [ $level = 1 ]; then
     fi
 
     filename=$(cat level1/projectname.txt)
-    bin/linux/AmlImagePack -d in/$filename.img level1
+    bin/AmlImagePack -d in/$filename.img level1
     echo "Done."
 elif [ $level = 2 ]; then
-    imgextractor="bin/common/imgextractor.py"
+    imgextractor="bin/imgextractor.py"
 
     version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
     if [ -z "$version" ]; then
@@ -72,7 +72,7 @@ elif [ $level = 2 ]; then
         if [ -f level1/$part.PARTITION ]; then
             echo "Extracting $part"
             if echo $(file level1/$part.PARTITION) | grep -q "sparse"; then
-                bin/linux/simg2img level1/$part.PARTITION level2/$part.raw.img
+                bin/simg2img level1/$part.PARTITION level2/$part.raw.img
                 python3 $imgextractor "level2/$part.raw.img" "level2"
             else
                 python3 $imgextractor "level1/$part.PARTITION" "level2"
@@ -84,9 +84,9 @@ elif [ $level = 2 ]; then
     rm -rf level2/*.raw.img
 
     if [ -f level1/super.PARTITION ]; then
-        bin/linux/simg2img level1/super.PARTITION level2/super.img
+        bin/simg2img level1/super.PARTITION level2/super.img
         echo $(du -b level2/super.img | cut -f1) >level2/config/super_size.txt
-        bin/linux/super/lpunpack -slot=0 level2/super.img level2/
+        bin/super/lpunpack -slot=0 level2/super.img level2/
         rm -rf level2/super.img
 
         if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then
@@ -127,15 +127,15 @@ elif [ $level = 3 ]; then
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -f level1/${part}.PARTITION ]; then
             mkdir level3/$part
-            bin/linux/aik/unpackimg.sh level1/${part}.PARTITION
-            mv -i bin/linux/aik/ramdisk level3/$part/
-            mv -i bin/linux/aik/split_img level3/$part/
+            bin/aik/unpackimg.sh level1/${part}.PARTITION
+            mv -i bin/aik/ramdisk level3/$part/
+            mv -i bin/aik/split_img level3/$part/
         fi
     done
 
     if [ -f level1/logo.PARTITION ]; then
         mkdir level3/logo
-        bin/linux/imgpack -d level1/logo.PARTITION level3/logo
+        bin/imgpack -d level1/logo.PARTITION level3/logo
     fi
 
     if [ ! -f level1/_aml_dtb.PARTITION ]; then
@@ -160,10 +160,10 @@ elif [ $level = 3 ]; then
         read answer
         if [[ "$answer" =~ ^[Yy]$ ]]; then
             mkdir level3/devtree
-            bin/linux/7za x level1/_aml_dtb.PARTITION -y
-            bin/linux/dtbSplit _aml_dtb level3/devtree/
+            bin/7za x level1/_aml_dtb.PARTITION -y
+            bin/dtbSplit _aml_dtb level3/devtree/
             rm -rf _aml_dtb
-            bin/linux/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
+            bin/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
             DIR='level3/devtree/'
             if [ "$(ls -A $DIR)" ]; then
                 for filename in level3/devtree/*.dtb; do
@@ -183,7 +183,7 @@ elif [ $level = 3 ]; then
         read answer
         if [[ "$answer" =~ ^[Yy]$ ]]; then
             mkdir level3/meson1
-            bin/linux/dtbSplit level1/meson1.dtb level3/meson1/
+            bin/dtbSplit level1/meson1.dtb level3/meson1/
             DIR='level3/meson1/'
             if [ "$(ls -A $DIR)" ]; then
                 for filename in level3/meson1/*.dtb; do

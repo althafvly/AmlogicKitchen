@@ -17,7 +17,7 @@ if [ $level = 1 ]; then
             mkdir out
         fi
         file_name=$(cat level1/projectname.txt)
-        bin/linux/imgrepacker level1/$file_name.img.dump
+        bin/imgrepacker level1/$file_name.img.dump
         mv level1/$file_name.img out/$file_name.img
         echo "Done."
     fi
@@ -37,7 +37,7 @@ elif [ $level = 2 ]; then
                 fs=level2/config/${part}_fs_config
                 fc=level2/config/${part}_file_contexts
                 if [ ! -z "$size" ]; then
-                    bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
+                    bin/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
                 fi
                 echo "Done."
             fi
@@ -51,7 +51,7 @@ elif [ $level = 2 ]; then
             fs=level2/config/${part}_fs_config
             fc=level2/config/${part}_file_contexts
             if [ ! -z "$size" ]; then
-                bin/linux/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
+                bin/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
             fi
             echo "Done."
         fi
@@ -68,8 +68,8 @@ elif [ $level = 2 ]; then
                 if [ $msize -lt 1048576 ]; then
                     msize=1048576
                 fi
-                bin/linux/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
-                bin/linux/ext4/resize2fs -M level2/${part}.img
+                bin/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
+                bin/ext4/resize2fs -M level2/${part}.img
                 echo "Done."
             fi
         done
@@ -84,7 +84,7 @@ elif [ $level = 2 ]; then
         supername="super"
         supersize=$(cat level2/config/super_size.txt)
         superusage1=$(du -cb level2/*.img | grep total | cut -f1)
-        command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
+        command="bin/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
         command="$command --device $supername:$supersize --group allwinner_dynamic_partitions_a:$superusage1"
 
         for filename in level2/*_a.img; do
@@ -128,7 +128,7 @@ elif [ $level = 2 ]; then
         supername="super"
         supersize=$(cat level2/config/super_size.txt)
         superusage=$(du -cb level2/*.img | grep total | cut -f1)
-        command="bin/linux/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
+        command="bin/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
         command="$command --device $supername:$supersize --group allwinner_dynamic_partitions:$superusage"
 
         for part in system_ext system odm product vendor; do
@@ -170,18 +170,18 @@ elif [ $level = 3 ]; then
 
     for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
         if [ -d level3/${part} ]; then
-            bin/linux/aik/cleanup.sh
-            cp -r level3/$part/ramdisk bin/linux/aik/
-            cp -r level3/$part/split_img bin/linux/aik/
-            bin/linux/aik/repackimg.sh
-            mv bin/linux/aik/image-new.img level1/$foldername/${part}.fex
-            bin/linux/aik/cleanup.sh
+            bin/aik/cleanup.sh
+            cp -r level3/$part/ramdisk bin/aik/
+            cp -r level3/$part/split_img bin/aik/
+            bin/aik/repackimg.sh
+            mv bin/aik/image-new.img level1/$foldername/${part}.fex
+            bin/aik/cleanup.sh
         fi
     done
 
     if [ -d "level3/boot-resource" ]; then
         cd "level3"
-        ../bin/linux/fsbuild200/fsbuild ../bin/common/boot-resource.ini "../level1/$foldername/split_xxxx.fex"
+        ../bin/fsbuild200/fsbuild ../bin/boot-resource.ini "../level1/$foldername/split_xxxx.fex"
         mv "boot-resource.fex" "../level1/$foldername/boot-resource.fex"
         cd ..
     fi

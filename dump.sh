@@ -26,8 +26,8 @@ echo "Input bootloader size in bytes (most are: 4194304) :"
 read blsize
 echo "Input dtb size in bytes (most are: 262144) :"
 read dtbsize
-bin/linux/update mread store bootloader normal $blsize dump/bootloader.img
-bin/linux/update mread store _aml_dtb normal $dtbsize dtb/dtb.img
+bin/update mread store bootloader normal $blsize dump/bootloader.img
+bin/update mread store _aml_dtb normal $dtbsize dtb/dtb.img
 
 if [ -f dtb/dtb.img ]; then
     if [ ! $(which dtc) ]; then
@@ -35,12 +35,12 @@ if [ -f dtb/dtb.img ]; then
         exit 0
     fi
 
-    bin/linux/7za x dtb/dtb.img -y
+    bin/7za x dtb/dtb.img -y
     if [ -f _aml_dtb ]; then
-        bin/linux/dtbSplit _aml_dtb dtb/
+        bin/dtbSplit _aml_dtb dtb/
         rm -rf _aml_dtb
     fi
-    bin/linux/dtbSplit dtb/dtb.img dtb/
+    bin/dtbSplit dtb/dtb.img dtb/
     for filename in dtb/*.dtb; do
         [ -e "$filename" ] || continue
         name=$(basename $filename .dtb)
@@ -70,7 +70,7 @@ if [ -f dtb/dtb.img ]; then
 
     for entry in $(cat dump/partitions.txt); do
         size=$(grep -A 3 "pname" dtb/$dtsname.dts | grep -A 3 "$entry" | grep "size" | grep -oP '(?<=0x00 )\w+')
-        bin/linux/update mread store $entry normal $size dump/$entry.img
+        bin/update mread store $entry normal $size dump/$entry.img
     done
 fi
 
