@@ -4,11 +4,11 @@
 echo "Resigning to AOSP keys"
 
 dir=$(pwd)
-security=$(pwd)/ROM_resigner/AOSP_security
+security=$dir/ROM_resigner/AOSP_security
 
 # Check if custom keys directory exists, use it as security directory if available
 if [ -d "$dir/custom_keys" ]; then
-  security=$(pwd)/custom_keys
+  security=$dir/custom_keys
 fi
 
 # List of partitions to process
