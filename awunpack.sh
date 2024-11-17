@@ -90,7 +90,7 @@ elif [ $level = 2 ]; then
   if [ -f level1/$foldername/super.fex ]; then
     bin/simg2img level1/$foldername/super.fex level2/super.img
     echo $(du -b level2/super.img | cut -f1) >level2/config/super_size.txt
-    bin/super/lpunpack -slot=0 level2/super.img level2/
+    bin/lpunpack -slot=0 level2/super.img level2/
     rm -rf level2/super.img
 
     if [ $(ls -1q level2/*_a.img 2>/dev/null | wc -l) -gt 0 ]; then

@@ -104,7 +104,7 @@ elif [ $level = 2 ]; then
           msize=1048576
         fi
         bin/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
-        bin/ext4/resize2fs -M level2/${part}.img
+        bin/resize2fs -M level2/${part}.img
         echo "Done."
       fi
     done
@@ -119,7 +119,7 @@ elif [ $level = 2 ]; then
     supername="super"
     supersize=$(cat level2/config/super_size.txt)
     superusage1=$(du -cb level2/*.img | grep total | cut -f1)
-    command="bin/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
+    command="bin/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
     command="$command --device $supername:$supersize --group rockchip_dynamic_partitions_a:$superusage1"
 
     for filename in level2/*_a.img; do
@@ -163,7 +163,7 @@ elif [ $level = 2 ]; then
     supername="super"
     supersize=$(cat level2/config/super_size.txt)
     superusage=$(du -cb level2/*.img | grep total | cut -f1)
-    command="bin/super/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
+    command="bin/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
     command="$command --device $supername:$supersize --group rockchip_dynamic_partitions:$superusage"
 
     for part in system_ext system odm product vendor; do
