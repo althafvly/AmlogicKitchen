@@ -181,7 +181,7 @@ elif [ $level = 3 ]; then
 
   if [ -d "level3/boot-resource" ]; then
     cd "level3"
-    ../bin/fsbuild200/fsbuild ../bin/boot-resource.ini "../level1/$foldername/split_xxxx.fex"
+    ../bin/fsbuild ../bin/boot-resource.ini "../level1/$foldername/split_xxxx.fex"
     mv "boot-resource.fex" "../level1/$foldername/boot-resource.fex"
     cd ..
   fi
