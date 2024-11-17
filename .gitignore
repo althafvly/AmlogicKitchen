@@ -4,7 +4,7 @@ dump/
 in/
 out/
 tmp/
-bin/common/__pycache__/
+bin/__pycache__/
 level1/
 level2/
 level3/
