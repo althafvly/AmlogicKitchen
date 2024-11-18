@@ -1,5 +1,7 @@
 #!/usr/bin/sudo bash
 
+set -e
+
 echo "....................."
 echo "Rockchip Kitchen"
 echo "....................."
