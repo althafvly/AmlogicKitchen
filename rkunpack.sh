@@ -72,7 +72,7 @@ elif [ $level = 2 ]; then
     mkdir -p level2/config
   fi
 
-  for part in system system_ext vendor product odm oem oem_a odm_ext_a odm_ext_b; do
+  for part in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a odm_ext_a odm_ext_b; do
     if [ -f level1/Image/$part.img ]; then
       echo "Extracting $part"
       if echo $(file level1/Image/$part.img) | grep -q "sparse"; then
@@ -99,7 +99,7 @@ elif [ $level = 2 ]; then
       echo "2" >level2/config/super_type.txt
     fi
 
-    for part in system system_ext vendor product odm oem oem_a system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
+    for part in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a system_a system_ext_a vendor_a product_a odm_a system_b system_ext_b vendor_b product_b odm_b; do
       if [ -f level2/$part.img ]; then
         size=$(du -b level2/$part.img | cut -f1)
         if [ $size -ge 1024 ]; then

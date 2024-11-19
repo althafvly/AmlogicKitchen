@@ -71,7 +71,7 @@ elif [ $level = 2 ]; then
   fi
 
   if [ ! -f level1/Image/super.img ]; then
-    for part in system system_ext vendor product odm oem oem_a; do
+    for part in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a; do
       if [ -d level2/$part ]; then
         echo "Creating $part image"
         size=$(cat level2/config/${part}_size.txt)
@@ -172,7 +172,7 @@ elif [ $level = 2 ]; then
     command="bin/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
     command="$command --device $supername:$supersize --group rockchip_dynamic_partitions:$superusage"
 
-    for part in system_ext system odm product vendor; do
+    for part in system_ext system odm odm_dlkm product vendor vendor_dlkm; do
       if [ -f level2/$part.img ]; then
         asize=$(du -skb level2/$part.img | cut -f1)
         if [ $asize -gt 0 ]; then
