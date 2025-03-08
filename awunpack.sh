@@ -103,10 +103,9 @@ elif [ $level = 2 ]; then
       if [ -f level2/$part.img ]; then
         size=$(du -b level2/$part.img | cut -f1)
         if [ $size -ge 1024 ]; then
-          if bin/gettype -i "level2/$part.img" == "erofs"; then
+          if [ "$(bin/gettype -i "level2/$part.img")" = "erofs" ]; then
             bin/extract.erofs -i "level2/$part.img" -x -o "level2"
             echo $(du -b level2/$part.img | cut -f1) >"level2/config/${part}_size.txt"
-            echo 1 >"level2/config/${part}_erofs.txt"
           else
             python3 $imgextractor "level2/$part.img" "level2"
           fi

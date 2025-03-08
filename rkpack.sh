@@ -109,8 +109,7 @@ elif [ $level = 2 ]; then
         if [ $msize -lt 1048576 ]; then
           msize=1048576
         fi
-        erofs=$(cat level2/config/${part}_erofs.txt 2>/dev/null)
-        if [ "$erofs" = "1" ]; then
+        if [ "$(bin/gettype -i "level2/$part.img")" = "erofs" ]; then
           bin/mkfs.erofs -zlz4hc --mount-point /$part --fs-config-file $fs --file-contexts $fc level2/${part}.img level2/$part
         else
           bin/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
