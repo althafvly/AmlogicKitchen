@@ -36,10 +36,8 @@ elif [ $level = 2 ]; then
       if [ -d level2/$part ]; then
         echo "Creating $part image"
         size=$(cat level2/config/${part}_size.txt)
-        fs=level2/config/${part}_fs_config
-        fc=level2/config/${part}_file_contexts
         if [ ! -z "$size" ]; then
-          bin/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
+          ./make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
         fi
         echo "Done."
       fi
@@ -50,115 +48,14 @@ elif [ $level = 2 ]; then
     if [ -d level2/$part ]; then
       echo "Creating $part image"
       size=$(cat level2/config/${part}_size.txt)
-      fs=level2/config/${part}_fs_config
-      fc=level2/config/${part}_file_contexts
       if [ ! -z "$size" ]; then
-        bin/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$foldername/$part.fex level2/$part
+        ./make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
       fi
       echo "Done."
     fi
   done
 
-  if [ -f level1/$foldername/super.fex ]; then
-    for filename in level2/*.img; do
-      part="$(basename "$filename" .img)"
-      if [ -d level2/$part ]; then
-        msize=$(du -sk level2/$part | cut -f1 | gawk '{$1*=1024;$1=int($1*1.08);printf $1}')
-        fs=level2/config/${part}_fs_config
-        fc=level2/config/${part}_file_contexts
-        echo "Creating $part image"
-        if [ $msize -lt 1048576 ]; then
-          msize=1048576
-        fi
-        if [ "$(bin/gettype -i "level2/$part.img")" = "erofs" ]; then
-          bin/mkfs.erofs -zlz4hc --mount-point /$part --fs-config-file $fs --file-contexts $fc level2/${part}.img level2/$part
-        else
-          bin/make_ext4fs -J -L $part -T -1 -S $fc -C $fs -l $msize -a $part level2/$part.img level2/$part/
-          bin/resize2fs -M level2/${part}.img
-        fi
-        echo "Done."
-      fi
-    done
-  fi
-
-  if [ -f level2/config/super_type.txt ]; then
-    supertype=$(cat level2/config/super_type.txt)
-  fi
-  if [ ! -z "$supertype" ] && [ $supertype -eq "3" ]; then
-    metadata_size=65536
-    metadata_slot=3
-    supername="super"
-    supersize=$(cat level2/config/super_size.txt)
-    superusage1=$(du -cb level2/*.img | grep total | cut -f1)
-    command="bin/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
-    command="$command --device $supername:$supersize --group allwinner_dynamic_partitions_a:$superusage1"
-
-    for filename in level2/*_a.img; do
-      part="$(basename "$filename" .img)"
-      if [ -f level2/$part.img ]; then
-        asize=$(du -skb level2/$part.img | cut -f1)
-        if [ $asize -gt 0 ]; then
-          command="$command --partition $part:readonly:$asize:allwinner_dynamic_partitions_a --image $part=level2/$part.img"
-        fi
-      fi
-    done
-
-    superusage2=$(expr $supersize - $superusage1)
-    command="$command --group allwinner_dynamic_partitions_b:$superusage2"
-
-    for filename in level2/*_b.img; do
-      part="$(basename "$filename" .img)"
-      if [ -f level2/$part.img ]; then
-        bsize=$(du -skb level2/$part.img | cut -f1)
-        if [ $bsize -eq 0 ]; then
-          command="$command --partition $part:readonly:$bsize:allwinner_dynamic_partitions_b"
-        fi
-      fi
-    done
-
-    if [ $superusage2 -ge $supersize ]; then
-      echo "Unable to create super image, recreated images are too big."
-      echo "Cleanup some files before retrying"
-      echo "Needed space: $superusage1"
-      echo "Available maximum space: $supersize"
-      exit 0
-    fi
-
-    command="$command --virtual-ab --sparse --output level1/$foldername/super.fex"
-    if [ -f level1/$foldername/super.fex ]; then
-      $($command)
-    fi
-  elif [ ! -z "$supertype" ] && [ $supertype -eq "2" ]; then
-    metadata_size=65536
-    metadata_slot=2
-    supername="super"
-    supersize=$(cat level2/config/super_size.txt)
-    superusage=$(du -cb level2/*.img | grep total | cut -f1)
-    command="bin/lpmake --metadata-size $metadata_size --super-name $supername --metadata-slots $metadata_slot"
-    command="$command --device $supername:$supersize --group allwinner_dynamic_partitions:$superusage"
-
-    for part in system_ext system odm product vendor; do
-      if [ -f level2/$part.img ]; then
-        asize=$(du -skb level2/$part.img | cut -f1)
-        if [ $asize -gt 0 ]; then
-          command="$command --partition $part:readonly:$asize:allwinner_dynamic_partitions --image $part=level2/$part.img"
-        fi
-      fi
-    done
-
-    if [ $superusage -ge $supersize ]; then
-      echo "Unable to create super image, recreated images are too big."
-      echo "Cleanup some files before retrying"
-      echo "Needed space: $superusage1"
-      echo "Available maximum space: $supersize"
-      exit 0
-    fi
-
-    command="$command --sparse --output level1/$foldername/super.fex"
-    if [ -f level1/$foldername/super.fex ]; then
-      $($command)
-    fi
-  fi
+  ./make_super.sh level1/$foldername/super.fex allwinner
 
   rm -rf level2/*.txt
 elif [ $level = 3 ]; then
