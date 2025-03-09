@@ -157,4 +157,4 @@ echo "[LIST_VERIFY]" >>$configname
 bin/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
 echo "Done."
 
-./write_perm.sh
+./common/write_perm.sh

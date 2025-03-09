@@ -14,4 +14,4 @@ else
   echo "2" > level2/config/super_type.txt
 fi
 
-./extract_images.sh "$OUTPUT_FOLDER" "$OUTPUT_FOLDER"
+./common/extract_images.sh "$OUTPUT_FOLDER" "$OUTPUT_FOLDER"

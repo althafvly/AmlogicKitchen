@@ -37,7 +37,7 @@ elif [ $level = 2 ]; then
         echo "Creating $part image"
         size=$(cat level2/config/${part}_size.txt)
         if [ ! -z "$size" ]; then
-          ./make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
+          ./common/make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
         fi
         echo "Done."
       fi
@@ -49,13 +49,13 @@ elif [ $level = 2 ]; then
       echo "Creating $part image"
       size=$(cat level2/config/${part}_size.txt)
       if [ ! -z "$size" ]; then
-        ./make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
+        ./common/make_image.sh -s $part $size level2/$part/ level1/$foldername/$part.fex
       fi
       echo "Done."
     fi
   done
 
-  ./make_super.sh level1/$foldername/super.fex allwinner
+  ./common/make_super.sh level1/$foldername/super.fex allwinner
 
   rm -rf level2/*.txt
 elif [ $level = 3 ]; then
@@ -94,4 +94,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
   exit
 fi
 
-while true; do ./write_perm.sh && ./awpack.sh && break; done
+while true; do ./common/write_perm.sh && ./awpack.sh && break; done

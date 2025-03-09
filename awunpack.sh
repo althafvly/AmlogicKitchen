@@ -70,10 +70,10 @@ elif [ $level = 2 ]; then
 
   foldername=$(cat level1/projectname.txt).img.dump
 
-  ./extract_images.sh "level1/$foldername" "level2"
+  ./common/extract_images.sh "level1/$foldername" "level2"
 
   if [ -f level1/$foldername/super.fex ]; then
-    ./extract_super.sh level1/$foldername/super.fex level2/
+    ./common/extract_super.sh level1/$foldername/super.fex level2/
   fi
 
   echo "Done."
@@ -120,4 +120,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
   exit
 fi
 
-while true; do ./write_perm.sh && ./awunpack.sh && break; done
+while true; do ./common/write_perm.sh && ./awunpack.sh && break; done

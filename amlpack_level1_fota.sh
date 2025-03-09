@@ -149,4 +149,4 @@ if [ -d tmp ]; then
   rm -rf tmp
 fi
 
-./write_perm.sh
+./common/write_perm.sh

@@ -76,7 +76,7 @@ elif [ $level = 2 ]; then
         echo "Creating $part image"
         size=$(cat level2/config/${part}_size.txt)
         if [ ! -z "$size" ]; then
-          ./make_image.sh $part $size level2/$part/ level1/Image/$part.img
+          ./common/make_image.sh $part $size level2/$part/ level1/Image/$part.img
         fi
         echo "Done."
       fi
@@ -88,13 +88,13 @@ elif [ $level = 2 ]; then
       echo "Creating $part image"
       size=$(cat level2/config/${part}_size.txt)
       if [ ! -z "$size" ]; then
-        ./make_image.sh $part $size level2/$part/ level1/Image/$part.img
+        ./common/make_image.sh $part $size level2/$part/ level1/Image/$part.img
       fi
       echo "Done."
     fi
   done
 
-  ./make_super.sh level1/Image/super.img rockchip
+  ./common/make_super.sh level1/Image/super.img rockchip
 
   rm -rf level2/*.txt
 elif [ $level = 3 ]; then
@@ -126,4 +126,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
   exit
 fi
 
-while true; do ./write_perm.sh && ./rkpack.sh && break; done
+while true; do ./common/write_perm.sh && ./rkpack.sh && break; done

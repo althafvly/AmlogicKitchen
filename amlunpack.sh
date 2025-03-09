@@ -66,10 +66,10 @@ elif [ $level = 2 ]; then
     mkdir -p level2/config
   fi
 
-  ./extract_images.sh "level1" "level2"
+  ./common/extract_images.sh "level1" "level2"
 
   if [ -f level1/super.PARTITION ]; then
-    ./extract_super.sh level1/super.PARTITION level2/
+    ./common/extract_super.sh level1/super.PARTITION level2/
   fi
 
   echo "Done."
@@ -169,4 +169,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
   exit
 fi
 
-while true; do ./write_perm.sh && ./amlunpack.sh && break; done
+while true; do ./common/write_perm.sh && ./amlunpack.sh && break; done

@@ -30,4 +30,4 @@ for part in "${partitions[@]}"; do
 done
 
 # Run write_perm.sh script
-./write_perm.sh
+./common/write_perm.sh

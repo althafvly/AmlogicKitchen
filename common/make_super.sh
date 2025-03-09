@@ -19,7 +19,7 @@ for filename in level2/*.img; do
     msize=$(du -sk level2/$part | cut -f1 | awk '{$1*=1024;$1=int($1*1.08);printf $1}')
     echo "Creating $part image"
     [ $msize -lt 1048576 ] && msize=1048576
-    ./make_image.sh -r $part $msize level2/$part level2/${part}.img
+    ./common/make_image.sh -r $part $msize level2/$part level2/${part}.img
     echo "Done."
   fi
 done

@@ -70,10 +70,10 @@ elif [ $level = 2 ]; then
     mkdir -p level2/config
   fi
 
-  ./extract_images.sh "level1/Image" "level2"
+  ./common/extract_images.sh "level1/Image" "level2"
 
   if [ -f level1/Image/super.img ]; then
-    ./extract_super.sh level1/Image/super.img level2/
+    ./common/extract_super.sh level1/Image/super.img level2/
   fi
 
   echo "Done."
@@ -112,4 +112,4 @@ elif [ $level = "q" -o $level = "Q" ]; then
   exit
 fi
 
-while true; do ./write_perm.sh && ./rkunpack.sh && break; done
+while true; do ./common/write_perm.sh && ./rkunpack.sh && break; done
