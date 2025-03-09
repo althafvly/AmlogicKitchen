@@ -35,7 +35,7 @@ if [ -f dtb/dtb.img ]; then
     exit 0
   fi
 
-  bin/7za x dtb/dtb.img -y
+  bin/7zz x dtb/dtb.img -y
   if [ -f _aml_dtb ]; then
     bin/dtbSplit _aml_dtb dtb/
     rm -rf _aml_dtb

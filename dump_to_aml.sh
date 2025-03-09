@@ -146,7 +146,7 @@ fi
 if [ -f level1/_aml_dtb.PARTITION ]; then
   echo "Repacking dtb"
   mkdir level3/devtree
-  bin/7za x level1/_aml_dtb.PARTITION -y >/dev/null 2>&1
+  bin/7zz x level1/_aml_dtb.PARTITION -y >/dev/null 2>&1
   bin/dtbSplit _aml_dtb level3/devtree/ >/dev/null 2>&1
   rm -rf _aml_dtb
   bin/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/ >/dev/null 2>&1

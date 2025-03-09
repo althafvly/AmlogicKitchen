@@ -126,7 +126,7 @@ elif [ $level = 3 ]; then
     read answer
     if [[ "$answer" =~ ^[Yy]$ ]]; then
       mkdir level3/devtree
-      bin/7za x level1/_aml_dtb.PARTITION -y
+      bin/7zz x level1/_aml_dtb.PARTITION -y
       bin/dtbSplit _aml_dtb level3/devtree/
       rm -rf _aml_dtb
       bin/dtbSplit level1/_aml_dtb.PARTITION level3/devtree/
