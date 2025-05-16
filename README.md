@@ -18,6 +18,12 @@
      git clone https://github.com/althafvly/AmlogicKitchen AmlogicKitchen
      git submodule update --init --recursive
 
+<b>Enable 32-bit support:</b>
+
+     sudo dpkg --add-architecture i386
+     sudo apt update
+     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386
+
 <b>Supported features (Rockchip):</b>
 
 - Unpack/pack Rockchip images.
