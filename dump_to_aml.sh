@@ -122,8 +122,8 @@ done
 if [ -f level1/logo.PARTITION ]; then
   mkdir level3/logo
   echo "Repacking logo"
-  bin/imgpack -d level1/logo.PARTITION level3/logo >/dev/null 2>&1
-  bin/imgpack -r level3/logo level1/logo.PARTITION >/dev/null 2>&1
+  bin/logo_img_packer -d level1/logo.PARTITION level3/logo >/dev/null 2>&1
+  bin/logo_img_packer -r level3/logo level1/logo.PARTITION >/dev/null 2>&1
 fi
 
 if [ ! -f level1/_aml_dtb.PARTITION ]; then

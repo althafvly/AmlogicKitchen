@@ -64,7 +64,7 @@ elif [ $level = 3 ]; then
   fi
 
   if [ -d level3/logo ]; then
-    bin/imgpack -r level3/logo level1/logo.PARTITION
+    bin/logo_img_packer -r level3/logo level1/logo.PARTITION
   fi
 
   if [ -d level3/devtree ]; then

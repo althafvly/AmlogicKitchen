@@ -91,7 +91,7 @@ elif [ $level = 3 ]; then
 
   if [ -f level1/logo.PARTITION ]; then
     mkdir level3/logo
-    bin/imgpack -d level1/logo.PARTITION level3/logo
+    bin/logo_img_packer -d level1/logo.PARTITION level3/logo
   fi
 
   if [ ! -f level1/_aml_dtb.PARTITION ]; then
