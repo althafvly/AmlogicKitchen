@@ -45,9 +45,15 @@ if [ $level = 1 ]; then
     exit 0
   fi
 
+  # Check for 32-bit dependencies
+  if ldd bin/imgrepacker | grep -q "not found"; then
+      echo "❌ Missing 32-bit libraries. Please check readme"
+      exit 1
+  fi
+
   filename=$(cat level1/projectname.txt)
   cp in/$filename.img level1/$filename.img
-  bin/imgrepacker level1/$filename.img
+  setarch i386 bin/imgrepacker level1/$filename.img
   rm level1/$filename.img
   echo "Done."
 elif [ $level = 2 ]; then
