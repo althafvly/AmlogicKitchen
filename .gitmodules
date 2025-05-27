@@ -2,3 +2,7 @@
 	path = ROM_resigner
 	url = https://github.com/althafvly/ROM_resigner
 	branch = main
+[submodule "bin/aik"]
+	path = bin/aik
+	url = https://github.com/althafvly/AIK-Linux-mirror
+	branch = master
