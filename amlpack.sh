@@ -58,11 +58,6 @@ elif [ $level = 2 ]; then
 
   rm -rf level2/*.txt
 elif [ $level = 3 ]; then
-  if [ ! $(which dtc) ]; then
-    echo "install dtc, please (apt-get install device-tree-compiler)"
-    exit 0
-  fi
-
   if [ ! -d level3 ]; then
     echo "Unpack level 3 first"
     exit 0

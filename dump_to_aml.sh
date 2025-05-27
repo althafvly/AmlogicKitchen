@@ -4,11 +4,6 @@ echo "....................."
 echo "Amlogic Dump to Image script"
 echo "....................."
 
-version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
-if [ -z "$version" ]; then
-  echo "No Python installed!"
-fi
-
 if [ -f dump/super.img ]; then
   echo "super image isn't supported yet"
   exit 0

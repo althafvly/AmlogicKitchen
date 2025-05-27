@@ -51,11 +51,6 @@ if [ $level = 1 ]; then
   rm level1/$filename.img
   echo "Done."
 elif [ $level = 2 ]; then
-  version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
-  if [ -z "$version" ]; then
-    echo "No Python installed!"
-  fi
-
   if [ ! -d level1 ]; then
     echo "Unpack level 1 first"
     exit 0
@@ -78,11 +73,6 @@ elif [ $level = 2 ]; then
 
   echo "Done."
 elif [ $level = 3 ]; then
-  if [ ! $(which dtc) ]; then
-    echo "install dtc, please (apt-get install device-tree-compiler)"
-    exit 0
-  fi
-
   if [ ! -d level1 ]; then
     echo "Unpack level 1 first"
     exit 0

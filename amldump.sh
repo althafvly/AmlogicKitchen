@@ -30,11 +30,6 @@ bin/update mread store bootloader normal $blsize dump/bootloader.img
 bin/update mread store _aml_dtb normal $dtbsize dtb/dtb.img
 
 if [ -f dtb/dtb.img ]; then
-  if [ ! $(which dtc) ]; then
-    echo "install dtc, please (apt-get install device-tree-compiler)"
-    exit 0
-  fi
-
   bin/7zz x dtb/dtb.img -y
   if [ -f _aml_dtb ]; then
     bin/dtbSplit _aml_dtb dtb/

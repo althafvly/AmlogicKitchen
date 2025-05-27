@@ -1,10 +1,5 @@
 #!/usr/bin/sudo bash
 
-version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
-if [ -z "$version" ]; then
-  echo "No Python installed!"
-fi
-
 for dir in level1 tmp; do
   if [ -d $dir ]; then
     echo "Deleting existing $dir"
