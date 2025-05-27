@@ -61,7 +61,7 @@ done
 for part in odm oem product vendor system system_ext; do
   if [ -f tmp/$part.transfer.list ]; then
     if [ -f tmp/$part.new.dat.br ]; then
-      bin/brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
+      brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
       rm -rf tmp/$part.new.dat.br
     fi
     python bin/sdat2img.py tmp/$part.transfer.list tmp/$part.new.dat tmp/$part.img

@@ -22,7 +22,7 @@
 
      sudo dpkg --add-architecture i386
      sudo apt update
-     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler python3 7zip android-sdk-libsparse-utils
+     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler python3 7zip android-sdk-libsparse-utils brotli
 
 <b>Supported features (Rockchip):</b>
 

@@ -54,7 +54,7 @@ for part in system system_ext vendor product odm oem; do
     cp level1/$part.PARTITION tmp/$part.img
     python bin/img2sdat.py tmp/$part.img -o tmp -v 4 -p $part
     if [ $compress = "y" ]; then
-      bin/brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
+      brotli tmp/$part.new.dat --output=tmp/$part.new.dat.br -q 6 -w 24
       rm -rf tmp/$part.img tmp/$part.new.dat
     fi
     echo "Done compressing $part"
