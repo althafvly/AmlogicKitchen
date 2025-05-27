@@ -46,7 +46,7 @@ if [ $level = 1 ]; then
   fi
 
   filename=$(cat level1/projectname.txt)
-  bin/AmlImagePack -d in/$filename.img level1
+  bin/aml_image_v2_packer -d in/$filename.img level1
   echo "Done."
 elif [ $level = 2 ]; then
   if [ ! -d level1 ]; then

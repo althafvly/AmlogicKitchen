@@ -181,7 +181,7 @@ fi
 
 echo "Enter a name for aml package: "
 read filename
-bin/AmlImagePack -r level1/image.cfg level1 out/"$filename.img"
+bin/aml_image_v2_packer -r level1/image.cfg level1 out/"$filename.img"
 echo "....................."
 echo "Done."
 ./common/write_perm.sh

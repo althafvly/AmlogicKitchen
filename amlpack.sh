@@ -21,7 +21,7 @@ if [ $level = 1 ]; then
       mkdir out
     fi
     file_name=$(cat level1/projectname.txt)
-    bin/AmlImagePack -r level1/image.cfg level1 out/"$file_name.img"
+    bin/aml_image_v2_packer -r level1/image.cfg level1 out/"$file_name.img"
     echo "Done."
   fi
 elif [ $level = 2 ]; then
