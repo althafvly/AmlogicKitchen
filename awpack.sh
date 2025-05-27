@@ -18,14 +18,15 @@ if [ $level = 1 ]; then
       echo "Created out folder"
       mkdir out
     fi
-    # Check for 32-bit dependencies
-    if ldd bin/imgrepacker | grep -q "not found"; then
-        echo "❌ Missing 32-bit libraries. Please check readme"
-        exit 1
-    fi
     file_name=$(cat level1/projectname.txt)
-    setarch i386 bin/imgrepacker level1/$file_name.img.dump
-    mv level1/$file_name.img out/$file_name.img
+    # Check for 32-bit support
+    if ldd bin/imgrepacker | grep -q "not found"; then
+        bin/OpenixCard -p level1/$file_name.img.dump
+        mv level1/$file_name.img.dump/$file_name.img out/$file_name.img
+    else
+        setarch i386 bin/imgrepacker level1/$filename.img
+        mv level1/$file_name.img out/$file_name.img
+    fi
     echo "Done."
   fi
 elif [ $level = 2 ]; then

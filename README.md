@@ -80,6 +80,7 @@ Special thanks to the contributors and original authors of the tools integrated 
 * **Roger Shimizu** – `android-sdk-libsparse-utils`
 * **erfanoabdi** – ROM Resigner
 * **RedScorpioXDA** – imgRePacker
+* **YuzukiTsuru** – OpenixCard
 
 *And everyone else who contributed—thank you!*
 
