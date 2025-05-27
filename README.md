@@ -1,72 +1,90 @@
 <p align="left">
-  <img src="logo.png" width="350" >
+  <img src="logo.png" width="350">
 </p>
 
-<b>Kitchen for working with Amlogic/Rockchip/AllWinner firmware (LINUX only).</b>
+# AmlogicKitchen
 
-- Used for unpacking/packing Amlogic/Rockchip/AllWinner images.
-
-<b>Disclaimer:</b>
-
-     - The user takes sole responsibility for any damage that might arise due to the use of this tool.
-     - This includes physical damage (to device), injury, data loss, and also legal matters.
-     - This project was made as a learning initiative and the developer or organization cannot
-       be held liable in any way for the use of this tool.
-
-<b>Clone the repository:</b>
-
-     git clone https://github.com/althafvly/AmlogicKitchen AmlogicKitchen
-     git submodule update --init --recursive
-
-<b>Enable 32-bit support and install dependencies:</b>
-
-     sudo dpkg --add-architecture i386
-     sudo apt update
-     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler python3 7zip android-sdk-libsparse-utils brotli
-
-<b>Supported features (Rockchip):</b>
-
-- Unpack/pack Rockchip images.
-
-<b>Supported features (Amlogic):</b>
-
-- Unpack/pack Amlogic images.
-- Create flashable zip from Amlogic image.
-- Create Amlogic image from supported flashable zips.
-- Dump ROM from device through mask mode.
-
-<b>Common features (Rockchip/Amlogic/AllWinner):</b>
-
-- Unpack/pack partitions (system,product,system_ext,oem and odm).
-- Unpack/pack recovery,boot,logo and DTB.
-- Support for super image unpack/pack.
-- Sign ROM with custom key
-
-<b>NOTE:</b>
-
-- Ignore some errors with DTB (some conditions are missing), decompiling/compiling dtb should work fine.
-- This tool is only tested in some firmwares, devices and processors.
-- There's no guarantee that packed flashable zip or Amlogic/Rockchip image will flash successfully.
-- This tool is only tested Linux (Ubuntu) machines. Even if it works on any other platform,
-  there's no can't guarantee for full functionality.
-  (Most of the binaries are compiled for Linux x86_64)
-
-# Credits:
+**A universal firmware kitchen for working with Amlogic, Rockchip, and AllWinner images (Linux x86\_64 only).**
 
 ---
 
-- Base kitchen (vtx_kitchen) - Vortex
-- gnuwin32 and cygwin for linux binary ports
-- aml update tool - osmc
-- 7-Zip - Igor Pavlov
-- ImgExtractor - unix3dgforce, blackeange and xiaoxindada
-- AIK - osm0sis
-- SuperImage tools - LonelyFool
-- Aml dtb, unpack tools - LineageOS
-- simg2img - anestisb
-- img2sdat, sdat2img - xpirt
-- simg2img - A.S.\_id
-- ROM_resigner - erfanoabdi
-- imgRePacker - RedScorpioXDA
+### 🛠️ Features
 
-[Report issue](https://github.com/xKern/AmlogicKitchen/issues/new)
+**✅ Rockchip Support**
+
+* Unpack and repack Rockchip firmware images.
+
+**✅ Amlogic Support**
+
+* Unpack and repack Amlogic firmware images.
+* Generate Amlogic images from supported flashable ZIPs.
+* Dump ROMs via mask ROM mode (Only for legacy chips).
+
+**✅ Common Features**
+
+* Unpack and repack partitions.
+* Handle `boot`, `recovery`, `logo`, and `dtb` images.
+* Unpack and repack super images.
+* Sign ROMs with custom keys.
+
+---
+
+### ⚠️ Disclaimer
+
+This project is intended for educational purposes. Use at your own risk.
+
+* The developer is not liable for any **device damage**, **data loss**, **legal issues**, or **injuries**.
+* By using this tool, you accept full responsibility for its usage and consequences.
+
+---
+
+### 🔧 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/althafvly/AmlogicKitchen AmlogicKitchen
+cd AmlogicKitchen
+git submodule update --init --recursive
+```
+
+Enable 32-bit support and install required dependencies:
+
+```bash
+sudo dpkg --add-architecture i386
+sudo apt update
+sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler \
+python3 7zip android-sdk-libsparse-utils brotli
+```
+
+---
+
+### 📌 Notes
+
+* DTB compile/decompile may throw some warnings—these can be safely ignored in most cases.
+* Compatibility is limited to certain firmwares, devices, and chipsets. Not all images may work.
+* Tested primarily on **Linux (Ubuntu)**. While it *might* work on other platforms, full functionality is not guaranteed.
+* Most binaries are compiled for **Linux x86\_64** only.
+
+---
+
+### 🙏 Credits
+
+Special thanks to the contributors and original authors of the tools integrated into this kitchen:
+
+* **Vortex** – Base kitchen (vtx\_kitchen)
+* **unix3dgforce, blackeange, xiaoxindada** – ImgExtractor
+* **osm0sis** – Android Image Kitchen (AIK)
+* **LineageOS** – Super image tools, Amlogic DTB/unpack tools
+* **xpirt** – `img2sdat`, `sdat2img`
+* **Roger Shimizu** – `android-sdk-libsparse-utils`
+* **erfanoabdi** – ROM Resigner
+* **RedScorpioXDA** – imgRePacker
+
+*And everyone else who contributed—thank you!*
+
+---
+
+### 🐞 Report Issues
+
+Encounter a bug or need help? [Open an issue](https://github.com/xKern/AmlogicKitchen/issues/new)
