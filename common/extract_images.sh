@@ -21,7 +21,7 @@ for IMAGE in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a
     bin/extract.erofs -i "$IMAGE_FILE" -x -o "$OUTPUT_FOLDER"
     du -b "$IMAGE_FILE" | cut -f1 > "level2/config/${IMAGE}_size.txt"
   elif [[ "$TYPE" == "sparse" ]]; then
-    bin/simg2img "$IMAGE_FILE" "level2/${IMAGE}.raw.img"
+    simg2img "$IMAGE_FILE" "level2/${IMAGE}.raw.img"
     python3 bin/imgextractor.py "level2/${IMAGE}.raw.img" "$OUTPUT_FOLDER"
     rm -f "level2/${IMAGE}.raw.img"
   else

@@ -3,7 +3,7 @@
 IMAGE="$1"
 OUTPUT_FOLDER="$2"
 
-bin/simg2img "$IMAGE" level2/super.img
+simg2img "$IMAGE" level2/super.img
 du -b level2/super.img | cut -f1 > level2/config/super_size.txt
 bin/lpunpack -slot=0 level2/super.img "$OUTPUT_FOLDER"
 rm -f level2/super.img

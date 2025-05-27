@@ -69,7 +69,7 @@ for part in odm oem product vendor system system_ext; do
     if [ -f tmp/$part.patch.dat ]; then
       rm -rf tmp/$part.patch.dat
     fi
-    bin/img2simg tmp/$part.img tmp/${part}_simg.img
+    img2simg tmp/$part.img tmp/${part}_simg.img
     cp tmp/${part}_simg.img tmp/$part.img
   fi
 done
