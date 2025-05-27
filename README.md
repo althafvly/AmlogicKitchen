@@ -22,7 +22,7 @@
 
      sudo dpkg --add-architecture i386
      sudo apt update
-     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler python3
+     sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler python3 7zip
 
 <b>Supported features (Rockchip):</b>
 

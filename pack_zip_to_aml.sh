@@ -44,7 +44,7 @@ if [ ! -f in/$projectname.zip ]; then
 fi
 
 filename=$(cat level1/projectname.txt)
-bin/7zz x in/${filename}.zip -otmp
+7zz x in/${filename}.zip -otmp
 
 for file in compatibility.zip file_contexts.bin; do
   if [ -f tmp/$file ]; then
