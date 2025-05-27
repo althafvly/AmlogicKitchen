@@ -95,18 +95,7 @@ done
 
 echo "[LIST_VERIFY]" >>$configname
 
-for part in system system_ext vendor product odm oem; do
-  if [ -f level1/$part.PARTITION ]; then
-    echo "Unpacking $part"
-    python3 bin/imgextractor.py "level1/$part.PARTITION" "level2" >/dev/null 2>&1
-    awk -i inplace '!seen[$0]++' level2/config/*_file_contexts
-    size=$(cat level2/config/${part}_size.txt)
-    fs=level2/config/${part}_fs_config
-    fc=level2/config/${part}_file_contexts
-    echo "Repacking $part"
-    bin/make_ext4fs -s -J -L $part -T -1 -S $fc -C $fs -l $size -a $part level1/$part.PARTITION level2/$part/ >/dev/null 2>&1
-  fi
-done
+./common/extract_images.sh "level1" "level2"
 
 for part in boot recovery boot_a recovery_a; do
   if [ -f level1/${part}.PARTITION ]; then
