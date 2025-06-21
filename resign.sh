@@ -1,33 +1,40 @@
 #!/usr/bin/sudo bash
 
-# Resign to AOSP keys
+set -e
+
+echo "....................."
 echo "Resigning to AOSP keys"
+echo "....................."
 
-dir=$(pwd)
-security=$dir/ROM_resigner/AOSP_security
+# Set working directory and security key path
+dir="$(pwd)"
+security="$dir/ROM_resigner/AOSP_security"
 
-# Check if custom keys directory exists, use it as security directory if available
+# Use custom keys if available
 if [ -d "$dir/custom_keys" ]; then
-  security=$dir/custom_keys
+  echo "Using custom keys"
+  security="$dir/custom_keys"
 fi
 
-# List of partitions to process
+# Partitions to check and process
 partitions=(
   system_a system_ext_a vendor_a product_a odm_a
   system system_ext vendor product odm
 )
 
-# Loop through system partitions
+# Process each partition if directory exists
 for part in "${partitions[@]}"; do
-  if [ -d "$dir/level2/$part" ]; then
-    echo "Signing apks/jar in $part partition"
-    if [[ "$part" == "system_a" || "$part" == "system" ]] && [ -d "$dir/level2/$part/system" ]; then
-      python3 "$dir/ROM_resigner/resign.py" "$dir/level2/$part/system" "$security"
+  partition_path="$dir/level2/$part"
+  if [ -d "$partition_path" ]; then
+    echo "Signing APKs/JARs in: $part"
+
+    if [[ "$part" == "system_a" || "$part" == "system" ]] && [ -d "$partition_path/system" ]; then
+      python3 "$dir/ROM_resigner/resign.py" "$partition_path/system" "$security"
     else
-      python3 "$dir/ROM_resigner/resign.py" "$dir/level2/$part" "$security"
+      python3 "$dir/ROM_resigner/resign.py" "$partition_path" "$security"
     fi
   fi
 done
 
-# Run write_perm.sh script
+# Set correct permissions post-signing
 ./common/write_perm.sh

@@ -1,155 +1,109 @@
 #!/usr/bin/sudo bash
 
+set -e
+
+# Clean and prepare working directories
 for dir in level1 tmp; do
-  if [ -d $dir ]; then
-    echo "Deleting existing $dir"
-    rm -rf $dir && mkdir $dir
-  else
-    mkdir $dir
-  fi
+  echo "Resetting $dir"
+  rm -rf "$dir"
+  mkdir "$dir"
 done
 
-if [ ! -d $dir ]; then
-  mkdir $dir
+[[ -d in ]] || { echo "Creating /in folder"; mkdir in; }
+
+# Check for input zip files
+count_file=$(ls -1 in/*.zip 2>/dev/null | wc -l)
+if [[ "$count_file" = 0 ]]; then
+  echo "No files found in /in"
+  exit 1
 fi
 
 echo "....................."
 echo "Amlogic Kitchen"
 echo "....................."
-if [ ! -d in ]; then
-  echo "Can't find /in folder"
-  echo "Creating /in folder"
-  mkdir in
-fi
-count_file=$(ls -1 in/*.zip 2>/dev/null | wc -l)
-if [ "$count_file" = 0 ]; then
-  echo "No files found in /in"
-  exit 0
-fi
-echo "Files in input dir (*.zip)"
+echo "Available input files (*.zip):"
 count=0
-for entry in $(ls in/*.zip); do
-  count=$(($count + 1))
-  name=$(basename in/$entry .zip)
-  echo $count - $name
+for entry in in/*.zip; do
+  count=$((count + 1))
+  name=$(basename "$entry" .zip)
+  echo "$count - $name"
 done
-echo "....................."
-echo "Enter a file name :"
-read projectname
-echo $projectname >level1/projectname.txt
 
-if [ ! -f in/$projectname.zip ]; then
-  echo "Can't find the file"
-  exit 0
+echo "....................."
+read -p "Enter a file name (without .zip): " projectname
+echo "$projectname" >level1/projectname.txt
+
+zipfile="in/$projectname.zip"
+if [[ ! -f "$zipfile" ]]; then
+  echo "Can't find the file: $zipfile"
+  exit 1
 fi
 
-filename=$(cat level1/projectname.txt)
-7zz x in/${filename}.zip -otmp
+7zz x "$zipfile" -otmp
 
-for file in compatibility.zip file_contexts.bin; do
-  if [ -f tmp/$file ]; then
-    rm -rf tmp/$file
-  fi
-done
+# Clean unnecessary files
+rm -rf tmp/{compatibility.zip,file_contexts.bin} tmp/{META-INF,system}
 
-for dir in META-INF system; do
-  if [ -d tmp/$dir ]; then
-    rm -rf tmp/$dir
-  fi
-done
-
+# Convert sparse dat to .img
 for part in odm oem product vendor system system_ext; do
-  if [ -f tmp/$part.transfer.list ]; then
-    if [ -f tmp/$part.new.dat.br ]; then
-      brotli --decompress tmp/$part.new.dat.br --o=tmp/$part.new.dat
-      rm -rf tmp/$part.new.dat.br
+  if [[ -f tmp/$part.transfer.list ]]; then
+    if [[ -f tmp/$part.new.dat.br ]]; then
+      brotli -d -o tmp/$part.new.dat tmp/$part.new.dat.br
+      rm -f tmp/$part.new.dat.br
     fi
     python bin/sdat2img.py tmp/$part.transfer.list tmp/$part.new.dat tmp/$part.img
-    rm -rf tmp/$part.new.dat tmp/$part.transfer.list
-    if [ -f tmp/$part.patch.dat ]; then
-      rm -rf tmp/$part.patch.dat
-    fi
+    rm -f tmp/$part.new.dat tmp/$part.transfer.list tmp/$part.patch.dat 2>/dev/null
     img2simg tmp/$part.img tmp/${part}_simg.img
-    cp tmp/${part}_simg.img tmp/$part.img
+    mv tmp/${part}_simg.img tmp/$part.img
   fi
 done
 
-if [ -f tmp/dt.img ]; then
-  cp tmp/dt.img level1/_aml_dtb.PARTITION
-fi
+# Optional dt.img to dtb
+[[ -f tmp/dt.img ]] && cp tmp/dt.img level1/_aml_dtb.PARTITION
 
+# Move recognized partitions
 for part in boot recovery logo dtbo vbmeta bootloader odm odm_ext oem product vendor system system_ext vendor_boot vbmeta_system; do
-  if [ -f tmp/$part.img ]; then
-    mv tmp/$part.img level1/$part.PARTITION
-  fi
+  [[ -f tmp/$part.img ]] && mv tmp/$part.img level1/$part.PARTITION
 done
 
 rm -rf tmp
 
-cp bin/aml_sdc_burn.ini level1/aml_sdc_burn.ini
+# Copy burn ini
+cp bin/aml_sdc_burn.ini level1/
 
+# Generate image.cfg
 configname="level1/image.cfg"
+echo "[LIST_NORMAL]" >"$configname"
 
-echo "[LIST_NORMAL]" >$configname
-
-if [ ! -f level1/DDR.USB ]; then
-  echo "DDR.USB is missing, DDR.USB to level1 dir"
-  read -p "Press enter to continue"
-fi
-
-if [ -f level1/DDR.USB ]; then
-  echo "file=\"DDR.USB\"		main_type=\"USB\"		sub_type=\"DDR\"" >>$configname
-fi
-
-if [ ! -f level1/UBOOT.USB ]; then
-  echo "UBOOT.USB is missing, UBOOT.USB to level1 dir"
-  read -p "Press enter to continue"
-fi
-
-if [ -f level1/UBOOT.USB ]; then
-  echo "file=\"UBOOT.USB\"		main_type=\"USB\"		sub_type=\"UBOOT\"" >>$configname
-fi
-
-if [ ! -f level1/aml_sdc_burn.UBOOT ]; then
-  echo "aml_sdc_burn.UBOOT is missing, aml_sdc_burn.UBOOT to level1 dir"
-  read -p "Press enter to continue"
-fi
-
-if [ -f level1/aml_sdc_burn.UBOOT ]; then
-  echo "file=\"aml_sdc_burn.UBOOT\"		main_type=\"UBOOT\"		sub_type=\"aml_sdc_burn\"" >>$configname
-fi
-
-if [ -f level1/aml_sdc_burn.ini ]; then
-  echo "file=\"aml_sdc_burn.ini\"		main_type=\"ini\"		sub_type=\"aml_sdc_burn\"" >>$configname
-fi
-
-if [ ! -f level1/meson1.PARTITION ]; then
-  echo "meson1.PARTITION is missing, meson1.PARTITION to level1 dir"
-  read -p "Press enter to continue"
-fi
-
-if [ -f level1/meson1.PARTITION ]; then
-  echo "file=\"meson1.PARTITION\"		main_type=\"dtb\"		sub_type=\"meson1\"" >>$configname
-fi
-
-if [ ! -f level1/platform.conf ]; then
-  echo "platform.conf is missing, platform.conf to level1 dir"
-  read -p "Press enter to continue"
-fi
-
-if [ -f level1/platform.conf ]; then
-  echo "file=\"platform.conf\"		main_type=\"conf\"		sub_type=\"platform\"" >>$configname
-fi
-
-for part in _aml_dtb boot recovery vendor_boot bootloader dtbo logo odm odm_ext oem product vendor system system_ext vbmeta vbmeta_system; do
-  if [ -f level1/$part.PARTITION ]; then
-    echo "file=\"$part.PARTITION\"		main_type=\"PARTITION\"		sub_type=\"$part\"" >>$configname
+# Required binaries
+for item in DDR.USB UBOOT.USB aml_sdc_burn.UBOOT meson1.PARTITION platform.conf; do
+  if [[ ! -f level1/$item ]]; then
+    echo "$item is missing. Please copy it to level1/"
+    read -p "Press Enter to continue..."
   fi
 done
 
-echo "[LIST_VERIFY]" >>$configname
+# Add binaries to image.cfg
+[[ -f level1/DDR.USB ]] && echo 'file="DDR.USB"	main_type="USB"	sub_type="DDR"' >>"$configname"
+[[ -f level1/UBOOT.USB ]] && echo 'file="UBOOT.USB"	main_type="USB"	sub_type="UBOOT"' >>"$configname"
+[[ -f level1/aml_sdc_burn.UBOOT ]] && echo 'file="aml_sdc_burn.UBOOT"	main_type="UBOOT"	sub_type="aml_sdc_burn"' >>"$configname"
+[[ -f level1/aml_sdc_burn.ini ]] && echo 'file="aml_sdc_burn.ini"	main_type="ini"	sub_type="aml_sdc_burn"' >>"$configname"
+[[ -f level1/meson1.PARTITION ]] && echo 'file="meson1.PARTITION"	main_type="dtb"	sub_type="meson1"' >>"$configname"
+[[ -f level1/platform.conf ]] && echo 'file="platform.conf"	main_type="conf"	sub_type="platform"' >>"$configname"
 
+# Add partition files
+for part in _aml_dtb boot recovery vendor_boot bootloader dtbo logo odm odm_ext oem product vendor system system_ext vbmeta vbmeta_system; do
+  [[ -f level1/$part.PARTITION ]] && \
+    echo "file=\"$part.PARTITION\"	main_type=\"PARTITION\"	sub_type=\"$part\"" >>"$configname"
+done
+
+echo "[LIST_VERIFY]" >>"$configname"
+
+# Read output image filename from user
+filename=$(cat level1/projectname.txt)
 bin/aml_image_v2_packer -r level1/image.cfg level1 out/"$filename.img"
+
+echo "....................."
 echo "Done."
 
 ./common/write_perm.sh

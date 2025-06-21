@@ -5,19 +5,17 @@ set -e
 echo "....................."
 echo "Rockchip Kitchen"
 echo "....................."
-echo "....................."
-echo "Select level 1,2,3 or q/Q to exit: "
-read level
+read -p "Select level 1, 2, 3 or q/Q to exit: " level
 
-if [ $level = 1 ]; then
-  if [ ! -d level1 ]; then
-    echo "Can't find level1 folder"
-  else
-    if [ ! -d out ]; then
-      echo "Can't find out folder"
-      echo "Created out folder"
-      mkdir out
+case "$level" in
+  1)
+    if [[ ! -d level1 ]]; then
+      echo "Can't find level1 folder"
+      exit 1
     fi
+
+    [[ -d out ]] || { echo "Created out folder"; mkdir out; }
+
     echo "Supported models:"
     echo "px30            RKPX30"
     echo "px3se           RK312A"
@@ -39,79 +37,88 @@ if [ $level = 1 ]; then
     echo "rk3528          RK3528"
     echo "rk3576          RK3576"
     echo "rv1126_rv1109   RK1126"
-    echo "If your model starts with rk312* then its RK312A"
-    echo "Enter your chip model, Eg: RK312X:"
-    read chip
+    echo "Note: If your model starts with rk312*, choose RK312A"
+
+    read -p "Enter your chip model (e.g. RK312X): " chip
     file_name=$(cat level1/projectname.txt)
-    if [ $chip ]; then
-      if grep -q trust.img "level1/package-file"; then
-        if [ ! -f "level1/Image/trust.img" ]; then
-          touch level1/Image/trust.img
-        fi
-      fi
-      if [ -f "level1/parameter.txt" ] && grep -q "Image/parameter.txt" "level1/package-file"; then
-        mv "level1/parameter.txt" "level1/Image/parameter.txt"
-      fi
-      if [ -f "level1/MiniLoaderAll.bin" ] && grep -q "Image/MiniLoaderAll.bin" "level1/package-file"; then
-        mv "level1/MiniLoaderAll.bin" "level1/Image/MiniLoaderAll.bin"
-      fi
+
+    if [[ "$chip" =~ ^RK ]]; then
+      [[ -f level1/package-file && ! -f level1/Image/trust.img ]] && \
+        grep -q trust.img level1/package-file && touch level1/Image/trust.img
+
+      [[ -f level1/parameter.txt && -f level1/package-file ]] && \
+        grep -q "Image/parameter.txt" level1/package-file && \
+        mv level1/parameter.txt level1/Image/parameter.txt
+
+      [[ -f level1/MiniLoaderAll.bin && -f level1/package-file ]] && \
+        grep -q "Image/MiniLoaderAll.bin" level1/package-file && \
+        mv level1/MiniLoaderAll.bin level1/Image/MiniLoaderAll.bin
+
       bin/afptool -pack level1/ level1/Image/update.img
-      bin/rkImageMaker -$chip level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
-    else
-      echo "Error: Chip is invalid, must be started with RK"
-      exit 0
-    fi
-
-    echo "Done."
-  fi
-elif [ $level = 2 ]; then
-  if [ ! -d level2 ]; then
-    echo "Unpack level 2 first"
-    exit 0
-  fi
-
-  if [ ! -f level1/Image/super.img ]; then
-    for part in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a; do
-      if [ -d level2/$part ]; then
-        echo "Creating $part image"
-        size=$(cat level2/config/${part}_size.txt)
-        if [ ! -z "$size" ]; then
-          ./common/make_image.sh $part $size level2/$part/ level1/Image/$part.img
-        fi
-        echo "Done."
-      fi
-    done
-  fi
-
-  for part in oem_a odm_ext_a odm_ext_b; do
-    if [ -d level2/$part ]; then
-      echo "Creating $part image"
-      size=$(cat level2/config/${part}_size.txt)
-      if [ ! -z "$size" ]; then
-        ./common/make_image.sh $part $size level2/$part/ level1/Image/$part.img
-      fi
+      bin/rkImageMaker -"$chip" level1/Image/MiniLoaderAll.bin level1/Image/update.img out/"$file_name.img" -os_type:androidos
       echo "Done."
+    else
+      echo "Error: Chip is invalid, must start with RK"
+      exit 1
     fi
-  done
+    ;;
 
-  ./common/make_super.sh level1/Image/super.img rockchip
+  2)
+    if [[ ! -d level2 ]]; then
+      echo "Unpack level 2 first"
+      exit 1
+    fi
 
-  rm -rf level2/*.txt
-elif [ $level = 3 ]; then
-  if [ ! -d level3 ]; then
-    echo "Unpack level 3 first"
+    if [[ ! -f level1/Image/super.img ]]; then
+      for part in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a; do
+        [[ -d level2/$part ]] || continue
+        echo "Creating $part image"
+        size=$(<level2/config/${part}_size.txt)
+        [[ -n "$size" ]] && ./common/make_image.sh "$part" "$size" level2/$part/ level1/Image/$part.img
+        echo "Done."
+      done
+    fi
+
+    for part in oem_a odm_ext_a odm_ext_b; do
+      [[ -d level2/$part ]] || continue
+      echo "Creating $part image"
+      size=$(<level2/config/${part}_size.txt)
+      [[ -n "$size" ]] && ./common/make_image.sh "$part" "$size" level2/$part/ level1/Image/$part.img
+      echo "Done."
+    done
+
+    ./common/make_super.sh level1/Image/super.img rockchip
+    rm -f level2/*.txt
+    ;;
+
+  3)
+    if [[ ! -d level3 ]]; then
+      echo "Unpack level 3 first"
+      exit 1
+    fi
+
+    if [[ -d level3/resource ]]; then
+      echo "Packing resource.img"
+      bin/resource_tool --pack --root=level3/resource \
+        --image=level1/Image/resource.img \
+        $(find level3/resource -type f | sort)
+    fi
+
+    ./common/pack_boot.sh
+    echo "Done."
+    ;;
+
+  q|Q)
     exit 0
-  fi
+    ;;
 
-  if [ -d "level3/resource" ]; then
-    bin/resource_tool --pack --root=level3/resource --image=level1/Image/resource.img $(find level3/resource -type f | sort)
-  fi
+  *)
+    echo "Invalid selection"
+    exit 1
+    ;;
+esac
 
-  ./common/pack_boot.sh
-
-  echo "Done."
-elif [ $level = "q" -o $level = "Q" ]; then
-  exit
-fi
-
-while true; do ./common/write_perm.sh && ./rkpack.sh && break; done
+# Always run final step
+while true; do
+  ./common/write_perm.sh && ./rkpack.sh && break
+done
