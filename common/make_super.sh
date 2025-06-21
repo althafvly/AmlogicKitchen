@@ -1,5 +1,11 @@
 #!/bin/bash
 
+set -e
+
+# Add bin/ to LD_LIBRARY_PATH if not already present
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+[[ ":$LD_LIBRARY_PATH:" != *":$ROOT_DIR/bin:"* ]] && export LD_LIBRARY_PATH="$ROOT_DIR/bin${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
 ARGS=()
 while [[ $# -gt 0 ]]; do
     ARGS+=("$1")
