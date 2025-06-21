@@ -3,7 +3,7 @@
 set -e
 
 foldername=$(<level1/projectname.txt).img.dump
-parts="boot recovery vendor_boot boot_a recovery_a vendor_boot_a"
+parts="boot init_boot recovery vendor_boot boot_a init_boot_a recovery_a vendor_boot_a"
 
 repack() {
   local part=$1 output=$2

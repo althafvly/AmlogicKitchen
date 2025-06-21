@@ -3,7 +3,12 @@
 IMAGE_DIR="$1"
 OUTPUT_FOLDER="$2"
 
-for IMAGE in system system_ext vendor vendor_dlkm product odm odm_dlkm oem oem_a system_a system_ext_a vendor_a product_a odm_a; do
+partitions=(
+  system_a system_dlkm_a system_ext_a vendor_a vendor_dlkm_a product_a odm_a odm_ext_a odm_dlkm_a oem_a
+  system system_dlkm system_ext vendor vendor_dlkm product odm odm_ext odm_dlkm oem
+)
+
+for IMAGE in "${partitions[@]}"; do
   for ext in PARTITION img fex; do
     IMAGE_FILE="$IMAGE_DIR/$IMAGE.$ext"
     [[ -f "$IMAGE_FILE" ]] && break || IMAGE_FILE=""
