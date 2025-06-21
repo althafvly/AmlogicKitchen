@@ -107,19 +107,7 @@ elif [ $level = 3 ]; then
     bin/resource_tool --pack --root=level3/resource --image=level1/Image/resource.img $(find level3/resource -type f | sort)
   fi
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -d "level3/resource_${part}" ]; then
-      bin/resource_tool --pack --root=level3/resource_${part} --image=level3/$part/split_img/$part.img-second $(find level3/resource_${part} -type f | sort)
-    fi
-    if [ -d level3/${part} ]; then
-      bin/aik/cleanup.sh
-      cp -r level3/$part/ramdisk bin/aik/
-      cp -r level3/$part/split_img bin/aik/
-      bin/aik/repackimg.sh
-      mv bin/aik/image-new.img level1/Image/${part}.img
-      bin/aik/cleanup.sh
-    fi
-  done
+  ./common/pack_boot.sh
 
   echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then

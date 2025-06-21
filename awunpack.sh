@@ -91,14 +91,7 @@ elif [ $level = 3 ]; then
 
   foldername=$(cat level1/projectname.txt).img.dump
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -f level1/$foldername/${part}.fex ]; then
-      mkdir level3/$part
-      bin/aik/unpackimg.sh level1/$foldername/${part}.fex
-      mv -i bin/aik/ramdisk level3/$part/
-      mv -i bin/aik/split_img level3/$part/
-    fi
-  done
+  ./common/unpack_boot.sh
 
   if [ -f "level1/$foldername/boot-resource.fex" ]; then
     echo "Extracting boot-resource in level3"

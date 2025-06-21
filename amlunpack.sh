@@ -98,14 +98,7 @@ elif [ $level = 3 ]; then
     mkdir level3
   fi
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -f level1/${part}.PARTITION ]; then
-      mkdir level3/$part
-      bin/aik/unpackimg.sh level1/${part}.PARTITION
-      mv -i bin/aik/ramdisk level3/$part/
-      mv -i bin/aik/split_img level3/$part/
-    fi
-  done
+  ./common/unpack_boot.sh
 
   if [ -f level1/logo.PARTITION ]; then
     mkdir level3/logo

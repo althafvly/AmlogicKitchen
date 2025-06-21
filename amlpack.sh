@@ -145,22 +145,7 @@ elif [ $level = 3 ]; then
     fi
   fi
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -d level3/${part} ]; then
-      if [ -f "level3/$part/split_img/$part.PARTITION-dtb" ]; then
-        cp level1/_aml_dtb.PARTITION "level3/$part/split_img/$part.PARTITION-dtb"
-      fi
-      if [ -f "level3/$part/split_img/$part.PARTITION-second" ]; then
-        cp level1/_aml_dtb.PARTITION "level3/$part/split_img/$part.PARTITION-second"
-      fi
-      bin/aik/cleanup.sh
-      cp -r level3/$part/ramdisk bin/aik/
-      cp -r level3/$part/split_img bin/aik/
-      bin/aik/repackimg.sh
-      mv bin/aik/image-new.img level1/${part}.PARTITION
-      bin/aik/cleanup.sh
-    fi
-  done
+  ./common/pack_boot.sh
 
   echo "Done."
 elif [ $level = "q" -o $level = "Q" ]; then

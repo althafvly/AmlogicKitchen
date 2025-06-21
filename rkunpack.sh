@@ -84,18 +84,7 @@ elif [ $level = 3 ]; then
     mkdir level3
   fi
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -f level1/Image/${part}.img ]; then
-      mkdir level3/$part
-      bin/aik/unpackimg.sh level1/Image/${part}.img
-      mv -i bin/aik/ramdisk level3/$part/
-      mv -i bin/aik/split_img level3/$part/
-      if [ -f level3/$part/split_img/$part.img-second ]; then
-        mkdir -p level3/resource_$part
-        bin/resource_tool --unpack --verbose --image=level3/$part/split_img/$part.img-second level3/resource_$part 2>&1 | grep entry | sed "s/^.*://" | xargs echo
-      fi
-    fi
-  done
+  ./common/unpack_boot.sh
 
   if [ -f level1/Image/resource.img ]; then
     mkdir -p level3/resource

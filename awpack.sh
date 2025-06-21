@@ -72,16 +72,7 @@ elif [ $level = 3 ]; then
 
   foldername=$(cat level1/projectname.txt).img.dump
 
-  for part in boot recovery vendor_boot boot_a recovery_a vendor_boot_a; do
-    if [ -d level3/${part} ]; then
-      bin/aik/cleanup.sh
-      cp -r level3/$part/ramdisk bin/aik/
-      cp -r level3/$part/split_img bin/aik/
-      bin/aik/repackimg.sh
-      mv bin/aik/image-new.img level1/$foldername/${part}.fex
-      bin/aik/cleanup.sh
-    fi
-  done
+  ./common/pack_boot.sh
 
   if [ -d "level3/boot-resource" ]; then
     cd "level3"
