@@ -38,7 +38,6 @@ if [ $level = 1 ]; then
   echo "....................."
   echo "Enter a file name :"
   read projectname
-  echo $projectname >level1/projectname.txt
 
   if [ ! -f in/$projectname.img ]; then
     echo "Can't find the file"
@@ -46,7 +45,26 @@ if [ $level = 1 ]; then
   fi
 
   filename=$(cat level1/projectname.txt)
-  bin/aml_image_v2_packer -d in/$filename.img level1
+  echo "Choose unpack tool:"
+  echo "1) ampack"
+  echo "2) aml_image_v2_packer"
+  read -p "Enter choice [1 or 2]: " choice
+
+  case "$choice" in
+      1)
+          echo "Using ampack..."
+          bin/ampack unpack "in/$projectname.img" level1
+          ;;
+      2)
+          echo "Using aml_image_v2_packer..."
+          bin/aml_image_v2_packer -d "in/$projectname.img" level1
+          ;;
+      *)
+          echo "Invalid choice."
+          exit 1
+          ;;
+  esac
+  echo $projectname >level1/projectname.txt
   echo "Done."
 elif [ $level = 2 ]; then
   if [ ! -d level1 ]; then

@@ -12,8 +12,6 @@ read level
 if [ $level = 1 ]; then
   if [ ! -d level1 ]; then
     echo "Can't find level1 folder"
-  elif [ "$(ls -1 level1/image.cfg 2>/dev/null | wc -l)" = 0 ]; then
-    echo "Can't find image.cfg"
   else
     if [ ! -d out ]; then
       echo "Can't find out folder"
@@ -21,7 +19,30 @@ if [ $level = 1 ]; then
       mkdir out
     fi
     file_name=$(cat level1/projectname.txt)
-    bin/aml_image_v2_packer -r level1/image.cfg level1 out/"$file_name.img"
+    echo "Choose pack tool:"
+    echo "1) ampack"
+    echo "2) aml_image_v2_packer"
+    read -p "Enter choice [1 or 2]: " choice
+    case "$choice" in
+        1)
+            echo "Using ampack..."
+            rm level1/projectname.txt
+            bin/ampack pack level1 out/"$file_name.img"
+            echo $file_name >level1/projectname.txt
+            ;;
+        2)
+            if [ "$(ls -1 level1/image.cfg 2>/dev/null | wc -l)" = 0 ]; then
+                echo "Can't find image.cfg"
+            else
+                echo "Using aml_image_v2_packer..."
+                bin/aml_image_v2_packer -r level1/image.cfg level1 out/"$file_name.img"
+            fi
+            ;;
+        *)
+            echo "Invalid choice."
+            exit 1
+            ;;
+    esac
     echo "Done."
   fi
 elif [ $level = 2 ]; then
