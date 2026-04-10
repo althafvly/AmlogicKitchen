@@ -54,7 +54,7 @@ Enable 32-bit support and install required dependencies:
 sudo dpkg --add-architecture i386
 sudo apt update
 sudo apt install libc6:i386 libstdc++6:i386 libgcc1:i386 device-tree-compiler \
-python3 7zip android-sdk-libsparse-utils brotli
+python3 7zip android-sdk-libsparse-utils brotli rename libconfuse2
 ```
 
 ---
